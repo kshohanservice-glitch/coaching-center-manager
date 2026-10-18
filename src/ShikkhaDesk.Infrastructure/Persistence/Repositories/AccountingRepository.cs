@@ -248,6 +248,18 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
                AND (@AsOf IS NULL OR je.entry_date <= @AsOf);",
             new { AccountId = accountId, AsOf = asOf is null ? null : EndOfDay(asOf.Value) }, ct)!;
 
+    public Task<Money> GetFinancialAccountBalanceAsync(Guid financialAccountId, DateTime? asOf,
+        CancellationToken ct = default) =>
+        ExecuteScalarAsync<Money>(@"
+            SELECT fa.opening_balance + IFNULL(SUM(jl.debit - jl.credit), 0)
+              FROM financial_accounts fa
+              LEFT JOIN journal_lines jl ON jl.financial_account_id = fa.id
+              LEFT JOIN journal_entries je ON je.id = jl.journal_entry_id
+                   AND je.status <> 2
+                   AND (@AsOf IS NULL OR je.entry_date <= @AsOf)
+             WHERE fa.id = @FinancialAccountId;",
+            new { FinancialAccountId = financialAccountId, AsOf = asOf is null ? null : EndOfDay(asOf.Value) }, ct)!;
+
     // ------------------------------------------------------------------ transfers
 
     public Task InsertTransferAsync(Transfer transfer, CancellationToken ct = default) =>

@@ -32,6 +32,8 @@ public interface IAccountingRepository
         CancellationToken ct = default);
     Task<IReadOnlyList<TrialBalanceRow>> GetTrialBalanceAsync(DateRange range, CancellationToken ct = default);
     Task<Money> GetAccountBalanceAsync(Guid accountId, DateTime? asOf, CancellationToken ct = default);
+    Task<Money> GetFinancialAccountBalanceAsync(Guid financialAccountId, DateTime? asOf,
+        CancellationToken ct = default);
 
     // Transfers
     Task InsertTransferAsync(Transfer transfer, CancellationToken ct = default);
