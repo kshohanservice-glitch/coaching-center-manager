@@ -126,10 +126,10 @@ public sealed class IncomeViewModel : ViewModelBase
                 total += record.Amount;
                 Rows.Add(new IncomeExpenseEntry
                 {
-                    Date = Core.Digits.Format(record.IncomeDate, _state.UseBengaliDigits),
-                    Number = record.IncomeNumber,
+                    Date = Core.Digits.Format(record.ExpenseDate, _state.UseBengaliDigits),
+                    Number = record.ExpenseNumber,
                     Description = record.Description,
-                    Category = record.Source ?? "—",
+                    Category = record.IsAccrued ? "বকেয়া (পেয়েবল)" : "পরিশোধিত",
                     Amount = _state.Money(record.Amount),
                     Reference = record.Reference ?? "—"
                 });

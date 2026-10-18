@@ -115,7 +115,6 @@ public sealed class ExamsViewModel : ViewModelBase
                     Status = exam.Status switch
                     {
                         ExamStatus.Published => "প্রকাশিত",
-                        ExamStatus.Completed => "সম্পন্ন",
                         _ => "খসড়া"
                     }
                 });

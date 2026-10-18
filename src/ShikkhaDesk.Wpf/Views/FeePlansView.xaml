@@ -50,13 +50,12 @@
 
                                         <ComboBox Grid.Row="0" Grid.Column="0" SelectedIndex="{Binding KindIndex}"
                                                   Margin="0,0,8,8">
-                                            <ComboBoxItem Content="টিউশন ফি" />
+                                            <ComboBoxItem Content="মাসিক টিউশন ফি" />
+                                            <ComboBoxItem Content="কোর্স ফি" />
                                             <ComboBoxItem Content="ভর্তি ফি" />
                                             <ComboBoxItem Content="পরীক্ষা ফি" />
-                                            <ComboBoxItem Content="উপকরণ ফি" />
-                                            <ComboBoxItem Content="যাতায়াত ফি" />
-                                            <ComboBoxItem Content="বিলম্ব ফি" />
-                                            <ComboBoxItem Content="অন্যান্য" />
+                                            <ComboBoxItem Content="রেজিস্ট্রেশন ফি" />
+                                            <ComboBoxItem Content="অন্যান্য ফি" />
                                         </ComboBox>
                                         <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Amount}"
                                                  Margin="0,0,0,8" />

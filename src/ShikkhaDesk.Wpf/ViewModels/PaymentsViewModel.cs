@@ -92,8 +92,8 @@ public sealed class PaymentsViewModel : ViewModelBase
                 {
                     1 => PaymentMethod.Cash,
                     2 => PaymentMethod.Bank,
-                    3 => PaymentMethod.MobileBanking,
-                    4 => PaymentMethod.Card,
+                    3 => PaymentMethod.BKash,
+                    4 => PaymentMethod.Rocket,
                     _ => null
                 },
                 PageSize: 500);
@@ -174,21 +174,7 @@ public sealed class PaymentsViewModel : ViewModelBase
         StatusMessage = "রপ্তানি সম্পন্ন: " + path;
     }
 
-    private static string Translate(PaymentMethod method) => method switch
-    {
-        PaymentMethod.Cash => "নগদ",
-        PaymentMethod.Bank => "ব্যাংক",
-        PaymentMethod.MobileBanking => "মোবাইল ব্যাংকিং",
-        PaymentMethod.Card => "কার্ড",
-        _ => method.ToString()
-    };
+    private static string Translate(PaymentMethod method) => Labels.For(method);
 
-    private static string Translate(PaymentStatus status) => status switch
-    {
-        PaymentStatus.Active => "বৈধ",
-        PaymentStatus.Reversed => "বাতিল",
-        PaymentStatus.PartiallyRefunded => "আংশিক ফেরত",
-        PaymentStatus.Refunded => "ফেরত",
-        _ => status.ToString()
-    };
+    private static string Translate(PaymentStatus status) => Labels.For(status);
 }

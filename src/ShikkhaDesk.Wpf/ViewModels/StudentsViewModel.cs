@@ -135,7 +135,7 @@ public sealed class StudentsViewModel : ViewModelBase
                 Status: StatusFilterIndex switch
                 {
                     1 => StudentStatus.Active,
-                    2 => StudentStatus.Inactive,
+                    2 => StudentStatus.Withdrawn,
                     3 => StudentStatus.Archived,
                     _ => null
                 },

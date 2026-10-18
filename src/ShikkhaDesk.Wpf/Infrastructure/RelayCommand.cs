@@ -18,6 +18,12 @@ public sealed class RelayCommand : ICommand
     {
     }
 
+    public RelayCommand(Action<object?> execute, Func<bool>? canExecute = null)
+    {
+        _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+        _canExecute = canExecute is null ? null : _ => canExecute();
+    }
+
     public event EventHandler? CanExecuteChanged;
 
     public bool CanExecute(object? parameter) => _canExecute?.Invoke(parameter) ?? true;
@@ -42,6 +48,12 @@ public sealed class AsyncRelayCommand : ICommand
     public AsyncRelayCommand(Func<Task> execute, Func<bool>? canExecute = null)
         : this(_ => execute(), canExecute is null ? null : _ => canExecute())
     {
+    }
+
+    public AsyncRelayCommand(Func<object?, Task> execute, Func<bool>? canExecute = null)
+    {
+        _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+        _canExecute = canExecute is null ? null : _ => canExecute();
     }
 
     public event EventHandler? CanExecuteChanged;

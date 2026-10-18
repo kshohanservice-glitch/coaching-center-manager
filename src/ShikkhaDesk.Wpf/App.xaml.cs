@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
@@ -101,6 +102,26 @@ public partial class App : System.Windows.Application
         MainWindow main = Services.GetRequiredService<MainWindow>();
         main.Closed += (_, _) => Shutdown();
         main.Show();
+    }
+
+    /// <summary>
+    /// Signs out and starts a fresh process. Rebuilding a logged-in shell in place would leave the
+    /// previous user's permission-filtered menu behind, which is exactly the bug this avoids.
+    /// </summary>
+    internal static void Restart()
+    {
+        State.End();
+
+        string executable = Environment.ProcessPath
+            ?? Process.GetCurrentProcess().MainModule?.FileName
+            ?? string.Empty;
+
+        if (executable.Length > 0 && File.Exists(executable))
+        {
+            Process.Start(new ProcessStartInfo(executable) { UseShellExecute = true });
+        }
+
+        Current.Shutdown();
     }
 
     private static bool ShowLogin()

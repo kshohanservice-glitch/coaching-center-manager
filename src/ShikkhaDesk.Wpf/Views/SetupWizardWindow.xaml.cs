@@ -15,7 +15,7 @@ namespace ShikkhaDesk.Wpf.Views;
 /// </summary>
 public partial class SetupWizardWindow : Window
 {
-    private readonly Panel[] _steps;
+    private readonly FrameworkElement[] _steps;
     private int _index;
 
     public SetupWizardWindow()
@@ -190,13 +190,12 @@ public partial class SetupWizardWindow : Window
             return false;
         }
 
-        PasswordStrengthText.Text = PasswordHasher.ValidateStrength(password, out string detail)
-            ? string.Empty
-            : detail;
+        IReadOnlyList<string> weaknesses = PasswordHasher.ValidateStrength(password);
+        PasswordStrengthText.Text = string.Join(" · ", weaknesses);
 
-        if (!PasswordHasher.ValidateStrength(password, out string message))
+        if (weaknesses.Count > 0)
         {
-            ErrorText.Text = message;
+            ErrorText.Text = weaknesses[0];
             return false;
         }
 
@@ -227,15 +226,14 @@ public partial class SetupWizardWindow : Window
 
     private void BrowseBackup_Click(object sender, RoutedEventArgs e)
     {
-        var dialog = new System.Windows.Forms.FolderBrowserDialog
+        var dialog = new Microsoft.Win32.OpenFolderDialog
         {
-            Description = "ব্যাকআপ কোথায় রাখা হবে?",
-            UseDescriptionForTitle = true
+            Title = "ব্যাকআপ কোথায় রাখা হবে?"
         };
 
-        if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        if (dialog.ShowDialog(this) == true)
         {
-            BackupBox.Text = dialog.SelectedPath;
+            BackupBox.Text = dialog.FolderName;
         }
     }
 
@@ -269,9 +267,9 @@ public partial class SetupWizardWindow : Window
                 AdminUserName: AdminUserBox.Text.Trim(),
                 AdminFullName: AdminNameBox.Text.Trim(),
                 AdminPassword: AdminPasswordBox.Password,
-                HostMode: ModeLanClient.IsChecked == true ? HostMode.Client
+                HostMode: ModeLanClient.IsChecked == true ? HostMode.LanClient
                     : ModeLanHost.IsChecked == true ? HostMode.LanHost
-                    : HostMode.Single,
+                    : HostMode.SingleComputer,
                 SessionName: SessionNameBox.Text.Trim(),
                 SessionStart: SessionStartPicker.SelectedDate!.Value.Date,
                 SessionEnd: SessionEndPicker.SelectedDate!.Value.Date,

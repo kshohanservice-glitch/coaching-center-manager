@@ -120,16 +120,7 @@ public sealed class DuesViewModel : ViewModelBase
         }, "বকেয়া হিসাব করা হচ্ছে…");
     }
 
-    private static string Translate(FeeChargeKind kind) => kind switch
-    {
-        FeeChargeKind.Tuition => "টিউশন",
-        FeeChargeKind.Admission => "ভর্তি",
-        FeeChargeKind.Exam => "পরীক্ষা",
-        FeeChargeKind.Material => "উপকরণ",
-        FeeChargeKind.Transport => "যাতায়াত",
-        FeeChargeKind.LateFee => "বিলম্ব",
-        _ => "অন্যান্য"
-    };
+    private static string Translate(FeeChargeKind kind) => Labels.For(kind);
 
     private void Export()
     {

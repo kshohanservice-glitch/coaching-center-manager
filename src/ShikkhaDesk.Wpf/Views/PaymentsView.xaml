@@ -19,8 +19,8 @@
                     <ComboBoxItem Content="সব পদ্ধতি" />
                     <ComboBoxItem Content="নগদ" />
                     <ComboBoxItem Content="ব্যাংক" />
-                    <ComboBoxItem Content="মোবাইল ব্যাংকিং" />
-                    <ComboBoxItem Content="কার্ড" />
+                    <ComboBoxItem Content="বিকাশ" />
+                    <ComboBoxItem Content="রকেট" />
                 </ComboBox>
                 <Button Grid.Column="3" Content="খুঁজুন" Command="{Binding SearchCommand}" Width="100"
                         Margin="0,0,10,0" />

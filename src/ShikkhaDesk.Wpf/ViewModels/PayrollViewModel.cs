@@ -121,7 +121,6 @@ public sealed class PayrollViewModel : ViewModelBase
                     Status = row.Status switch
                     {
                         PayrollStatus.Paid => "পরিশোধিত",
-                        PayrollStatus.Approved => "অনুমোদিত",
                         PayrollStatus.Cancelled => "বাতিল",
                         _ => "খসড়া"
                     },
@@ -175,12 +174,7 @@ public sealed class PayrollViewModel : ViewModelBase
                 Selected.PayrollRecordId,
                 PaymentDate.Date,
                 Account.Id,
-                MethodIndex switch
-                {
-                    1 => PaymentMethod.Bank,
-                    2 => PaymentMethod.MobileBanking,
-                    _ => PaymentMethod.Cash
-                });
+                Labels.MethodAt(MethodIndex));
 
             StatusMessage = Selected.Name + "-এর বেতন পরিশোধ করা হয়েছে।";
             await LoadAsync();

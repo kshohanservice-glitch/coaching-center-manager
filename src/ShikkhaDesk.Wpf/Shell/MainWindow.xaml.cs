@@ -19,7 +19,7 @@ public partial class MainWindow : Window
         InstitutionName.Text = string.IsNullOrWhiteSpace(state.Institution?.NameBn)
             ? state.Institution?.Name ?? "শিক্ষা ডেস্ক"
             : state.Institution.NameBn;
-        CurrentUserName.Text = $"{state.CurrentUser.DisplayName} ({state.CurrentUser.RoleName})";
+        CurrentUserName.Text = $"{state.CurrentUser.FullName} ({state.CurrentUser.RoleName})";
         VersionText.Text = $"সংস্করণ {App.ApplicationVersion} · অফলাইন-প্রথম · ডেটা: {App.DataLocation}";
 
         _navigation.BuildMenu();
@@ -31,4 +31,6 @@ public partial class MainWindow : Window
     }
 
     public NavigationService Navigation => _navigation;
+
+    private void Logout_Click(object sender, RoutedEventArgs e) => App.Restart();
 }

@@ -15,27 +15,17 @@ public sealed class FeePlanDraftItem
     public string Discount { get; set; } = "0";
     public int RecurrenceIndex { get; set; }
 
-    public static FeeChargeKind ToKind(int index) => index switch
-    {
-        0 => FeeChargeKind.Tuition,
-        1 => FeeChargeKind.Admission,
-        2 => FeeChargeKind.Exam,
-        3 => FeeChargeKind.Material,
-        4 => FeeChargeKind.Transport,
-        5 => FeeChargeKind.LateFee,
-        _ => FeeChargeKind.Other
-    };
+    /// <summary>Combo-box position to fee kind. The list is <see cref="Labels.FeeChargeKinds"/>.</summary>
+    public static FeeChargeKind ToKind(int index) =>
+        index >= 0 && index < Labels.FeeChargeKinds.Count
+            ? Labels.FeeChargeKinds[index]
+            : FeeChargeKind.Other;
 
-    public static string KindName(FeeChargeKind kind) => kind switch
-    {
-        FeeChargeKind.Tuition => "টিউশন ফি",
-        FeeChargeKind.Admission => "ভর্তি ফি",
-        FeeChargeKind.Exam => "পরীক্ষা ফি",
-        FeeChargeKind.Material => "উপকরণ ফি",
-        FeeChargeKind.Transport => "যাতায়াত ফি",
-        FeeChargeKind.LateFee => "বিলম্ব ফি",
-        _ => "অন্যান্য"
-    };
+    public static string KindName(FeeChargeKind kind) => Labels.For(kind);
+
+    /// <summary>The labels shown in the fee-kind combo box.</summary>
+    public static IReadOnlyList<string> KindNames { get; } =
+        Labels.FeeChargeKinds.Select(Labels.For).ToList();
 
     public static int RecurrenceToIndex(int months) => months switch
     {

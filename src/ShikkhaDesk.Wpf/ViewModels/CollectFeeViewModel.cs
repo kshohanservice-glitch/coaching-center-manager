@@ -309,11 +309,5 @@ public sealed class CollectFeeViewModel : ViewModelBase
         }, "ক্রেডিট বরাদ্দ করা হচ্ছে…");
     }
 
-    private static PaymentMethod ToMethod(int index) => index switch
-    {
-        1 => PaymentMethod.Bank,
-        2 => PaymentMethod.MobileBanking,
-        3 => PaymentMethod.Card,
-        _ => PaymentMethod.Cash
-    };
+    private static PaymentMethod ToMethod(int index) => Labels.MethodAt(index);
 }

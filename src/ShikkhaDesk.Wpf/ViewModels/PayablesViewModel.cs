@@ -471,12 +471,7 @@ public sealed class PayablesViewModel : ViewModelBase
                 SettlementDate: SettlementDate.Date,
                 Amount: amount,
                 FinancialAccountId: Account.Id,
-                Method: MethodIndex switch
-                {
-                    1 => PaymentMethod.Bank,
-                    2 => PaymentMethod.MobileBanking,
-                    _ => PaymentMethod.Cash
-                },
+                Method: Labels.MethodAt(MethodIndex == 0 ? 1 : MethodIndex),
                 Reference: Reference.Trim().Length == 0 ? null : Reference.Trim()));
 
             AmountText = "0";

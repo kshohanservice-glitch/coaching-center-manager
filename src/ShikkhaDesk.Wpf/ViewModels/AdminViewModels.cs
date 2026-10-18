@@ -175,7 +175,7 @@ public sealed class BackupViewModel : ViewModelBase
                     Created = Core.Digits.Format(record.StartedAtUtc, _state.UseBengaliDigits, "dd-MM-yyyy HH:mm"),
                     Size = $"{record.FileSizeBytes / 1024.0 / 1024.0:0.00} MB",
                     FullPath = record.FilePath,
-                    Status = record.Status == BackupStatus.Completed ? "সম্পন্ন" : record.Status.ToString()
+                    Status = Labels.For(record.Status)
                 });
             }
 
@@ -323,9 +323,7 @@ public sealed class LicenseViewModel : ViewModelBase
                 {
                     DeviceId = device.DeviceId,
                     Registered = Core.Digits.Format(device.RegisteredAtUtc, _state.UseBengaliDigits),
-                    LastSeen = device.LastSeenAtUtc is null
-                        ? "—"
-                        : Core.Digits.Format(device.LastSeenAtUtc.Value, _state.UseBengaliDigits),
+                    LastSeen = Core.Digits.Format(device.LastSeenAtUtc, _state.UseBengaliDigits),
                     Status = device.Status.ToString()
                 });
             }

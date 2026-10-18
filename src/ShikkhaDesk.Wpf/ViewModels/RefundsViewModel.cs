@@ -215,11 +215,5 @@ public sealed class RefundsViewModel : ViewModelBase
                ?? throw new NotFoundException($"রশিদ {receiptNumber} খুঁজে পাওয়া যায়নি।");
     }
 
-    private static PaymentMethod ToMethod(int index) => index switch
-    {
-        1 => PaymentMethod.Bank,
-        2 => PaymentMethod.MobileBanking,
-        3 => PaymentMethod.Card,
-        _ => PaymentMethod.Cash
-    };
+    private static PaymentMethod ToMethod(int index) => Labels.MethodAt(index);
 }

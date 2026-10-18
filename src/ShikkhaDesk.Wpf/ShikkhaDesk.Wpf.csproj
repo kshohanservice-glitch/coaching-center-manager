@@ -13,6 +13,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Using Include="System.IO" />
+    <Using Include="System.Linq" />
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="ShikkhaDesk.Lan" />
+    <Using Include="ShikkhaDesk.Wpf.Views" />
     <Using Include="System.Windows" />
     <Using Include="System.Windows.Controls" />
     <Using Include="System.Windows.Input" />

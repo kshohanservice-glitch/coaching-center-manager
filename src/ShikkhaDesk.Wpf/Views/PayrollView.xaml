@@ -22,7 +22,7 @@
                     <ComboBox SelectedIndex="{Binding MethodIndex}" Margin="0,0,0,10">
                         <ComboBoxItem Content="নগদ" />
                         <ComboBoxItem Content="ব্যাংক" />
-                        <ComboBoxItem Content="মোবাইল ব্যাংকিং" />
+                        <ComboBoxItem Content="বিকাশ" />
                     </ComboBox>
 
                     <TextBlock Text="হিসাব *" Style="{StaticResource FieldLabel}" />

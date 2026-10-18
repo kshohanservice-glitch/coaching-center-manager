@@ -272,7 +272,7 @@ public sealed class LanSettingsViewModel : ViewModelBase
         foreach (System.Net.NetworkInformation.NetworkInterface nic in
                  System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces())
         {
-            if (nic.OperationalState != System.Net.NetworkInformation.OperationalState.Up)
+            if (nic.OperationalStatus != System.Net.NetworkInformation.OperationalStatus.Up)
             {
                 continue;
             }
