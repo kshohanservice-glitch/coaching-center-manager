@@ -122,10 +122,96 @@ Chronological. Most recent at the bottom. Only work that was actually done is li
 - Wrote a default proprietary per-device EULA so the installer has a licence file. Flagged it in
   `docs/OPEN-DECISIONS.md` as needing the owner's review.
 
+## 2026-10-19 — Making the tests pass, then making the installer compile
+
+All work below was verified on Windows CI (`.github/workflows/build-windows.yml`, job
+`windows-build`). There is no local .NET SDK in the development sandbox, so each change was pushed,
+the run log read from the issue-#1 report, and the next hypothesis formed from what that run
+actually said.
+
+### Product defects found by failing tests, and fixed
+
+1. **Permissions that could never be granted.** `AccountingService` required the bare codes
+   `PermissionCodes.View` and `PermissionCodes.Reverse` ("view", "reverse"). Neither appears in
+   `PermissionCodes.All`, and `SetupService.EnsurePermissionsSeededAsync` grants only catalogue
+   codes, so `Require` threw for every user including the administrator: the trial balance and
+   journal reversal were unreachable. Now `accounting.view` / `accounting.reverse`.
+2. **Seven report DTOs could not be materialised.** Dapper can only build a positional record when
+   every constructor parameter type is the raw SQLite type, and `Money`, `Guid`, `DateTime` and
+   enums never are — so `PayableRow`, `TrialBalanceRow`, `AccountBalanceRow`, `LedgerEntryRow`,
+   `CashbookRow`, `PayrollRow` and `PaymentListItem` all threw. Each query now fills a flat
+   projection class (the registered type handlers convert) and maps onto the public record.
+3. **Opening balances counted twice.** Four balance queries put their journal filters in the `ON`
+   clause of a `LEFT JOIN`, which does not drop the line — it only nulls the journal columns. So
+   reversed entries and the opening-balance entry stayed in every sum: cash of 20,000 was reported
+   as 20,000 + 20,000 − 7,500 = 32,500. Each `SUM` now wraps its term in
+   `CASE WHEN je.id IS NULL THEN 0`.
+4. **Trial balance inverted.** The debit and credit columns were swapped for liability, equity and
+   income accounts, inflating the debit side by exactly their credit balances. Debit is now the net
+   debit and credit the net credit, for every type.
+5. **Payment search failed to prepare:** `SQLite Error 1: ambiguous column name: status` — the
+   predicate used an unqualified `status`, which exists on `payments` and on `students`. Every
+   column is now qualified and the count query aliases the table.
+6. **Reversing a payment violated a foreign key.** `payments.reversed_by_payment_id` references
+   `payments(id)`, but the service stored a *journal entry* id in it. Migration
+   `004_payment_reversal_journal.sql` adds `reversal_journal_entry_id`, and the service writes that.
+7. **The admission fee never reached the ledger.** `AdmitAsync` created the fee charge but posted no
+   journal entry, so the fee sub-ledger showed a due the general ledger never recognised, and every
+   payment settling it over-credited the receivable control account — which the reconciliation
+   caught as "expected 0.00, got −500.00". The admission fee is now posted Dr Student Receivables /
+   Cr Admission Income, through the same `JournalBuilder.ForFeeAssessment` path as an assessment.
+8. Earlier in the same sequence: fee plan items inserted with `FeePlanId = Guid.Empty`, and document
+   numbering keyed by month while printing only the year.
+
+### Test expectations that were wrong, not the code
+
+Three assertions were corrected, with the reasoning recorded in the test itself: concurrent payments
+settle the 500 admission fee first (so 500 of credit, not 1,000); an overpayment against 2,500 of
+dues leaves 500 of credit and nothing outstanding; and stored credit can only be applied once a
+*new* charge exists to apply it to. Two further expectations (a batch's outstanding charges, and
+the balance-sheet total) had been written while the admission fee was invisible to the ledger.
+
+### Installer
+
+Inno Setup aborted with `ISCC_EXIT=2` and no visible error until the workflow was changed to report
+the compiler's own output. Two causes, fixed in order:
+- `[Icons]` used `skipifsourcedoesntexist`, which is a `[Files]`-only flag; the `[Icons]` flag is
+  `createonlyiffileexists`.
+- A per-machine installer must write a "run at logon" shortcut to `{commonstartup}`, not
+  `{userstartup}` — using the per-user folder with `PrivilegesRequired=admin` only touches the
+  installing user's profile, and Inno Setup warns about it.
+
+The workflow now also reports the produced installer's name and size.
+
+### Documentation
+
+- Wrote `docs/TEST-RESULTS.md` — the real inventory (47 unit, 34 integration), the run it came from,
+  the defects the tests caught, and an explicit list of what is **not** covered.
+- Wrote `docs/RELEASE-NOTES.md` for 1.0.0, marked **not released**, with the eight limitations a
+  reader must know before trusting the build.
+- Wrote `docs/BRAND-GUIDELINES.md` — palette, typography, logo and icon rules, installer geometry,
+  and how to regenerate the assets. `Themes/Colors.xaml` already pointed at this file.
+- Updated `PROJECT-STATE.md`, `KNOWN-ISSUES.md` (O-2 moved to *Fixed (pending verification)*; added
+  O-12 warnings and O-13 volume testing), and `RELEASE-CHECKLIST.md` (Gate 0 in full, item 1.1).
+
+### Result
+
+CI run **39170126327** is the first fully green run:
+
+    PRESENTATION_EXIT=0  RESTORE_EXIT=0  BUILD_EXIT=0
+    TEST_EXIT(ShikkhaDesk.IntegrationTests)=0   TEST_EXIT(ShikkhaDesk.Tests)=0
+    PUBLISH_EXIT=0  ZIP_BYTES=68424034  ISCC_EXIT=0  ERROR_COUNT=0
+
+47/47 unit and 34/34 integration tests pass. The installer compiles and is produced.
+
+**What this does not mean:** the program still has never been launched, and the installer has never
+been executed. Gate 0 and item 1.1 are the only gates that have been attempted.
+
 ---
 
 ## Next
 
-- Confirm the build is green end to end.
-- Produce the first real installer and run it.
-- Launch the application and record what actually happens.
+- Run the installer on a Windows machine: install, launch, reach the setup wizard, uninstall with
+  data kept, reinstall and reopen the existing centre (Gate 1, items 1.2–1.10).
+- Launch the application and walk all 42 navigation targets with real data (Gate 2).
+- Clear the outstanding warnings (O-12).
