@@ -56,7 +56,7 @@ public partial class App : Application
         services.AddShikkhaDesk(environment, loggerFactory);
         services.AddSingleton<AppState>(State);
         services.AddSingleton<IDialogService, DialogService>();
-        services.AddSingleton<NavigationService>();
+        services.AddShikkhaDeskPresentation();
         services.AddSingleton<MainWindow>();
         Services = services.BuildServiceProvider();
 

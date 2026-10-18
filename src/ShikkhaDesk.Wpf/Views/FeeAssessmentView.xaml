@@ -1,0 +1,54 @@
+<UserControl x:Class="ShikkhaDesk.Wpf.Views.FeeAssessmentView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="380" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Style="{StaticResource Card}" Margin="0,0,12,0">
+            <StackPanel>
+                <TextBlock Text="মাসিক ফি ধার্য" Style="{StaticResource SectionTitle}" />
+
+                <TextBlock Text="ব্যাচ *" Style="{StaticResource FieldLabel}" />
+                <ComboBox ItemsSource="{Binding Batches}" SelectedItem="{Binding Batch}" Margin="0,0,0,10" />
+
+                <TextBlock Text="মাস (YYYY-MM) *" Style="{StaticResource FieldLabel}" />
+                <ComboBox ItemsSource="{Binding Periods}" SelectedItem="{Binding Period}" Margin="0,0,0,10" />
+
+                <TextBlock Text="ফি প্ল্যান" Style="{StaticResource FieldLabel}" />
+                <ComboBox ItemsSource="{Binding FeePlans}" SelectedItem="{Binding FeePlan}" Margin="0,0,0,10" />
+
+                <TextBlock Text="পরিশোধের শেষ তারিখ" Style="{StaticResource FieldLabel}" />
+                <DatePicker SelectedDate="{Binding DueDate}" Margin="0,0,0,14" />
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="প্রিভিউ" Command="{Binding PreviewCommand}" Width="110" Margin="0,0,8,0" />
+                    <Button Content="ধার্য করুন" Command="{Binding AssessCommand}"
+                            Style="{StaticResource PrimaryButton}" Width="130" />
+                </StackPanel>
+
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource ErrorBrush}"
+                           TextWrapping="Wrap" Margin="0,12,0,0" />
+            </StackPanel>
+        </Border>
+
+        <StackPanel Grid.Column="1">
+            <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="প্রিভিউ" Style="{StaticResource SectionTitle}" />
+                    <TextBlock Text="{Binding PreviewText}" TextWrapping="Wrap" FontSize="13" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Background="#FFF1FBF7"
+                    BorderBrush="{StaticResource PrimaryTealBrush}">
+                <StackPanel>
+                    <TextBlock Text="ফলাফল" Style="{StaticResource SectionTitle}" />
+                    <TextBlock Text="{Binding ResultText}" TextWrapping="Wrap" FontSize="13" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</UserControl>

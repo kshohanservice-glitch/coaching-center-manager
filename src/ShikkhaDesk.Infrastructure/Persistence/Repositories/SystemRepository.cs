@@ -9,7 +9,7 @@ public sealed class SystemRepository : RepositoryBase, ISystemRepository
 
     private const string InstitutionColumns = @"
         id, name, name_bn, address, phone, email, logo_path, registration_number, currency_code,
-        currency_symbol, digit_preference, created_at_utc, updated_at_utc";
+        currency_symbol, digit_preference, receipt_prefix, established_on, created_at_utc, updated_at_utc";
 
     public Task<Institution?> GetInstitutionAsync(CancellationToken ct = default) =>
         QueryFirstOrDefaultAsync<Institution>($"SELECT {InstitutionColumns} FROM institutions LIMIT 1;", null, ct);
@@ -20,7 +20,8 @@ public sealed class SystemRepository : RepositoryBase, ISystemRepository
             UPDATE institutions SET name = @Name, name_bn = @NameBn, address = @Address, phone = @Phone,
                    email = @Email, logo_path = @LogoPath, registration_number = @RegistrationNumber,
                    currency_code = @CurrencyCode, currency_symbol = @CurrencySymbol,
-                   digit_preference = @DigitPreference, updated_at_utc = @UpdatedAtUtc
+                   digit_preference = @DigitPreference, receipt_prefix = @ReceiptPrefix,
+                   established_on = @EstablishedOn, updated_at_utc = @UpdatedAtUtc
              WHERE id = @Id;", institution, ct).ConfigureAwait(false);
 
         if (updated == 0)
@@ -28,9 +29,10 @@ public sealed class SystemRepository : RepositoryBase, ISystemRepository
             await ExecuteAsync(@"
                 INSERT INTO institutions (id, name, name_bn, address, phone, email, logo_path,
                                           registration_number, currency_code, currency_symbol, digit_preference,
-                                          created_at_utc, updated_at_utc)
+                                          receipt_prefix, established_on, created_at_utc, updated_at_utc)
                 VALUES (@Id, @Name, @NameBn, @Address, @Phone, @Email, @LogoPath, @RegistrationNumber,
-                        @CurrencyCode, @CurrencySymbol, @DigitPreference, @CreatedAtUtc, @UpdatedAtUtc);",
+                        @CurrencyCode, @CurrencySymbol, @DigitPreference, @ReceiptPrefix, @EstablishedOn,
+                        @CreatedAtUtc, @UpdatedAtUtc);",
                 institution, ct).ConfigureAwait(false);
         }
     }

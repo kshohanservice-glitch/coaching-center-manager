@@ -1,7 +1,21 @@
 using System.Globalization;
 using System.Text;
 
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 namespace ShikkhaDesk.Core.Services;
+
+/// <summary>The licence document as issued: the payload plus the vendor signature over it.</summary>
+public sealed class LicenseDocument
+{
+    public LicensePayload Payload { get; set; } = new();
+
+    /// <summary>RSA-SHA256-PKCS#1 signature over <see cref="LicensePayload.CanonicalString"/>, base64.</summary>
+    public string Signature { get; set; } = string.Empty;
+
+    public string PublicKeyId { get; set; } = "default";
+}
 
 /// <summary>
 /// The signed licence document. The canonical string is what gets signed, so field order and
@@ -67,4 +81,50 @@ public sealed class LicensePayload
     }
 
     private static string Trim(string? value) => (value ?? string.Empty).Trim();
+
+    /// <summary>
+    /// Reads a licence document supplied by the operator. The document is JSON; the signature travels
+    /// with it and is verified offline by the licence verifier, never by calling a server.
+    /// </summary>
+    public static LicensePayload Parse(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            throw new ValidationException("লাইসেন্স কী খালি।");
+        }
+
+        string trimmed = text.Trim();
+        LicenseDocument? document;
+
+        try
+        {
+            document = JsonSerializer.Deserialize<LicenseDocument>(trimmed, ParseOptions);
+        }
+        catch (JsonException)
+        {
+            throw new ValidationException(
+                "লাইসেন্স কী পড়া যায়নি। অনুগ্রহ করে প্রদত্ত লাইসেন্স ফাইলের সম্পূর্ণ বিষয়বস্তু কপি করে পেস্ট করুন।");
+        }
+
+        if (document?.Payload is null)
+        {
+            throw new ValidationException("লাইসেন্স কী-এ কোনো তথ্য পাওয়া যায়নি।");
+        }
+
+        if (string.IsNullOrWhiteSpace(document.Signature))
+        {
+            throw new ValidationException("লাইসেন্স কী-এ স্বাক্ষর নেই — এটি গ্রহণযোগ্য নয়।");
+        }
+
+        document.Payload.Signature = document.Signature.Trim();
+        document.Payload.PublicKeyId = document.PublicKeyId;
+        document.Payload.ValidateFields();
+        return document.Payload;
+    }
+
+    private static readonly JsonSerializerOptions ParseOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
 }

@@ -1,0 +1,104 @@
+<UserControl x:Class="ShikkhaDesk.Wpf.Views.RefundsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="360" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Style="{StaticResource Card}" Margin="0,0,12,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" Text="{Binding Search}" Margin="0,0,8,0" />
+                    <Button Grid.Column="1" Content="খুঁজুন" Command="{Binding SearchCommand}" Width="90" />
+                </Grid>
+                <DataGrid Grid.Row="1" ItemsSource="{Binding SearchResults}"
+                          SelectedItem="{Binding SelectedSearch}" MinHeight="380"
+                          SelectionChanged="Results_SelectionChanged" />
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+                    <StackPanel>
+                        <TextBlock Text="টাকা ফেরত" Style="{StaticResource SectionTitle}" />
+                        <TextBlock Text="{Binding Summary}" FontWeight="SemiBold" Margin="0,0,0,12" />
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,10">
+                                <TextBlock Text="পরিমাণ (টাকা) *" Style="{StaticResource FieldLabel}" />
+                                <TextBox Text="{Binding AmountText}" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="0" Grid.Column="1" Margin="10,0,0,10">
+                                <TextBlock Text="পদ্ধতি" Style="{StaticResource FieldLabel}" />
+                                <ComboBox SelectedIndex="{Binding MethodIndex}">
+                                    <ComboBoxItem Content="নগদ" />
+                                    <ComboBoxItem Content="ব্যাংক" />
+                                    <ComboBoxItem Content="মোবাইল ব্যাংকিং" />
+                                    <ComboBoxItem Content="কার্ড" />
+                                </ComboBox>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,0,0,10">
+                                <TextBlock Text="যে হিসাব থেকে ফেরত দেওয়া হবে" Style="{StaticResource FieldLabel}" />
+                                <ComboBox ItemsSource="{Binding Accounts}" SelectedItem="{Binding Account}" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="2" Grid.ColumnSpan="2">
+                                <TextBlock Text="কারণ *" Style="{StaticResource FieldLabel}" />
+                                <TextBox Text="{Binding Reason}" Height="60" AcceptsReturn="True"
+                                         VerticalContentAlignment="Top" />
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource ErrorBrush}"
+                                   TextWrapping="Wrap" Margin="0,8,0,0" />
+                        <Button Content="ফেরত দিন" Command="{Binding RefundCommand}"
+                                Style="{StaticResource PrimaryButton}" Width="150"
+                                HorizontalAlignment="Right" Margin="0,12,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="ভুল পেমেন্ট বাতিল" Style="{StaticResource SectionTitle}" />
+                        <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="{StaticResource SecondaryTextBrush}"
+                                   Margin="0,0,0,10">
+                            ভুল করে নেওয়া পেমেন্ট বাতিল করলে একটি বিপরীত জার্নাল এন্ট্রি তৈরি হয়। মূল রেকর্ড
+                            ও রশিদ ইতিহাসে থেকে যায়, কিছুই মুছে যায় না।
+                        </TextBlock>
+
+                        <TextBlock Text="রশিদ নম্বর" Style="{StaticResource FieldLabel}" />
+                        <TextBox Text="{Binding ReceiptToReverse}" Margin="0,0,0,10" />
+                        <TextBlock Text="কারণ *" Style="{StaticResource FieldLabel}" />
+                        <TextBox Text="{Binding ReverseReason}" Height="50" AcceptsReturn="True"
+                                 VerticalContentAlignment="Top" Margin="0,0,0,10" />
+
+                        <Button Content="পেমেন্ট বাতিল করুন" Command="{Binding ReverseCommand}"
+                                Style="{StaticResource DangerButton}" Width="180" HorizontalAlignment="Right" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

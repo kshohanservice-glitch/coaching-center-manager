@@ -1,0 +1,97 @@
+<UserControl x:Class="ShikkhaDesk.Wpf.Views.FeePlansView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="420" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Style="{StaticResource Card}" Margin="0,0,12,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Button Grid.Row="0" Content="রিফ্রেশ" Command="{Binding RefreshCommand}" Width="110"
+                        HorizontalAlignment="Right" Margin="0,0,0,10" />
+                <DataGrid Grid.Row="1" ItemsSource="{Binding Plans}" SelectedItem="{Binding Selected}"
+                          MinHeight="420" />
+            </Grid>
+        </Border>
+
+        <Border Grid.Column="1" Style="{StaticResource Card}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="নতুন ফি প্ল্যান" Style="{StaticResource SectionTitle}" />
+                    <TextBlock Text="নাম *" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding PlanName}" Margin="0,0,0,10" />
+                    <TextBlock Text="ব্যাচ" Style="{StaticResource FieldLabel}" />
+                    <ComboBox ItemsSource="{Binding Batches}" SelectedItem="{Binding Batch}" Margin="0,0,0,10" />
+                    <TextBlock Text="কার্যকর" Style="{StaticResource FieldLabel}" />
+                    <DatePicker SelectedDate="{Binding EffectiveFrom}" Margin="0,0,0,12" />
+
+                    <TextBlock Text="ফি খাতসমূহ" Style="{StaticResource SectionTitle}" />
+                    <ItemsControl ItemsSource="{Binding Items}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                        CornerRadius="6" Padding="10" Margin="0,0,0,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="80" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <ComboBox Grid.Row="0" Grid.Column="0" SelectedIndex="{Binding KindIndex}"
+                                                  Margin="0,0,8,8">
+                                            <ComboBoxItem Content="টিউশন ফি" />
+                                            <ComboBoxItem Content="ভর্তি ফি" />
+                                            <ComboBoxItem Content="পরীক্ষা ফি" />
+                                            <ComboBoxItem Content="উপকরণ ফি" />
+                                            <ComboBoxItem Content="যাতায়াত ফি" />
+                                            <ComboBoxItem Content="বিলম্ব ফি" />
+                                            <ComboBoxItem Content="অন্যান্য" />
+                                        </ComboBox>
+                                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Amount}"
+                                                 Margin="0,0,0,8" />
+
+                                        <ComboBox Grid.Row="1" Grid.Column="0" SelectedIndex="{Binding RecurrenceIndex}"
+                                                  Margin="0,0,8,8">
+                                            <ComboBoxItem Content="এককালীন" />
+                                            <ComboBoxItem Content="মাসিক" />
+                                            <ComboBoxItem Content="ত্রৈমাসিক" />
+                                            <ComboBoxItem Content="বার্ষিক" />
+                                        </ComboBox>
+                                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Discount}"
+                                                 Margin="0,0,0,8" />
+
+                                        <TextBox Grid.Row="2" Grid.Column="0" Text="{Binding Description}"
+                                                 Margin="0,0,8,0" />
+                                        <Button Grid.Row="2" Grid.Column="1" Content="সরান"
+                                                Command="{Binding DataContext.RemoveItemCommand,
+                                                    RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Button Content="খাত যোগ করুন" Command="{Binding AddItemCommand}" Margin="0,0,0,10" />
+                    <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource ErrorBrush}"
+                               TextWrapping="Wrap" Margin="0,0,0,8" />
+                    <TextBlock Text="{Binding StatusMessage}" Foreground="{StaticResource SuccessBrush}"
+                               TextWrapping="Wrap" Margin="0,0,0,8" />
+                    <Button Content="প্ল্যান সংরক্ষণ" Command="{Binding SaveCommand}"
+                            Style="{StaticResource PrimaryButton}" />
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>

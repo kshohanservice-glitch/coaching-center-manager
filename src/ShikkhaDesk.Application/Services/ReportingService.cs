@@ -33,6 +33,7 @@ public interface IReportingService
         CancellationToken ct = default);
     Task<IReadOnlyList<PayableRow>> GetPayablesAsync(PayableStatus? status = null, CancellationToken ct = default);
     Task<IReadOnlyList<PayrollRow>> GetPayrollAsync(Guid periodId, CancellationToken ct = default);
+    Task<IReadOnlyList<PayrollRow>> GetPayrollForPeriodAsync(string periodKey, CancellationToken ct = default);
     Task<IReadOnlyList<StudentCreditTransaction>> GetCreditLedgerAsync(Guid studentId,
         CancellationToken ct = default);
 }

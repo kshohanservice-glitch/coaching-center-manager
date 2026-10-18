@@ -1,0 +1,62 @@
+<UserControl x:Class="ShikkhaDesk.Wpf.Views.LanSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel MaxWidth="680" HorizontalAlignment="Left">
+        <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+            <StackPanel>
+                <TextBlock Text="নেটওয়ার্ক মোড" Style="{StaticResource SectionTitle}" />
+
+                <TextBlock Text="মোড" Style="{StaticResource FieldLabel}" />
+                <ComboBox SelectedIndex="{Binding ModeIndex}" Margin="0,0,0,10">
+                    <ComboBoxItem Content="একক কম্পিউটার (হোস্ট)" />
+                    <ComboBoxItem Content="ল্যান হোস্ট — অন্য কম্পিউটার সংযুক্ত হবে" />
+                    <ComboBoxItem Content="ল্যান ক্লায়েন্ট — এই কম্পিউটার হোস্টে যুক্ত হবে" />
+                </ComboBox>
+
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Margin="0,0,10,0">
+                        <TextBlock Text="হোস্টের ঠিকানা" Style="{StaticResource FieldLabel}" />
+                        <TextBox Text="{Binding HostAddress}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="পোর্ট" Style="{StaticResource FieldLabel}" />
+                        <TextBox Text="{Binding PortText}" />
+                    </StackPanel>
+                </Grid>
+
+                <TextBlock Text="ডিভাইস আইডি" Style="{StaticResource FieldLabel}" />
+                <TextBox Text="{Binding DeviceId}" IsReadOnly="True" Margin="0,0,0,12" />
+
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource ErrorBrush}"
+                           TextWrapping="Wrap" Margin="0,0,0,8" />
+                <TextBlock Text="{Binding StatusMessage}" Foreground="{StaticResource SuccessBrush}"
+                           TextWrapping="Wrap" Margin="0,0,0,10" />
+                <TextBlock Text="{Binding StatusText}" Foreground="{StaticResource SecondaryTextBrush}"
+                           TextWrapping="Wrap" Margin="0,0,0,12" />
+
+                <WrapPanel>
+                    <Button Content="সংরক্ষণ" Command="{Binding SaveCommand}"
+                            Style="{StaticResource PrimaryButton}" Width="130" Margin="0,0,8,8" />
+                    <Button Content="সংযোগ পরীক্ষা" Command="{Binding TestCommand}" Width="150" Margin="0,0,8,8" />
+                    <Button Content="হোস্ট চালু করুন" Command="{Binding StartHostCommand}" Width="170" />
+                </WrapPanel>
+            </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource Card}">
+            <StackPanel>
+                <TextBlock Text="এই কম্পিউটারের ঠিকানা" Style="{StaticResource SectionTitle}" />
+                <ItemsControl ItemsSource="{Binding Addresses}" />
+                <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="{StaticResource SecondaryTextBrush}"
+                           Margin="0,8,0,0">
+                    ক্লায়েন্ট কম্পিউটারে উপরের ঠিকানার একটি ব্যবহার করুন। হোস্ট কম্পিউটারের একটি স্থির (static)
+                    আইপি ঠিকানা থাকা উচিত, নাহলে পুনরায় চালু করলে ঠিকানা বদলে যেতে পারে।
+                </TextBlock>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>

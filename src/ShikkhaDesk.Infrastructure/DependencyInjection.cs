@@ -68,6 +68,7 @@ public static class DependencyInjection
         services.AddSingleton<ISetupService, SetupService>();
         services.AddSingleton<ILicenseService, LicenseService>();
         services.AddSingleton<IBackupService, DatabaseBackupService>();
+        services.AddSingleton<ISupplierService, SupplierService>();
 
         return services;
     }

@@ -1,0 +1,66 @@
+<UserControl x:Class="ShikkhaDesk.Wpf.Views.TransfersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel MaxWidth="620" HorizontalAlignment="Left" Width="620">
+        <Border Style="{StaticResource Card}">
+            <StackPanel>
+                <TextBlock Text="হিসাব স্থানান্তর" Style="{StaticResource SectionTitle}" />
+
+                <TextBlock Text="যে হিসাব থেকে *" Style="{StaticResource FieldLabel}" />
+                <ComboBox ItemsSource="{Binding Accounts}" SelectedItem="{Binding From}" Margin="0,0,0,10" />
+
+                <TextBlock Text="যে হিসাবে *" Style="{StaticResource FieldLabel}" />
+                <ComboBox ItemsSource="{Binding Accounts}" SelectedItem="{Binding To}" Margin="0,0,0,10" />
+
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Margin="0,0,5,0">
+                        <TextBlock Text="তারিখ" Style="{StaticResource FieldLabel}" />
+                        <DatePicker SelectedDate="{Binding TransferDate}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                        <TextBlock Text="টাকার পরিমাণ *" Style="{StaticResource FieldLabel}" />
+                        <TextBox Text="{Binding AmountText}" />
+                    </StackPanel>
+                </Grid>
+
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Margin="0,0,5,0">
+                        <TextBlock Text="চার্জ (ঐচ্ছিক)" Style="{StaticResource FieldLabel}" />
+                        <TextBox Text="{Binding FeeText}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                        <TextBlock Text="রেফারেন্স" Style="{StaticResource FieldLabel}" />
+                        <TextBox Text="{Binding Reference}" />
+                    </StackPanel>
+                </Grid>
+
+                <TextBlock Text="মন্তব্য" Style="{StaticResource FieldLabel}" />
+                <TextBox Text="{Binding Notes}" Height="60" AcceptsReturn="True"
+                         VerticalContentAlignment="Top" Margin="0,0,0,12" />
+
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource ErrorBrush}"
+                           TextWrapping="Wrap" Margin="0,0,0,8" />
+                <TextBlock Text="{Binding StatusMessage}" Foreground="{StaticResource SuccessBrush}"
+                           TextWrapping="Wrap" Margin="0,0,0,10" />
+
+                <Button Content="স্থানান্তর করুন" Command="{Binding TransferCommand}"
+                        Style="{StaticResource PrimaryButton}" Width="190" HorizontalAlignment="Right" />
+            </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource Card}" Margin="0,12,0,0" Background="#FFFDF8EC"
+                BorderBrush="{StaticResource AccentBrush}">
+            <TextBlock Text="স্থানান্তর কোনো আয় বা ব্যয় নয় — এটি কেবল এক হিসাব থেকে অন্য হিসাবে টাকা সরায়,
+তাই লাভ-ক্ষতি হিসাবে এর কোনো প্রভাব পড়ে না।"
+                       TextWrapping="Wrap" FontSize="12" />
+        </Border>
+    </StackPanel>
+</UserControl>

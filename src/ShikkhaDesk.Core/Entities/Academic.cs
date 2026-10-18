@@ -14,6 +14,11 @@ public sealed class Institution
     public string CurrencyCode { get; set; } = "BDT";
     public string CurrencySymbol { get; set; } = "৳";
     public DigitPreference DigitPreference { get; set; } = DigitPreference.Bengali;
+
+    /// <summary>Prefix for receipt numbers, e.g. "SD" produces SD-000001.</summary>
+    public string ReceiptPrefix { get; set; } = "SD";
+
+    public DateTime? EstablishedOn { get; set; }
     public DateTime CreatedAtUtc { get; set; }
     public DateTime UpdatedAtUtc { get; set; }
 }

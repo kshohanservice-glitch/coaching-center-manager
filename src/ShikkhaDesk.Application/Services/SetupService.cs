@@ -124,6 +124,9 @@ public sealed class SetupService : ISetupService
                 CurrencyCode = string.IsNullOrWhiteSpace(request.CurrencyCode) ? "BDT" : request.CurrencyCode,
                 CurrencySymbol = string.IsNullOrWhiteSpace(request.CurrencySymbol) ? "৳" : request.CurrencySymbol,
                 DigitPreference = request.DigitPreference,
+                ReceiptPrefix = string.IsNullOrWhiteSpace(request.ReceiptPrefix)
+                    ? "SD"
+                    : request.ReceiptPrefix.Trim(),
                 CreatedAtUtc = DateTime.UtcNow,
                 UpdatedAtUtc = DateTime.UtcNow
             };
