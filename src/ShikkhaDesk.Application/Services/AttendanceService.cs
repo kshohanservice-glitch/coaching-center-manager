@@ -122,13 +122,11 @@ public sealed class AttendanceService : IAttendanceService
                     CorrectedFromRecordId = existing.Id
                 }, token).ConfigureAwait(false);
 
-                await _academic.UpdateAttendanceAsync(existing with
-                {
-                    Status = entry.Status,
-                    Note = entry.Note,
-                    RecordedByUserId = userId,
-                    RecordedAtUtc = DateTime.UtcNow
-                }, token).ConfigureAwait(false);
+                existing.Status = entry.Status;
+                existing.Note = entry.Note;
+                existing.RecordedByUserId = userId;
+                existing.RecordedAtUtc = DateTime.UtcNow;
+                await _academic.UpdateAttendanceAsync(existing, token).ConfigureAwait(false);
             }
 
             await _audit.RecordAsync("attendance.save", nameof(AttendanceRecord), batchId,
