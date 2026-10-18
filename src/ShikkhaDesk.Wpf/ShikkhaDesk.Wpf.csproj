@@ -21,6 +21,11 @@
     <Using Include="ShikkhaDesk.Core.Entities" />
     <Using Include="ShikkhaDesk.Core.Services" />
     <Using Include="ShikkhaDesk.Core.Security" />
+    <Using Include="ShikkhaDesk.Application" />
+    <Using Include="ShikkhaDesk.Application.Abstractions" />
+    <Using Include="ShikkhaDesk.Application.Dto" />
+    <Using Include="ShikkhaDesk.Application.Security" />
+    <Using Include="ShikkhaDesk.Application.Services" />
   </ItemGroup>
 
   <ItemGroup>

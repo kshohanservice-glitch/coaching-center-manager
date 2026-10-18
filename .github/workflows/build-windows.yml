@@ -55,6 +55,55 @@ jobs:
             } else { "TEST_EXIT=skipped (no test projects)" | Out-File -Append ci-logs/build.txt -Encoding utf8 }
           } else { "TEST_EXIT=skipped (no tests dir)" | Out-File -Append ci-logs/build.txt -Encoding utf8 }
 
+      - name: Read version
+        shell: pwsh
+        run: |
+          $version = (Select-String -Path Directory.Build.props -Pattern "<Version>(.+)</Version>").Matches[0].Groups[1].Value
+          "VERSION=$version" | Out-File -Append ci-logs/build.txt -Encoding utf8
+          "VERSION=$version" | Out-File -Append $env:GITHUB_ENV -Encoding utf8
+
+      - name: Publish application
+        shell: pwsh
+        run: |
+          dotnet publish src\ShikkhaDesk.Wpf\ShikkhaDesk.Wpf.csproj -c Release -r win-x64 --self-contained true `
+            -p:PublishSingleFile=false -p:PublishTrimmed=false -o artifacts\app 2>&1 | Tee-Object -FilePath ci-logs/publish.txt
+          "PUBLISH_EXIT=$LASTEXITCODE" | Out-File -Append ci-logs/build.txt -Encoding utf8
+          "PUBLISH_EXIT=$LASTEXITCODE" | Out-File -Append $env:GITHUB_ENV -Encoding utf8
+
+      - name: Package portable release
+        if: env.PUBLISH_EXIT == '0'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path artifacts\release | Out-Null
+          $zip = "artifacts\release\ShikkhaDesk-Release-v$env:VERSION-x64.zip"
+          Copy-Item -Path docs -Destination artifacts\app\docs -Recurse -Force -ErrorAction SilentlyContinue
+          if (Test-Path $zip) { Remove-Item $zip -Force }
+          Compress-Archive -Path "artifacts\app\*" -DestinationPath $zip
+          "PORTABLE_ZIP=$zip" | Out-File -Append ci-logs/build.txt -Encoding utf8
+          Get-Item $zip | ForEach-Object { "ZIP_BYTES=$($_.Length)" | Out-File -Append ci-logs/build.txt -Encoding utf8 }
+
+      - name: Build installer
+        if: env.PUBLISH_EXIT == '0'
+        shell: pwsh
+        run: |
+          $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+          if (Test-Path $iscc) {
+            & $iscc "installer\windows\ShikkhaDesk.iss" "/DMyAppVersion=$env:VERSION" 2>&1 | Tee-Object -FilePath ci-logs/installer.txt
+            "ISCC_EXIT=$LASTEXITCODE" | Out-File -Append ci-logs/build.txt -Encoding utf8
+          } else {
+            "ISCC_EXIT=not-found" | Out-File -Append ci-logs/build.txt -Encoding utf8
+          }
+
+      - name: Upload release artefacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ShikkhaDesk-artifacts
+          path: |
+            artifacts/release/*.exe
+            artifacts/release/*.zip
+          if-no-files-found: warn
+
       - name: Summarise
         if: always()
         shell: pwsh
