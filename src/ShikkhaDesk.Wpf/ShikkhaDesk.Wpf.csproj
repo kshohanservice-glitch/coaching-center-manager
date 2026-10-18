@@ -13,6 +13,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Using Include="System.Windows" />
+    <Using Include="System.Windows.Controls" />
+    <Using Include="System.Windows.Input" />
+    <Using Include="System.Windows.Media" />
     <Using Include="ShikkhaDesk.Core" />
     <Using Include="ShikkhaDesk.Core.Entities" />
     <Using Include="ShikkhaDesk.Core.Services" />

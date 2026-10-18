@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ShikkhaDesk.Infrastructure;
@@ -29,7 +30,7 @@ public static class Program
             }
         });
 
-        ILogger<Program> logger = loggerFactory.CreateLogger<Program>();
+        ILogger logger = loggerFactory.CreateLogger("ShikkhaDesk.Lan.Host");
 
         LanHostConfiguration configuration = LanHostConfiguration.Load(environment.DataDirectory);
 
@@ -106,7 +107,7 @@ public static class Program
         foreach (System.Net.NetworkInformation.NetworkInterface nic in
                  System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces())
         {
-            if (nic.OperationalState != System.Net.NetworkInformation.OperationalState.Up)
+            if (nic.OperationalStatus != System.Net.NetworkInformation.OperationalStatus.Up)
             {
                 continue;
             }

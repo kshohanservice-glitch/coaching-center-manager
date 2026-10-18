@@ -11,7 +11,7 @@ using ShikkhaDesk.Wpf.Views;
 
 namespace ShikkhaDesk.Wpf;
 
-public partial class App : Application
+public partial class App : System.Windows.Application
 {
     internal static ServiceProvider? Services { get; private set; }
     internal static AppState State { get; } = new();

@@ -1,0 +1,71 @@
+ShikkhaDesk — Coaching Center Management & Accounts
+End User Licence Agreement (EULA)
+
+Copyright (c) ShikkhaDesk. All rights reserved.
+
+PLEASE READ THIS AGREEMENT BEFORE INSTALLING THE SOFTWARE. INSTALLING, COPYING OR
+USING THE SOFTWARE MEANS YOU ACCEPT THESE TERMS. IF YOU DO NOT ACCEPT THEM, DO NOT
+INSTALL OR USE THE SOFTWARE.
+
+This document is the default licence shipped with the product. It is a proprietary,
+per-device commercial licence. The project owner must review it, and replace it with
+legal-reviewed wording, before the first public release — see docs/OPEN-DECISIONS.md.
+
+1. LICENCE GRANT
+   The Licensor grants you a non-exclusive, non-transferable, perpetual right to
+   install and use one (1) copy of the Software on each computer for which a valid
+   licence has been issued. A licence is issued to a single device; using the Software
+   on more devices than the licence allows requires additional licences.
+
+2. RESTRICTIONS
+   You may not:
+   (a) rent, lease, lend, sell, sublicense or otherwise distribute the Software;
+   (b) reverse engineer, decompile or disassemble the Software, except to the extent
+       such activity is expressly permitted by applicable law notwithstanding this
+       limitation;
+   (c) remove, alter or obscure any proprietary notices, labels or marks;
+   (d) use the Software to provide a commercial hosting or service-bureau offering to
+       third parties.
+
+3. YOUR DATA
+   You retain all ownership of the data you enter into the Software. The Software
+   stores that data locally, in files you control. The Licensor does not receive,
+   upload, or transmit your data, and the Software contains no telemetry.
+
+4. BACKUPS
+   The Software provides a backup and restore facility. You are responsible for taking
+   backups and for verifying that a backup can be restored. The Licensor is not
+   responsible for data loss.
+
+5. LICENCE VALIDATION AND PRIVACY
+   Licence validation is performed entirely on your own computer, offline. The Software
+   does not contact any server to validate a licence, and does not transmit any
+   information about you or your computer.
+
+6. NO WARRANTY
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+   INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+   PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+7. LIMITATION OF LIABILITY
+   IN NO EVENT SHALL THE LICENSOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. THIS
+   INCLUDES ANY LOSS OF DATA, LOSS OF PROFITS, OR LOSS OF BUSINESS RECORDS.
+
+8. TERMINATION
+   This licence terminates automatically if you fail to comply with any of its terms.
+   On termination you must stop using the Software and destroy all copies. Your data
+   remains yours; the uninstaller asks before removing it and never removes it
+   silently.
+
+9. GOVERNING LAW
+   This Agreement is governed by the laws of the People's Republic of Bangladesh.
+
+10. THIRD-PARTY COMPONENTS
+    The Software is distributed with third-party components, each licensed under its
+    own terms. Their licences are listed in docs/THIRD-PARTY-NOTICES.md. Nothing in
+    this Agreement restricts your rights under those licences.
+
+If you have questions about this Agreement, contact the Licensor through the project
+repository: https://github.com/kshohanservice-glitch/coaching-center-manager
