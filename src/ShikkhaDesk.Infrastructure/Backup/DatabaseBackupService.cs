@@ -39,7 +39,16 @@ public sealed class DatabaseBackupService : IBackupService
 
         string fileName = string.Format(CultureInfo.InvariantCulture, BackupFilePattern,
             DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture));
+
+        // The stamp is only second-granular, so two backups taken inside one second used to resolve
+        // to the same path: two history records, one file, and the first record's integrity hash
+        // describing a file that had already been overwritten. Never reuse an existing file.
         string path = Path.Combine(directory, fileName);
+        for (int suffix = 2; File.Exists(path); suffix++)
+        {
+            path = Path.Combine(directory,
+                $"{Path.GetFileNameWithoutExtension(fileName)}-{suffix}.db");
+        }
 
         var record = new BackupRecord
         {
