@@ -29,6 +29,13 @@ jobs:
           "=== dotnet SDKs ===" | Out-File -Append $log -Encoding utf8
           (dotnet --list-sdks) | Out-File -Append $log -Encoding utf8
 
+      - name: Check presentation layer
+        shell: pwsh
+        run: |
+          python scripts/check-presentation.py 2>&1 | Tee-Object -FilePath ci-logs/presentation.txt
+          "PRESENTATION_EXIT=$LASTEXITCODE" | Out-File -Append ci-logs/build.txt -Encoding utf8
+          exit $LASTEXITCODE
+
       - name: Restore
         shell: pwsh
         run: |

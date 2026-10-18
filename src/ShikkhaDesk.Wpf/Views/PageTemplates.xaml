@@ -165,7 +165,7 @@
         <views:InstitutionView />
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+    <DataTemplate DataType="{x:Type vm:GeneralSettingsViewModel}">
         <views:SettingsView />
     </DataTemplate>
 
