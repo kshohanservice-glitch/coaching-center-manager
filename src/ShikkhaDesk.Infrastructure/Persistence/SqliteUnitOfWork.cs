@@ -1,5 +1,7 @@
 using System.Data;
+using Dapper;
 using Microsoft.Data.Sqlite;
+using ShikkhaDesk.Core;
 using ShikkhaDesk.Application.Abstractions;
 
 namespace ShikkhaDesk.Infrastructure.Persistence;
@@ -116,7 +118,7 @@ public sealed class SqliteUnitOfWork : IUnitOfWork
 
             return result;
         }
-        catch
+        catch (Exception exception)
         {
             try
             {
@@ -127,7 +129,7 @@ public sealed class SqliteUnitOfWork : IUnitOfWork
                 // Rolling back an already-aborted transaction must not mask the original error.
             }
 
-            throw;
+            throw DescribeConstraintFailure(exception);
         }
         finally
         {
@@ -149,6 +151,46 @@ public sealed class SqliteUnitOfWork : IUnitOfWork
             await work(ct).ConfigureAwait(false);
             return null;
         }, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// SQLite reports a foreign-key violation without naming the table or the row, which leaves an
+    /// operator staring at "FOREIGN KEY constraint failed" with nothing to act on. Naming the
+    /// offending row turns that into something a person can actually fix.
+    /// </summary>
+    private Exception DescribeConstraintFailure(Exception exception)
+    {
+        if (exception is not SqliteException sqlite)
+        {
+            return exception;
+        }
+
+        bool isForeignKey = sqlite.SqliteErrorCode == 19
+            && (sqlite.Message.Contains("FOREIGN KEY", StringComparison.OrdinalIgnoreCase)
+                || sqlite.SqliteExtendedErrorCode == 787);
+
+        if (!isForeignKey)
+        {
+            return sqlite;
+        }
+
+        List<string> violations;
+        try
+        {
+            violations = _factory.Connection.Query<string>(@"
+                SELECT DISTINCT [table] || ' সারি ' || [rowid] || ' -> ' || IFNULL([parent], '(অজানা)')
+                  FROM pragma_foreign_key_check;").ToList();
+        }
+        catch (Exception)
+        {
+            // Diagnosing the failure must never replace it.
+            return sqlite;
+        }
+
+        return violations.Count == 0
+            ? sqlite
+            : new DomainException("তথ্যের সংযোগে সমস্যা (foreign key): " + string.Join(", ", violations)
+                                  + " — " + sqlite.Message, sqlite);
     }
 
     public void Dispose()

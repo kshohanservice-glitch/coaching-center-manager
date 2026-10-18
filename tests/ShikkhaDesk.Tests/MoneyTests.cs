@@ -76,7 +76,7 @@ public sealed class MoneyTests
     [Fact]
     public void Percentage_rounds_half_away_from_zero()
     {
-        Assert.Equal(Money.FromMinorUnits(1500), Money.FromDecimal(1000).Percentage(15));
+        Assert.Equal(Money.FromMajor(150), Money.FromDecimal(1000).Percentage(15));
         Assert.Equal(Money.FromMinorUnits(1501), Money.FromMinorUnits(10005).Percentage(15));
     }
 

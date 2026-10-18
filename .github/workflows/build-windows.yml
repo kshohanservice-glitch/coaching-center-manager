@@ -57,7 +57,7 @@ jobs:
             $testProjects = Get-ChildItem -Path tests -Filter *.csproj -Recurse
             if ($testProjects.Count -gt 0) {
               foreach ($p in $testProjects) {
-                dotnet test $p.FullName -c Release --no-build --logger "console;verbosity=normal" 2>&1 | Tee-Object -FilePath ci-logs/test-$($p.BaseName).txt
+                dotnet test $p.FullName -c Release --no-build --logger "console;verbosity=detailed" 2>&1 | Tee-Object -FilePath ci-logs/test-$($p.BaseName).txt
                 "TEST_EXIT($($p.BaseName))=$LASTEXITCODE" | Out-File -Append ci-logs/build.txt -Encoding utf8
               }
             } else { "TEST_EXIT=skipped (no test projects)" | Out-File -Append ci-logs/build.txt -Encoding utf8 }
@@ -136,7 +136,7 @@ jobs:
             "--- $($_.Name) ---" | Out-File -Append $log -Encoding utf8
             $lines = Get-Content $_.FullName
             "LINES=$($lines.Count)" | Out-File -Append $log -Encoding utf8
-            ($lines | Select-String -Pattern "Failed|Passed!|Total tests|error |Assert|Error Message|Stack Trace|MSB|not found|No test") |
+            ($lines | Select-String -Pattern "Failed|Passed!|Total tests|error |Assert|Expected|Actual|Error Message|Stack Trace|at ShikkhaDesk|MSB|not found|No test") |
               Select-Object -First 80 | ForEach-Object { $_.Line } | Out-File -Append $log -Encoding utf8
           }
           Get-Content $log | Write-Host
