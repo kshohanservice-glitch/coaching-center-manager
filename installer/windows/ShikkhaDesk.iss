@@ -67,7 +67,9 @@ Source: "..\..\docs\*"; DestDir: "{app}\docs"; Flags: ignoreversion recursesubdi
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
-Name: "{group}\ডকুমেন্টেশন"; Filename: "{app}\docs"; Flags: skipifsourcedoesntexist
+; skipifdoesntexist is the [Icons] flag; skipifsourcedoesntexist only exists on [Files], and using it
+; here aborts the compile.
+Name: "{group}\ডকুমেন্টেশন"; Filename: "{app}\docs"; Flags: skipifdoesntexist
 Name: "{group}\Uninstall {#MyAppName}"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 Name: "{userstartup}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: startup
