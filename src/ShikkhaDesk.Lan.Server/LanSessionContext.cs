@@ -14,7 +14,7 @@ public sealed class LanSessionContext : ICurrentUserService
 
     public Principal Current => Slot.Value ?? Principal.Anonymous;
 
-    public bool IsAuthenticated => Principal.UserId != Guid.Empty;
+    public bool IsAuthenticated => Current.UserId != Guid.Empty;
 
     public void SignIn(Principal principal) => Slot.Value = principal;
 

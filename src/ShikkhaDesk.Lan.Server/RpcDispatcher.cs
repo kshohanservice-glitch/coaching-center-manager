@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using ShikkhaDesk.Application.Security;
 using ShikkhaDesk.Application.Services;
+using ShikkhaDesk.Core;
 using ShikkhaDesk.Lan;
 
 namespace ShikkhaDesk.Lan.Server;

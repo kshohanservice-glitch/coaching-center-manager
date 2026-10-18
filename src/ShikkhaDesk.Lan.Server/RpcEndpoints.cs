@@ -32,8 +32,8 @@ public static class RpcEndpoints
                 Institution? institution = await app.Services.GetRequiredService<ISettingsService>()
                     .GetInstitutionAsync();
                 info.InstitutionName = institution?.Name ?? string.Empty;
-                info.DatabaseVersion = string.Join(",", await app.Services
-                    .GetRequiredService<DatabaseMigrator>().GetHistory());
+                info.DatabaseVersion = string.Join(",", app.Services
+                    .GetRequiredService<DatabaseMigrator>().GetHistory().Select(h => h.Version));
             }
             catch (Exception)
             {
@@ -76,14 +76,14 @@ public static class RpcEndpoints
         app.MapPost("/api/session/logout", (HttpContext context) =>
         {
             context.RequestServices.GetRequiredService<LanSessionStore>()
-                .Revoke(context.Request.Headers[SessionHeader]);
+                .Revoke(context.Request.Headers[RpcProtocol.SessionHeader]);
             return Results.Ok(new { ok = true });
         });
 
         app.MapPost("/api/invoke", async (HttpContext context, RpcRequest request) =>
         {
             LanSessionStore sessions = context.RequestServices.GetRequiredService<LanSessionStore>();
-            Principal? principal = sessions.Resolve(context.Request.Headers[SessionHeader]);
+            Principal? principal = sessions.Resolve(context.Request.Headers[RpcProtocol.SessionHeader]);
 
             if (principal is null)
             {

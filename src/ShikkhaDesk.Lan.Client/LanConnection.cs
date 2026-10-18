@@ -128,7 +128,7 @@ public sealed class LanConnection : ILanConnection, IDisposable
 
             if (_token is not null)
             {
-                message.Headers.TryAddWithoutValidation(RpcEndpoints.SessionHeader, _token);
+                message.Headers.TryAddWithoutValidation(RpcProtocol.SessionHeader, _token);
             }
 
             HttpResponseMessage response = await _http.SendAsync(message, ct);

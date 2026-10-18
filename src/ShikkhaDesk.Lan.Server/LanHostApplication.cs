@@ -25,7 +25,7 @@ public static class LanHostApplication
 
         builder.Logging.ClearProviders();
         builder.Logging.AddProvider(new ShikkhaDeskLanLoggerProvider(loggerFactory));
-        builder.WebHost.ConfigureKestrel(kestrel =>
+        builder.WebHost.UseKestrel(kestrel =>
         {
             if (string.IsNullOrWhiteSpace(options.BindAddress))
             {
