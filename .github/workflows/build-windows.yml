@@ -60,9 +60,16 @@ jobs:
         shell: pwsh
         run: |
           $log = "ci-logs/build.txt"
-          "=== errors and warnings ===" | Out-File -Append $log -Encoding utf8
+          "=== errors ===" | Out-File -Append $log -Encoding utf8
           if (Test-Path ci-logs/compile.txt) {
-            Select-String -Path ci-logs/compile.txt -Pattern "error|warning" | Select-Object -First 60 |
+            $errors = Select-String -Path ci-logs/compile.txt -Pattern ": error " |
+              ForEach-Object { $_.Line } | Select-Object -Unique
+            "ERROR_COUNT=$($errors.Count)" | Out-File -Append $log -Encoding utf8
+            $errors | Select-Object -First 200 | ForEach-Object { $_ } | Out-File -Append $log -Encoding utf8
+          }
+          "=== warnings (first 20) ===" | Out-File -Append $log -Encoding utf8
+          if (Test-Path ci-logs/compile.txt) {
+            Select-String -Path ci-logs/compile.txt -Pattern ": warning " | Select-Object -First 20 |
               ForEach-Object { $_.Line } | Out-File -Append $log -Encoding utf8
           }
           "=== test summary ===" | Out-File -Append $log -Encoding utf8
@@ -98,16 +105,3 @@ jobs:
                 issue_number: 1, owner: context.repo.owner, repo: context.repo.repo, body: text
               });
             }
-
-      - name: Commit CI log back to branch
-        if: always()
-        shell: pwsh
-        run: |
-          git config user.name "shikkhadesk-ci"
-          git config user.email "ci@shikkhadesk.local"
-          git add -f ci-logs/
-          $hasChanges = -not (git diff --cached --quiet)
-          if ($hasChanges) {
-            git commit -m "ci: publish build log for run ${{ github.run_number }} [skip ci]"
-            git push origin "HEAD:${{ github.ref_name }}"
-          } else { Write-Host "no log change to publish" }
