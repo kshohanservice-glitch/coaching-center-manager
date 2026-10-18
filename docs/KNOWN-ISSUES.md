@@ -3,7 +3,7 @@
 Nothing here is hidden, and nothing here is marked fixed until it is fixed.
 Status: **Open** · **Mitigated** · **Fixed (pending verification)** · **Closed**
 
-Last updated: 2026-10-19
+Last updated: 2026-10-19 (Asia/Dhaka)
 
 ---
 
@@ -20,18 +20,20 @@ section *Acceptance*), with a written record of each step.
 
 ---
 
-## O-2 — No installer has been produced. **Open** · **Critical**
+## O-2 — The installer has been produced but never run. **Fixed (pending verification)** · **Critical**
 
-`installer/windows/ShikkhaDesk.iss` exists and is written, but Inno Setup has never been invoked
-against it. `artifacts/release/` is empty.
+Inno Setup now compiles the script successfully: CI run **39170126327** reports `ISCC_EXIT=0` and
+produces `artifacts/release/ShikkhaDesk-Setup-v1.0.0-x64.exe`. Three compile-stopping defects had
+to be fixed first — `[Icons]` cannot use the `[Files]`-only flag `skipifsourcedoesntexist` (it uses
+`createonlyiffileexists`), and a per-machine installer must write a "run at logon" shortcut to
+`{commonstartup}`, not `{userstartup}`.
 
-Consequences: nothing has been installed, upgraded-over, repaired or uninstalled. The
-data-preservation question in the uninstaller — the one thing that could destroy a centre's
-accounts — has never executed.
+**This is not the same as a working installer.** It has never been executed. Nothing has been
+installed, upgraded-over, repaired or uninstalled with it. The data-preservation question in the
+uninstaller — the one thing that could destroy a centre's accounts — has never run.
 
-**What must happen to close it:** a successful ISCC run producing
-`ShikkhaDesk-Setup-v1.0.0-x64.exe`, then an install → run → uninstall → reinstall cycle on a
-clean Windows machine.
+**What must happen to close it:** an install → run → uninstall → reinstall cycle on a clean Windows
+machine, with the evidence listed under Gate 1 of `docs/RELEASE-CHECKLIST.md`.
 
 ---
 
@@ -141,6 +143,36 @@ Quick feedback, at the cost of runner minutes. Acceptable while the branch is th
 
 ---
 
+## O-12 — Compiler and analyser warnings are not zero. **Open** · **Low**
+
+The build reports `ERROR_COUNT=0`, but warnings remain:
+
+* `xUnit1031` across `tests/ShikkhaDesk.IntegrationTests` — test methods block on
+  `.GetAwaiter().GetResult()` instead of being `async Task`. This is deliberate for now (xUnit runs
+  these synchronously against a single SQLite connection and the pattern is stable), but it is a
+  real analyzer warning and would deadlock under a synchronisation context.
+* `CS8601` in `src/ShikkhaDesk.Application/Services/LicenseService.cs:81` — a possible null
+  reference assignment.
+
+Neither fails the build. Both should be cleared before a release that anyone installs.
+
+**What would close it:** make the integration tests `async Task`, and fix the nullable assignment.
+
+---
+
+## O-13 — No performance or volume testing. **Open** · **Medium**
+
+Every test operates on a handful of rows. A centre with 5,000 students, five years of attendance
+and ten years of journals has never been simulated. The ledger queries that sum over
+`journal_lines` are the ones most likely to degrade.
+
+**What would close it:** a seeded volume database and a measured pass over the dashboard, the
+outstanding-dues report and the trial balance.
+
+---
+
 ## Closed
 
-None yet. Nothing in this project has been verified end to end, so nothing can honestly be closed.
+Nothing is closed. `ISCC_EXIT=0` moved O-2 from *Open* to *Fixed (pending verification)*, but
+"the installer compiles" is not "the installer works", and no other issue has been verified end to
+end.

@@ -100,6 +100,13 @@ jobs:
           if (Test-Path $iscc) {
             & $iscc "installer\windows\ShikkhaDesk.iss" "/DMyAppVersion=$env:VERSION" 2>&1 | Tee-Object -FilePath ci-logs/installer.txt
             "ISCC_EXIT=$LASTEXITCODE" | Out-File -Append ci-logs/build.txt -Encoding utf8
+            $setup = "artifacts\\release\\ShikkhaDesk-Setup-v$env:VERSION-x64.exe"
+            if (Test-Path $setup) {
+              Get-Item $setup | ForEach-Object { "SETUP_EXE=$($_.Name)" | Out-File -Append ci-logs/build.txt -Encoding utf8
+                "SETUP_BYTES=$($_.Length)" | Out-File -Append ci-logs/build.txt -Encoding utf8 }
+            } else {
+              "SETUP_EXE=missing" | Out-File -Append ci-logs/build.txt -Encoding utf8
+            }
           } else {
             "ISCC_EXIT=not-found" | Out-File -Append ci-logs/build.txt -Encoding utf8
           }

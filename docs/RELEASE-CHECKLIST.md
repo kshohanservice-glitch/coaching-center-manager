@@ -4,7 +4,11 @@ Nothing on this list may be ticked without the evidence named beside it.
 "Looks fine" is not evidence. A skipped gate is a skipped gate, and it must be recorded as
 skipped, not quietly omitted.
 
-Version: **1.0.0** · Status: **Planned**
+Version: **1.0.0** · Status: **Build gate passed — Gates 1–6 open**
+
+Progress since the checklist was written: Gate 0 passes in full and Gate 1.1 passes. Evidence for
+each is named in the row. **Nothing beyond item 1.1 has been attempted.** The installer has been
+produced; it has not been executed.
 
 ---
 
@@ -12,18 +16,18 @@ Version: **1.0.0** · Status: **Planned**
 
 | # | Check | Evidence required | Status |
 |---|---|---|---|
-| 0.1 | `dotnet restore` succeeds on Windows | `RESTORE_EXIT=0` in the CI log | ☐ |
-| 0.2 | `dotnet build -c Release` succeeds with zero errors | `BUILD_EXIT=0` and `ERROR_COUNT=0` | ☐ |
-| 0.3 | Unit tests pass | `TEST_EXIT(ShikkhaDesk.Tests)=0` | ☐ |
-| 0.4 | Integration tests pass | `TEST_EXIT(ShikkhaDesk.IntegrationTests)=0` | ☐ |
-| 0.5 | No new compile warnings introduced | warning list reviewed and unchanged or reduced | ☐ |
-| 0.6 | Publish produces a runnable output folder | `PUBLISH_EXIT=0`, `artifacts/app/ShikkhaDesk.exe` exists | ☐ |
+| 0.1 | `dotnet restore` succeeds on Windows | `RESTORE_EXIT=0` in the CI log | ☑ — run 39170126327 |
+| 0.2 | `dotnet build -c Release` succeeds with zero errors | `BUILD_EXIT=0` and `ERROR_COUNT=0` | ☑ — run 39170126327 |
+| 0.3 | Unit tests pass | `TEST_EXIT(ShikkhaDesk.Tests)=0` | ☑ — 47/47, run 39170126327 |
+| 0.4 | Integration tests pass | `TEST_EXIT(ShikkhaDesk.IntegrationTests)=0` | ☑ — 34/34, run 39170126327 |
+| 0.5 | No new compile warnings introduced | warning list reviewed and unchanged or reduced | ☑ — `ERROR_COUNT=0`; warnings remain and are tracked as O-12 |
+| 0.6 | Publish produces a runnable output folder | `PUBLISH_EXIT=0`, `artifacts/app/ShikkhaDesk.exe` exists | ☑ — `PUBLISH_EXIT=0`; *runnable* not yet demonstrated on a desktop |
 
 ## Gate 1 — Installer
 
 | # | Check | Evidence required | Status |
 |---|---|---|---|
-| 1.1 | Inno Setup builds the installer | `ISCC_EXIT=0`, `artifacts/release/ShikkhaDesk-Setup-v1.0.0-x64.exe` exists | ☐ |
+| 1.1 | Inno Setup builds the installer | `ISCC_EXIT=0`, `artifacts/release/ShikkhaDesk-Setup-v1.0.0-x64.exe` exists | ☑ — `ISCC_EXIT=0`, run 39170126327 |
 | 1.2 | Installs on a clean Windows 10/11 x64 machine | screenshot of the completed wizard | ☐ |
 | 1.3 | Installed application launches and reaches the setup wizard | screenshot | ☐ |
 | 1.4 | Uninstall asks about data and defaults to keeping it | screenshot of the data question | ☐ |

@@ -72,7 +72,9 @@ Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{group}\ডকুমেন্টেশন"; Filename: "{app}\docs"; Flags: createonlyiffileexists
 Name: "{group}\Uninstall {#MyAppName}"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
-Name: "{userstartup}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: startup
+; Per-machine install, so a "run at logon" shortcut belongs in the common Startup folder; writing to
+; {userstartup} during an administrative install would only touch the installing user's profile.
+Name: "{commonstartup}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: startup
 
 [Dirs]
 ; The database and backups are created here on first run, writable by standard users.
