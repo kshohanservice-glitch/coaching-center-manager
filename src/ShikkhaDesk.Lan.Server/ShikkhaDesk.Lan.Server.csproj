@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>ShikkhaDesk.Lan.Server</RootNamespace>
+    <AssemblyName>ShikkhaDesk.Lan.Server</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ShikkhaDesk.Core\ShikkhaDesk.Core.csproj" />
+    <ProjectReference Include="..\ShikkhaDesk.Application\ShikkhaDesk.Application.csproj" />
+    <ProjectReference Include="..\ShikkhaDesk.Infrastructure\ShikkhaDesk.Infrastructure.csproj" />
+    <ProjectReference Include="..\ShikkhaDesk.Lan.Contracts\ShikkhaDesk.Lan.Contracts.csproj" />
+  </ItemGroup>
+</Project>

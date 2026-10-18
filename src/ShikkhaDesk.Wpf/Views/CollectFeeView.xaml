@@ -1,0 +1,100 @@
+<UserControl x:Class="ShikkhaDesk.Wpf.Views.CollectFeeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="360" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="380" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Student search -->
+        <Border Grid.Column="0" Style="{StaticResource Card}" Margin="0,0,12,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}"
+                             Margin="0,0,8,0" />
+                    <Button Grid.Column="1" Content="খুঁজুন" Command="{Binding SearchCommand}" Width="90" />
+                </Grid>
+                <DataGrid Grid.Row="1" ItemsSource="{Binding SearchResults}"
+                          SelectedItem="{Binding SelectedSearch}" MinHeight="380"
+                          SelectionChanged="SearchResults_SelectionChanged" />
+            </Grid>
+        </Border>
+
+        <!-- Dues -->
+        <Border Grid.Column="1" Style="{StaticResource Card}" Margin="0,0,12,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="{Binding StudentText}" FontWeight="SemiBold" FontSize="15"
+                           Margin="0,0,0,4" />
+                <TextBlock Grid.Row="1" Text="{Binding BalanceText}" Foreground="{StaticResource SecondaryTextBrush}"
+                           TextWrapping="Wrap" Margin="0,0,0,12" />
+                <DataGrid Grid.Row="2" ItemsSource="{Binding Dues}" MinHeight="380" />
+            </Grid>
+        </Border>
+
+        <!-- Payment -->
+        <Border Grid.Column="2" Style="{StaticResource Card}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="পেমেন্ট" Style="{StaticResource SectionTitle}" />
+
+                    <TextBlock Text="টাকার পরিমাণ *" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding AmountText}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10" />
+
+                    <TextBlock Text="পদ্ধতি" Style="{StaticResource FieldLabel}" />
+                    <ComboBox SelectedIndex="{Binding MethodIndex}" Margin="0,0,0,10">
+                        <ComboBoxItem Content="নগদ" />
+                        <ComboBoxItem Content="ব্যাংক" />
+                        <ComboBoxItem Content="বিকাশ" />
+                        <ComboBoxItem Content="রকেট" />
+                    </ComboBox>
+
+                    <TextBlock Text="জমার হিসাব" Style="{StaticResource FieldLabel}" />
+                    <ComboBox ItemsSource="{Binding Accounts}" SelectedItem="{Binding Account}" Margin="0,0,0,10" />
+
+                    <TextBlock Text="রেফারেন্স" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding Reference}" Margin="0,0,0,10" />
+
+                    <TextBlock Text="তারিখ" Style="{StaticResource FieldLabel}" />
+                    <DatePicker SelectedDate="{Binding PaymentDate}" Margin="0,0,0,10" />
+
+                    <TextBlock Text="মন্তব্য" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding Notes}" Height="50" AcceptsReturn="True"
+                             VerticalContentAlignment="Top" Margin="0,0,0,10" />
+
+                    <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource ErrorBrush}"
+                               TextWrapping="Wrap" Margin="0,0,0,8" />
+                    <TextBlock Text="{Binding StatusMessage}" Foreground="{StaticResource SuccessBrush}"
+                               TextWrapping="Wrap" Margin="0,0,0,10" />
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                        <Button Content="আদায় করুন" Command="{Binding CollectCommand}"
+                                Style="{StaticResource PrimaryButton}" Width="150" Margin="0,0,8,0" />
+                        <Button Content="ক্রেডিট প্রয়োগ" Command="{Binding ApplyCreditCommand}" Width="140" />
+                    </StackPanel>
+
+                    <TextBlock Text="রশিদ" Style="{StaticResource SectionTitle}" />
+                    <Border Background="{StaticResource AppBackgroundBrush}" Padding="12" CornerRadius="6">
+                        <TextBlock Text="{Binding ReceiptText}" FontSize="12" TextWrapping="Wrap" />
+                    </Border>
+                    <Button Content="রশিদ মুদ্রণ" Command="{Binding PrintCommand}" Margin="0,12,0,0" />
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>

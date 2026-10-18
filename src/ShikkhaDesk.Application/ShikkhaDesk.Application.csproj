@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>ShikkhaDesk.Application</RootNamespace>
+    <AssemblyName>ShikkhaDesk.Application</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="ShikkhaDesk.Core" />
+    <Using Include="ShikkhaDesk.Core.Security" />
+    <Using Include="ShikkhaDesk.Core.Entities" />
+    <Using Include="ShikkhaDesk.Core.Services" />
+    <Using Include="ShikkhaDesk.Application.Dto" />
+    <Using Include="ShikkhaDesk.Application.Security" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ShikkhaDesk.Core\ShikkhaDesk.Core.csproj" />
+  </ItemGroup>
+</Project>

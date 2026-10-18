@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>ShikkhaDesk.Infrastructure</RootNamespace>
+    <AssemblyName>ShikkhaDesk.Infrastructure</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="ShikkhaDesk.Core" />
+    <Using Include="ShikkhaDesk.Core.Entities" />
+    <Using Include="ShikkhaDesk.Core.Services" />
+    <Using Include="ShikkhaDesk.Core.Security" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.35" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.11" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ShikkhaDesk.Core\ShikkhaDesk.Core.csproj" />
+    <ProjectReference Include="..\ShikkhaDesk.Application\ShikkhaDesk.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Persistence\Schema\*.sql" />
+  </ItemGroup>
+</Project>

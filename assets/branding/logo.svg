@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="ShikkhaDesk">
+  <title>ShikkhaDesk</title>
+  <rect x="0" y="0" width="256" height="256" rx="56" ry="56" fill="#102A43"/>
+  <polygon points="34,116 128,142 222,116 222,198 128,222 34,198" fill="#138A72"/>
+  <polygon points="46,128 122,147 122,196 46,178" fill="#FFFFFF"/>
+  <polygon points="210,128 134,147 134,196 210,178" fill="#FFFFFF"/>
+  <path d="M92 88 L114 110 L162 58" fill="none" stroke="#25C2A0" stroke-width="14"
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="60" y="230" width="136" height="10" rx="5" ry="5" fill="#138A72"/>
+</svg>

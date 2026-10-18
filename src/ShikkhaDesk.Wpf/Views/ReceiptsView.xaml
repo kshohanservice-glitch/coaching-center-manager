@@ -1,0 +1,40 @@
+<UserControl x:Class="ShikkhaDesk.Wpf.Views.ReceiptsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel>
+        <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="240" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Column="0" Text="{Binding ReceiptNumber}" Margin="0,0,10,0" />
+                <Button Grid.Column="1" Content="খুঁজুন" Command="{Binding FindCommand}" Width="100"
+                        Margin="0,0,10,0" />
+                <TextBlock Grid.Column="2" Text="{Binding Summary}" VerticalAlignment="Center"
+                           HorizontalAlignment="Center" FontWeight="SemiBold" />
+                <Button Grid.Column="3" Content="মুদ্রণ" Command="{Binding PrintCommand}" Width="100"
+                        Margin="0,0,10,0" />
+                <Button Grid.Column="4" Content="পুনর্মুদ্রণ" Command="{Binding ReprintCommand}" Width="120" />
+            </Grid>
+        </Border>
+
+        <Border Style="{StaticResource Card}" MaxWidth="520" HorizontalAlignment="Left">
+            <StackPanel>
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource ErrorBrush}"
+                           TextWrapping="Wrap" Margin="0,0,0,8" />
+                <TextBlock Text="{Binding StatusMessage}" Foreground="{StaticResource SuccessBrush}"
+                           TextWrapping="Wrap" Margin="0,0,0,8" />
+                <TextBlock Text="রশিদের বিবরণ" Style="{StaticResource SectionTitle}" />
+                <ItemsControl ItemsSource="{Binding LineTexts}" Margin="0,0,0,12" />
+                <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="{StaticResource SecondaryTextBrush}">
+                    'পুনর্মুদ্রণ' রশিদে একটি চিহ্ন ও সংখ্যা যোগ করে, যাতে কপিটি মূল রশিদ হিসেবে ব্যবহার করা না যায়।
+                </TextBlock>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>

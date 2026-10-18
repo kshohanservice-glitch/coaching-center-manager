@@ -1,0 +1,61 @@
+<UserControl x:Class="ShikkhaDesk.Wpf.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel MaxWidth="720" HorizontalAlignment="Left">
+        <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+            <StackPanel>
+                <TextBlock Text="ব্যাকআপ" Style="{StaticResource SectionTitle}" />
+                <TextBlock Text="ব্যাকআপ সংরক্ষণের স্থান" Style="{StaticResource FieldLabel}" />
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" Text="{Binding BackupLocation}" Margin="0,0,8,0" />
+                    <Button Grid.Column="1" Content="ব্রাউজ" Command="{Binding BrowseBackupCommand}" Width="100" />
+                </Grid>
+
+                <TextBlock Text="স্বয়ংক্রিয় ব্যাকআপের ব্যবধান (দিন)" Style="{StaticResource FieldLabel}" />
+                <TextBox Text="{Binding AutoBackupDays}" Margin="0,0,0,12" />
+            </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+            <StackPanel>
+                <TextBlock Text="রশিদ" Style="{StaticResource SectionTitle}" />
+                <TextBlock Text="প্রিফিক্স" Style="{StaticResource FieldLabel}" />
+                <TextBox Text="{Binding ReceiptPrefix}" Margin="0,0,0,10" />
+                <TextBlock Text="রশিদের নিচের লেখা" Style="{StaticResource FieldLabel}" />
+                <TextBox Text="{Binding ReceiptFooter}" Margin="0,0,0,10" />
+                <CheckBox Content="রশিদে লোগো দেখান" IsChecked="{Binding ShowLogoOnReceipt}" />
+            </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+            <StackPanel>
+                <TextBlock Text="ফি" Style="{StaticResource SectionTitle}" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Margin="0,0,10,0">
+                        <TextBlock Text="বিলম্ব ফি (টাকা)" Style="{StaticResource FieldLabel}" />
+                        <TextBox Text="{Binding LateFeeAmount}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                        <TextBlock Text="মেয়াদের ছাড় (দিন)" Style="{StaticResource FieldLabel}" />
+                        <TextBox Text="{Binding LateFeeGraceDays}" />
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource ErrorBrush}" TextWrapping="Wrap"
+                   Margin="0,0,0,6" />
+        <TextBlock Text="{Binding StatusMessage}" Foreground="{StaticResource SuccessBrush}" TextWrapping="Wrap"
+                   Margin="0,0,0,10" />
+        <Button Content="সেটিংস সংরক্ষণ" Command="{Binding SaveCommand}"
+                Style="{StaticResource PrimaryButton}" Width="200" HorizontalAlignment="Right" />
+    </StackPanel>
+</UserControl>

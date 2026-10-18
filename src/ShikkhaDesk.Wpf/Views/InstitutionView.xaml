@@ -1,0 +1,73 @@
+<UserControl x:Class="ShikkhaDesk.Wpf.Views.InstitutionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel MaxWidth="720" HorizontalAlignment="Left">
+        <Border Style="{StaticResource Card}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,12">
+                    <TextBlock Text="প্রতিষ্ঠানের নাম *" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding Name}" />
+                </StackPanel>
+                <StackPanel Grid.Row="0" Grid.Column="1" Margin="10,0,0,12">
+                    <TextBlock Text="নাম (বাংলা)" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding NameBn}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,0,0,12">
+                    <TextBlock Text="ঠিকানা" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding Address}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,10,12">
+                    <TextBlock Text="ফোন" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding Phone}" />
+                </StackPanel>
+                <StackPanel Grid.Row="2" Grid.Column="1" Margin="10,0,0,12">
+                    <TextBlock Text="ইমেইল" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding Email}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="3" Grid.Column="0" Margin="0,0,10,12">
+                    <TextBlock Text="রশিদ প্রিফিক্স" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding ReceiptPrefix}" />
+                </StackPanel>
+                <StackPanel Grid.Row="3" Grid.Column="1" Margin="10,0,0,12">
+                    <TextBlock Text="মুদ্রা প্রতীক" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding CurrencySymbol}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="4" Grid.Column="0" Margin="0,0,10,0">
+                    <TextBlock Text="সংখ্যা প্রদর্শন" Style="{StaticResource FieldLabel}" />
+                    <ComboBox SelectedIndex="{Binding DigitIndex}">
+                        <ComboBoxItem Content="বাংলা সংখ্যা" />
+                        <ComboBoxItem Content="ইংরেজি সংখ্যা" />
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Grid.Row="4" Grid.Column="1" Margin="10,0,0,0">
+                    <TextBlock Text="প্রতিষ্ঠার তারিখ" Style="{StaticResource FieldLabel}" />
+                    <DatePicker SelectedDate="{Binding EstablishedOn}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource ErrorBrush}" TextWrapping="Wrap"
+                   Margin="0,10,0,0" />
+        <TextBlock Text="{Binding StatusMessage}" Foreground="{StaticResource SuccessBrush}" TextWrapping="Wrap"
+                   Margin="0,4,0,10" />
+
+        <Button Content="প্রোফাইল সংরক্ষণ" Command="{Binding SaveCommand}"
+                Style="{StaticResource PrimaryButton}" Width="200" HorizontalAlignment="Right" />
+    </StackPanel>
+</UserControl>

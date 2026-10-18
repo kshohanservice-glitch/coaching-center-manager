@@ -1,0 +1,51 @@
+<UserControl x:Class="ShikkhaDesk.Wpf.Views.CreditLedgerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="380" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Style="{StaticResource Card}" Margin="0,0,12,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" Text="{Binding Search}" Margin="0,0,8,0" />
+                    <Button Grid.Column="1" Content="খুঁজুন" Command="{Binding SearchCommand}" Width="90" />
+                </Grid>
+                <DataGrid Grid.Row="1" ItemsSource="{Binding SearchResults}"
+                          SelectedItem="{Binding SelectedSearch}" MinHeight="380"
+                          SelectionChanged="Results_SelectionChanged" />
+            </Grid>
+        </Border>
+
+        <Border Grid.Column="1" Style="{StaticResource Card}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="{Binding Summary}" FontWeight="SemiBold" FontSize="15"
+                           Margin="0,0,0,6" />
+                <TextBlock Grid.Row="1" Text="{Binding StatusMessage}" Foreground="{StaticResource SuccessBrush}"
+                           TextWrapping="Wrap" Margin="0,0,0,10" />
+                <DataGrid Grid.Row="2" ItemsSource="{Binding Rows}" MinHeight="360" />
+                <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+                    <Button Content="ক্রেডিট বরাদ্দ করুন" Command="{Binding ApplyCommand}"
+                            Style="{StaticResource PrimaryButton}" Width="180" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

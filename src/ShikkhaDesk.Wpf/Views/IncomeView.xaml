@@ -1,0 +1,103 @@
+<UserControl x:Class="ShikkhaDesk.Wpf.Views.IncomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="430" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="আয় রেকর্ড" Style="{StaticResource SectionTitle}" />
+
+                        <TextBlock Text="আয়ের খাত *" Style="{StaticResource FieldLabel}" />
+                        <ComboBox ItemsSource="{Binding IncomeAccounts}" SelectedItem="{Binding IncomeAccount}"
+                                  Margin="0,0,0,10" />
+
+                        <TextBlock Text="জমার হিসাব *" Style="{StaticResource FieldLabel}" />
+                        <ComboBox ItemsSource="{Binding Accounts}" SelectedItem="{Binding Account}"
+                                  Margin="0,0,0,10" />
+
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Margin="0,0,5,0">
+                                <TextBlock Text="তারিখ" Style="{StaticResource FieldLabel}" />
+                                <DatePicker SelectedDate="{Binding IncomeDate}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                                <TextBlock Text="টাকার পরিমাণ *" Style="{StaticResource FieldLabel}" />
+                                <TextBox Text="{Binding AmountText}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Text="বিবরণ *" Style="{StaticResource FieldLabel}" />
+                        <TextBox Text="{Binding Description}" Margin="0,0,0,10" />
+
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Margin="0,0,5,0">
+                                <TextBlock Text="উৎস" Style="{StaticResource FieldLabel}" />
+                                <TextBox Text="{Binding Source}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                                <TextBlock Text="রেফারেন্স" Style="{StaticResource FieldLabel}" />
+                                <TextBox Text="{Binding Reference}" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource ErrorBrush}"
+                           TextWrapping="Wrap" Margin="0,10,0,0" />
+                <TextBlock Text="{Binding StatusMessage}" Foreground="{StaticResource SuccessBrush}"
+                           TextWrapping="Wrap" Margin="0,4,0,10" />
+
+                <Button Content="আয় রেকর্ড করুন" Command="{Binding RecordCommand}"
+                        Style="{StaticResource PrimaryButton}" Width="180" HorizontalAlignment="Right" />
+
+                <Border Style="{StaticResource Card}" Margin="0,12,0,0" Background="#FFFDF8EC"
+                        BorderBrush="{StaticResource AccentBrush}">
+                    <TextBlock Text="ফি থেকে আয় স্বয়ংক্রিয়ভাবে ধার্য হয়। এখানে শুধু ফি-বহির্ভূত আয় (যেমন অনুদান বা ভাড়া)
+রেকর্ড করুন — একই আয় দুইবার রেকর্ড করলে হিসাব দ্বিগুণ হয়ে যাবে।"
+                               TextWrapping="Wrap" FontSize="12" />
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Border Grid.Column="1" Style="{StaticResource Card}" Margin="12,0,0,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <DatePicker Grid.Column="0" SelectedDate="{Binding From}" Margin="0,0,10,0" Width="150" />
+                    <DatePicker Grid.Column="1" SelectedDate="{Binding To}" Margin="0,0,10,0" Width="150" />
+                    <TextBlock Grid.Column="2" Text="{Binding TotalText}" VerticalAlignment="Center"
+                               HorizontalAlignment="Center" FontWeight="SemiBold" />
+                    <Button Grid.Column="3" Content="রিফ্রেশ" Command="{Binding RefreshCommand}" Width="110" />
+                </Grid>
+
+                <TextBlock Grid.Row="1" Text="আয়ের খাতা" Style="{StaticResource SectionTitle}" />
+                <DataGrid Grid.Row="2" ItemsSource="{Binding Rows}" MinHeight="400" />
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

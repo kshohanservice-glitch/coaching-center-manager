@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>ShikkhaDesk.Wpf</RootNamespace>
+    <AssemblyName>ShikkhaDesk</AssemblyName>
+    <ApplicationIcon>..\..\assets\branding\app-icon.ico</ApplicationIcon>
+    <PackageIcon>app-icon-256.png</PackageIcon>
+    <Product>ShikkhaDesk</Product>
+    <Description>শিক্ষা ডেস্ক — কোচিং সেন্টারের সম্পূর্ণ ব্যবস্থাপনা, এক জায়গায়।</Description>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="System.IO" />
+    <Using Include="System.Linq" />
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="ShikkhaDesk.Lan" />
+    <Using Include="ShikkhaDesk.Wpf.Views" />
+    <Using Include="System.Windows" />
+    <Using Include="System.Windows.Controls" />
+    <Using Include="System.Windows.Input" />
+    <Using Include="System.Windows.Media" />
+    <Using Include="ShikkhaDesk.Core" />
+    <Using Include="ShikkhaDesk.Core.Entities" />
+    <Using Include="ShikkhaDesk.Core.Services" />
+    <Using Include="ShikkhaDesk.Core.Security" />
+    <Using Include="ShikkhaDesk.Application" />
+    <Using Include="ShikkhaDesk.Application.Abstractions" />
+    <Using Include="ShikkhaDesk.Application.Dto" />
+    <Using Include="ShikkhaDesk.Application.Security" />
+    <Using Include="ShikkhaDesk.Application.Services" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ShikkhaDesk.Core\ShikkhaDesk.Core.csproj" />
+    <ProjectReference Include="..\ShikkhaDesk.Application\ShikkhaDesk.Application.csproj" />
+    <ProjectReference Include="..\ShikkhaDesk.Infrastructure\ShikkhaDesk.Infrastructure.csproj" />
+    <ProjectReference Include="..\ShikkhaDesk.Lan.Client\ShikkhaDesk.Lan.Client.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="..\..\assets\branding\app-icon.ico" Link="app-icon.ico" />
+    <Resource Include="..\..\assets\branding\png\app-icon-256.png" Link="app-icon-256.png" />
+    <Resource Include="..\..\assets\branding\png\app-icon-64.png" Link="app-icon-64.png" />
+    <Resource Include="..\..\assets\branding\logo.png" Link="logo.png" />
+  </ItemGroup>
+</Project>
