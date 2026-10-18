@@ -1,4 +1,4 @@
   Determining projects to restore...
-  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Core\ShikkhaDesk.Core.csproj (in 155 ms).
-  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Application\ShikkhaDesk.Application.csproj (in 155 ms).
-  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Infrastructure\ShikkhaDesk.Infrastructure.csproj (in 3.36 sec).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Core\ShikkhaDesk.Core.csproj (in 230 ms).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Application\ShikkhaDesk.Application.csproj (in 231 ms).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Infrastructure\ShikkhaDesk.Infrastructure.csproj (in 3.57 sec).
