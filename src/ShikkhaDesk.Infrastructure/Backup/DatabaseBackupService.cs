@@ -126,7 +126,20 @@ public sealed class DatabaseBackupService : IBackupService
             return new RestoreResult(false, "নির্বাচিত ব্যাকআপ ফাইলটি পাওয়া যায়নি।", null);
         }
 
-        if (!await IsConsistentAsync(backupFilePath, ct).ConfigureAwait(false))
+        // A file that is not a SQLite database at all makes the consistency check throw, and a user
+        // who picks the wrong file must get a Bengali message, never an unhandled exception.
+        bool consistent;
+        try
+        {
+            consistent = await IsConsistentAsync(backupFilePath, ct).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Restore refused: {Path} is not a readable database", backupFilePath);
+            consistent = false;
+        }
+
+        if (!consistent)
         {
             return new RestoreResult(false, "ব্যাকআপ ফাইলটি ক্ষতিগ্রস্ত বা সামঞ্জস্যপূর্ণ নয়। পুনরুদ্ধার বাতিল করা হয়েছে।", null);
         }

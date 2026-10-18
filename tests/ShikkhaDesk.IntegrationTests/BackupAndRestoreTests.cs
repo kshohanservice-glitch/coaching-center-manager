@@ -29,9 +29,8 @@ public sealed class BackupAndRestoreTests
             studentId, Money.FromDecimal(1200), PaymentMethod.Cash)).GetAwaiter().GetResult();
 
         IBackupService backups = host.Get<IBackupService>();
-        BackupRecord backup = backups.CreateBackupAsync().GetAwaiter().GetResult();
+        BackupRecord backup = CreateVerifiedBackup(host);
 
-        Assert.Equal(BackupStatus.Succeeded, backup.Status);
         Assert.True(File.Exists(backup.FilePath), $"ব্যাকআপ ফাইল তৈরি হয়নি: {backup.FilePath}");
         Assert.True(backup.FileSizeBytes > 0);
         Assert.True(backup.IntegrityVerified);
@@ -56,8 +55,7 @@ public sealed class BackupAndRestoreTests
         (Money trialDebits, Money trialCredits, Money outstanding) before = Snapshot(host, studentId);
         Assert.Equal(before.trialDebits, before.trialCredits);
 
-        BackupRecord backup = host.Get<IBackupService>().CreateBackupAsync().GetAwaiter().GetResult();
-        Assert.Equal(BackupStatus.Succeeded, backup.Status);
+        BackupRecord backup = CreateVerifiedBackup(host);
 
         // More business happens after the backup, so the ledger is genuinely different.
         host.Get<IPaymentService>().CollectAsync(new CollectPaymentRequest(
@@ -130,11 +128,8 @@ public sealed class BackupAndRestoreTests
         using TestHost host = TestHost.Create().Setup();
 
         IBackupService backups = host.Get<IBackupService>();
-        BackupRecord first = backups.CreateBackupAsync().GetAwaiter().GetResult();
-        BackupRecord second = backups.CreateBackupAsync().GetAwaiter().GetResult();
-
-        Assert.Equal(BackupStatus.Succeeded, first.Status);
-        Assert.Equal(BackupStatus.Succeeded, second.Status);
+        BackupRecord first = CreateVerifiedBackup(host);
+        BackupRecord second = CreateVerifiedBackup(host);
 
         // The file name is stamped to the second, so two backups taken inside one second used to
         // land on the same path: two history records, one file, and the first record's integrity
@@ -154,8 +149,7 @@ public sealed class BackupAndRestoreTests
         IBackupService backups = host.Get<IBackupService>();
         for (int i = 0; i < 3; i++)
         {
-            Assert.Equal(BackupStatus.Succeeded,
-                backups.CreateBackupAsync().GetAwaiter().GetResult().Status);
+            CreateVerifiedBackup(host);
             System.Threading.Thread.Sleep(1100);
         }
 
@@ -173,6 +167,14 @@ public sealed class BackupAndRestoreTests
             .ToList();
 
         Assert.Equal(2, kept.Count(b => File.Exists(b.FilePath)));
+    }
+
+    /// <summary>Creates a backup and fails with the service's own reason if it did not succeed.</summary>
+    private static BackupRecord CreateVerifiedBackup(TestHost host)
+    {
+        BackupRecord record = host.Get<IBackupService>().CreateBackupAsync().GetAwaiter().GetResult();
+        Assert.True(record.Status == BackupStatus.Succeeded, $"ব্যাকআপ ব্যর্থ: {record.ErrorMessage}");
+        return record;
     }
 
     private static Money ReadOutstanding(TestHost host, Guid studentId) =>
