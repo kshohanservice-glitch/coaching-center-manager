@@ -211,6 +211,10 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
     // Without it a reversed entry and the opening-balance entry stayed inside every total, and a cash
     // balance was reported twice: once from financial_accounts.opening_balance and once from its own
     // opening journal entry.
+    // The trial balance reports the net side of each account, so the debit column is the net debit and
+    // the credit column is the net credit for every type. It used to invert the two columns for
+    // liability, equity and income accounts, which made the debit side of every trial balance too
+    // large by exactly the credit balances of those accounts.
 
     public async Task<IReadOnlyList<AccountBalanceRow>> GetAccountBalancesAsync(DateRange range,
         CancellationToken ct = default) =>
@@ -234,16 +238,10 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
         CancellationToken ct = default) =>
         (await QueryAsync<TrialBalanceProjection>(@"
             SELECT a.code AS Code, a.name AS Name, a.type AS Type,
-                   CASE WHEN a.type IN (0, 4)
-                        THEN MAX(0, IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.debit END), 0)
-                                  - IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.credit END), 0))
-                        ELSE MAX(0, IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.credit END), 0)
-                                  - IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.debit END), 0)) END AS Debit,
-                   CASE WHEN a.type IN (0, 4)
-                        THEN MAX(0, IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.credit END), 0)
-                                  - IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.debit END), 0))
-                        ELSE MAX(0, IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.debit END), 0)
-                                  - IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.credit END), 0)) END AS Credit
+                   MAX(0, IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.debit END), 0)
+                        - IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.credit END), 0)) AS Debit,
+                   MAX(0, IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.credit END), 0)
+                        - IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.debit END), 0)) AS Credit
               FROM accounts a
               LEFT JOIN journal_lines jl ON jl.account_id = a.id
               LEFT JOIN journal_entries je ON je.id = jl.journal_entry_id

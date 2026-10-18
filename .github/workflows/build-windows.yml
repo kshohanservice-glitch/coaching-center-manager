@@ -140,8 +140,12 @@ jobs:
             "--- $($_.Name) ---" | Out-File -Append $log -Encoding utf8
             $lines = Get-Content $_.FullName
             "LINES=$($lines.Count)" | Out-File -Append $log -Encoding utf8
-            ($lines | Select-String -Pattern "^  Failed |^  Error Message|^(Failed!|Passed!)|^Assert|^Total tests|^Expected:|^Actual:|^   (?!at )\\S") |
-              Select-Object -First 150 | ForEach-Object { $_.Line } | Out-File -Append $log -Encoding utf8
+            if ($lines.Count -le 300) {
+              $lines | Out-File -Append $log -Encoding utf8
+            } else {
+              ($lines | Select-String -Pattern "^  Failed |^  Error Message|^(Failed!|Passed!)|^Assert|^Total tests|^Expected:|^Actual:|^   (?!at )\\S") |
+                Select-Object -First 150 | ForEach-Object { $_.Line } | Out-File -Append $log -Encoding utf8
+            }
           }
           Get-Content $log | Write-Host
 
