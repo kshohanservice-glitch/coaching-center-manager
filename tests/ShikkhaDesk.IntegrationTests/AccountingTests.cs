@@ -268,7 +268,11 @@ public sealed class AccountingTests
             .GetBalanceSheetAsync(DateTime.Today).GetAwaiter().GetResult();
 
         Assert.Equal(sheet.TotalAssets, sheet.TotalLiabilitiesAndEquity);
-        Assert.Equal(Money.FromDecimal(52000), sheet.TotalAssets);
+
+        // 50,000 opening cash + 2,000 collected in cash + the 500 admission fee, which is a
+        // receivable until the student pays it. The equity side is the 50,000 opening capital plus
+        // the 2,000 tuition and 500 admission income now earned.
+        Assert.Equal(Money.FromDecimal(52500), sheet.TotalAssets);
     }
 
     [Fact]

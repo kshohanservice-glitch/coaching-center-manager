@@ -44,8 +44,12 @@ public sealed class FeeAndPaymentTests
             .AssessMonthlyFeesAsync(new AssessMonthlyFeesRequest(batchId, "2026-03")).GetAwaiter().GetResult());
 
         IReadOnlyList<FeeCharge> charges = fees.GetOutstandingChargesAsync(batchId).GetAwaiter().GetResult();
-        Assert.Single(charges);
-        Assert.Equal(Money.FromDecimal(2000), charges[0].NetAmount);
+
+        // The batch also carries the admission fee charged when the student was admitted, so this
+        // looks at the tuition charge only: what matters is that the second assessment added nothing.
+        FeeCharge tuition = Assert.Single(charges, c => c.Kind == FeeChargeKind.MonthlyTuition);
+        Assert.Equal(Money.FromDecimal(2000), tuition.NetAmount);
+        Assert.Equal(2, charges.Count);
     }
 
     [Fact]
