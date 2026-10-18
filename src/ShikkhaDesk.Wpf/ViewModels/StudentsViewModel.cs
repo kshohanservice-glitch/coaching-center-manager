@@ -164,13 +164,7 @@ public sealed class StudentsViewModel : ViewModelBase
         }, "খোঁজা হচ্ছে…");
     }
 
-    private static string Translate(StudentStatus status) => status switch
-    {
-        StudentStatus.Active => "সক্রিয়",
-        StudentStatus.Inactive => "নিষ্ক্রিয়",
-        StudentStatus.Archived => "সংরক্ষিত",
-        _ => status.ToString()
-    };
+    private static string Translate(StudentStatus status) => Labels.For(status);
 
     private async Task CreateAsync()
     {
