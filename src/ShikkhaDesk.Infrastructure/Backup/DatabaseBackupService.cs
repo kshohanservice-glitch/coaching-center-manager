@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Security.Cryptography;
+using ConnectionFactory = ShikkhaDesk.Infrastructure.Persistence.SqliteConnectionFactory;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -18,11 +19,11 @@ public sealed class DatabaseBackupService : IBackupService
 {
     private const string BackupFilePattern = "ShikkhaDesk-Backup-{0}.db";
 
-    private readonly SqliteConnectionFactory _factory;
+    private readonly ConnectionFactory _factory;
     private readonly ISystemRepository _systemRepository;
     private readonly ILogger<DatabaseBackupService> _logger;
 
-    public DatabaseBackupService(SqliteConnectionFactory factory, ISystemRepository systemRepository,
+    public DatabaseBackupService(ConnectionFactory factory, ISystemRepository systemRepository,
         ILogger<DatabaseBackupService>? logger = null)
     {
         _factory = factory;

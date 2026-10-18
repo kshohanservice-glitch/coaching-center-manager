@@ -6,6 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Using Include="ShikkhaDesk.Core" />
+    <Using Include="ShikkhaDesk.Core.Entities" />
+    <Using Include="ShikkhaDesk.Core.Services" />
+    <Using Include="ShikkhaDesk.Core.Security" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.11" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
