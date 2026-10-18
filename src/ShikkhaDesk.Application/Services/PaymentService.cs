@@ -456,7 +456,7 @@ public sealed class PaymentService : IPaymentService
                 fromAllocated,
                 payFrom.AccountId,
                 payFrom.Id,
-                map.TuitionIncome,
+                map.StudentReceivables,
                 map);
 
             Guid journalId = await _accounting.PostAsync(draft, token).ConfigureAwait(false);

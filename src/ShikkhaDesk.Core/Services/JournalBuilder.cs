@@ -157,8 +157,14 @@ public static class JournalBuilder
     // ---------------------------------------------------------------- refund
 
     /// <summary>
-    /// A refund of still-unallocated credit simply releases the liability. A refund of money that had
-    /// already been allocated to a fee reverses the income, so it is never posted as a new expense.
+    /// Refund treatment (see docs/ACCOUNTING-DESIGN.md):
+    /// * money that was never allocated was only ever a liability, so refunding it releases that
+    ///   liability (Dr Student Advance Credit, Cr Cash/Bank);
+    /// * money that had already been allocated to a fee makes that fee payable again, so the
+    ///   receivable is restored (Dr Student Receivables, Cr Cash/Bank). The assessment and the income
+    ///   recognised for it are left untouched, because the fee is still owed.
+    /// In neither case is a refund posted as an expense. Cancelling a fee is a separate, explicit
+    /// waiver action that reverses income.
     /// </summary>
     public static JournalDraft ForRefund(
         Guid refundId,
@@ -170,7 +176,7 @@ public static class JournalBuilder
         Money amountFromAllocatedFees,
         Guid paymentAccountId,
         Guid paymentFinancialAccountId,
-        Guid contraIncomeAccountId,
+        Guid receivableAccountId,
         AccountMap map)
     {
         map.Validate();
@@ -193,8 +199,8 @@ public static class JournalBuilder
 
         if (amountFromAllocatedFees.IsPositive)
         {
-            journalLines.Add(JournalLineDraft.Dr(contraIncomeAccountId, amountFromAllocatedFees,
-                studentId: studentId, memo: "আয় বাতিল (ফেরত)"));
+            journalLines.Add(JournalLineDraft.Dr(receivableAccountId, amountFromAllocatedFees,
+                studentId: studentId, memo: "বকেয়া পুনরুদ্ধার (ফেরত)"));
         }
 
         journalLines.Add(JournalLineDraft.Cr(paymentAccountId, amount,

@@ -256,6 +256,7 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
               LEFT JOIN journal_lines jl ON jl.financial_account_id = fa.id
               LEFT JOIN journal_entries je ON je.id = jl.journal_entry_id
                    AND je.status <> 2
+                   AND je.source_kind <> 12
                    AND (@AsOf IS NULL OR je.entry_date <= @AsOf)
              WHERE fa.id = @FinancialAccountId;",
             new { FinancialAccountId = financialAccountId, AsOf = asOf is null ? null : EndOfDay(asOf.Value) }, ct)!;
@@ -508,7 +509,8 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
             SELECT fa.opening_balance + IFNULL(SUM(jl.debit - jl.credit), 0)
               FROM financial_accounts fa
               LEFT JOIN journal_lines jl ON jl.financial_account_id = fa.id
-              LEFT JOIN journal_entries je ON je.id = jl.journal_entry_id AND je.status <> 2 AND je.entry_date < @From
+              LEFT JOIN journal_entries je ON je.id = jl.journal_entry_id
+                   AND je.status <> 2 AND je.source_kind <> 12 AND je.entry_date < @From
              WHERE fa.id = @FinancialAccountId;",
             new { FinancialAccountId = financialAccountId, From = StartOfDay(range.From) }, ct)
             .ConfigureAwait(false) ?? Money.Zero;

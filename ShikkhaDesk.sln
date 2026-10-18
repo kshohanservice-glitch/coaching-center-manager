@@ -8,6 +8,8 @@ Project("9A19103F-16F7-4668-BE54-9A1E7A4F7556") = "ShikkhaDesk.Core", "src\Shikk
 EndProject
 Project("9A19103F-16F7-4668-BE54-9A1E7A4F7556") = "ShikkhaDesk.Infrastructure", "src\ShikkhaDesk.Infrastructure\ShikkhaDesk.Infrastructure.csproj", "{694E0F2E-8CAB-578F-8B78-AFF167650D34}"
 EndProject
+Project("9A19103F-16F7-4668-BE54-9A1E7A4F7556") = "ShikkhaDesk.IntegrationTests", "tests\ShikkhaDesk.IntegrationTests\ShikkhaDesk.IntegrationTests.csproj", "{78C47980-6725-5200-8141-9FC46E7F8D05}"
+EndProject
 Project("9A19103F-16F7-4668-BE54-9A1E7A4F7556") = "ShikkhaDesk.Tests", "tests\ShikkhaDesk.Tests\ShikkhaDesk.Tests.csproj", "{329AF171-0F8F-54CE-9B13-4FC786E14DC5}"
 EndProject
 Global
@@ -28,6 +30,10 @@ Global
 		{694E0F2E-8CAB-578F-8B78-AFF167650D34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{694E0F2E-8CAB-578F-8B78-AFF167650D34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{694E0F2E-8CAB-578F-8B78-AFF167650D34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78C47980-6725-5200-8141-9FC46E7F8D05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78C47980-6725-5200-8141-9FC46E7F8D05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78C47980-6725-5200-8141-9FC46E7F8D05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78C47980-6725-5200-8141-9FC46E7F8D05}.Release|Any CPU.Build.0 = Release|Any CPU
 		{329AF171-0F8F-54CE-9B13-4FC786E14DC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{329AF171-0F8F-54CE-9B13-4FC786E14DC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{329AF171-0F8F-54CE-9B13-4FC786E14DC5}.Release|Any CPU.ActiveCfg = Release|Any CPU

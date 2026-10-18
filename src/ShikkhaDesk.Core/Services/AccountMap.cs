@@ -31,6 +31,37 @@ public sealed class AccountMap
         _ => OtherIncome
     };
 
+    /// <summary>
+    /// Fills every unset account with the given placeholder so a single-purpose map (for example the
+    /// opening-balance entry, which only needs equity) can still pass validation.
+    /// </summary>
+    public AccountMap WithPlaceholders(Guid? placeholder = null)
+    {
+        Guid[] known =
+        [
+            StudentReceivables, StudentAdvanceCredit, TuitionIncome, AdmissionIncome, CourseIncome,
+            ExamIncome, OtherIncome, AccountsPayable, SalaryPayable, SalaryExpense,
+            BankChargeExpense, OpeningBalanceEquity
+        ];
+
+        Guid fill = placeholder ?? known.FirstOrDefault(id => id != Guid.Empty);
+        return new AccountMap
+        {
+            StudentReceivables = StudentReceivables == Guid.Empty ? fill : StudentReceivables,
+            StudentAdvanceCredit = StudentAdvanceCredit == Guid.Empty ? fill : StudentAdvanceCredit,
+            TuitionIncome = TuitionIncome == Guid.Empty ? fill : TuitionIncome,
+            AdmissionIncome = AdmissionIncome == Guid.Empty ? fill : AdmissionIncome,
+            CourseIncome = CourseIncome == Guid.Empty ? fill : CourseIncome,
+            ExamIncome = ExamIncome == Guid.Empty ? fill : ExamIncome,
+            OtherIncome = OtherIncome == Guid.Empty ? fill : OtherIncome,
+            AccountsPayable = AccountsPayable == Guid.Empty ? fill : AccountsPayable,
+            SalaryPayable = SalaryPayable == Guid.Empty ? fill : SalaryPayable,
+            SalaryExpense = SalaryExpense == Guid.Empty ? fill : SalaryExpense,
+            BankChargeExpense = BankChargeExpense == Guid.Empty ? fill : BankChargeExpense,
+            OpeningBalanceEquity = OpeningBalanceEquity == Guid.Empty ? fill : OpeningBalanceEquity
+        };
+    }
+
     public void Validate()
     {
         var required = new (string Name, Guid Value)[]

@@ -44,19 +44,24 @@ public sealed class SetupService : ISetupService
     private readonly ISystemRepository _system;
     private readonly ISecurityRepository _security;
     private readonly IAccountingRepository _accounting;
+    private readonly IAcademicRepository _academic;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IAuditService _audit;
     private readonly PasswordHasher _hasher;
+    private readonly IAccountingService _ledgerPosting;
 
     public SetupService(ISystemRepository system, ISecurityRepository security,
-        IAccountingRepository accounting, IUnitOfWork unitOfWork, IAuditService audit, PasswordHasher hasher)
+        IAccountingRepository accounting, IAcademicRepository academic, IUnitOfWork unitOfWork,
+        IAuditService audit, PasswordHasher hasher, IAccountingService ledgerPosting)
     {
         _system = system;
         _security = security;
         _accounting = accounting;
+        _academic = academic;
         _unitOfWork = unitOfWork;
         _audit = audit;
         _hasher = hasher;
+        _ledgerPosting = ledgerPosting;
     }
 
     public async Task<bool> IsInitializedAsync(CancellationToken ct = default)
@@ -156,6 +161,8 @@ public sealed class SetupService : ISetupService
                 CreatedAtUtc = DateTime.UtcNow
             };
 
+            await _academic.InsertSessionAsync(session, token).ConfigureAwait(false);
+
             await _system.SetSettingAsync("academic.sessionId", session.Id.ToString(), token)
                 .ConfigureAwait(false);
 
@@ -176,6 +183,19 @@ public sealed class SetupService : ISetupService
 
             await _accounting.InsertFinancialAccountAsync(cashAccount, token).ConfigureAwait(false);
 
+            // Opening balances are recognised once, against opening capital, so the ledger and the
+            // cash/bank sub-accounts agree from the first day.
+            if (request.OpeningCashBalance != Money.Zero)
+            {
+                AccountMap map = await _ledgerPosting.GetAccountMapAsync(token).ConfigureAwait(false);
+
+                JournalDraft opening = JournalBuilder.ForOpeningBalance(
+                    cashAccount.Id, request.SessionStart.Date, request.OpeningCashBalance,
+                    cashLedger.Id, cashAccount.Name, map);
+
+                await _ledgerPosting.PostAsync(opening, token).ConfigureAwait(false);
+            }
+
             await _system.SetSettingAsync("receipt.prefix",
                 string.IsNullOrWhiteSpace(request.ReceiptPrefix) ? "RCP" : request.ReceiptPrefix.Trim(), token)
                 .ConfigureAwait(false);
@@ -192,7 +212,6 @@ public sealed class SetupService : ISetupService
             await _audit.RecordAsync("setup.complete", nameof(Institution), institution.Id,
                 $"{institution.Name} সেটআপ সম্পন্ন", ct: token).ConfigureAwait(false);
 
-            _ = session;
             return institution.Id;
         }, ct).ConfigureAwait(false);
     }

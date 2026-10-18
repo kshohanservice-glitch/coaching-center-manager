@@ -210,18 +210,40 @@ public sealed class AllocationAndJournalTests
     }
 
     [Fact]
-    public void Refund_of_allocated_money_reverses_income_not_an_expense()
+    public void Refund_of_allocated_money_restores_the_receivable_and_is_never_an_expense()
     {
         AccountMap map = Map();
         Guid cash = Guid.NewGuid();
 
         JournalDraft draft = JournalBuilder.ForRefund(Guid.NewGuid(), "RFN-1", Today, Guid.NewGuid(),
-            Money.FromDecimal(1000), Money.FromDecimal(0), Money.FromDecimal(1000), cash, Guid.NewGuid(),
-            map.TuitionIncome, map);
+            Money.FromDecimal(1000), Money.Zero, Money.FromDecimal(1000), cash, Guid.NewGuid(),
+            map.StudentReceivables, map);
 
         draft.Validate();
-        Assert.Contains(draft.Lines, l => l.AccountId == map.TuitionIncome && l.Debit == Money.FromDecimal(1000));
+        Assert.Contains(draft.Lines,
+            l => l.AccountId == map.StudentReceivables && l.Debit == Money.FromDecimal(1000));
+        // A refund never creates an expense and never touches income: the fee is simply owed again.
         Assert.DoesNotContain(draft.Lines, l => l.AccountId == map.SalaryExpense);
+        Assert.DoesNotContain(draft.Lines, l => l.AccountId == map.TuitionIncome);
+    }
+
+    [Fact]
+    public void Refund_can_split_between_credit_and_allocated_money()
+    {
+        AccountMap map = Map();
+        Guid cash = Guid.NewGuid();
+
+        JournalDraft draft = JournalBuilder.ForRefund(Guid.NewGuid(), "RFN-3", Today, Guid.NewGuid(),
+            Money.FromDecimal(1500), Money.FromDecimal(600), Money.FromDecimal(900), cash, Guid.NewGuid(),
+            map.StudentReceivables, map);
+
+        draft.Validate();
+        Assert.Equal(Money.FromDecimal(1500), draft.TotalDebit);
+        Assert.Equal(Money.FromDecimal(1500), draft.TotalCredit);
+        Assert.Contains(draft.Lines,
+            l => l.AccountId == map.StudentAdvanceCredit && l.Debit == Money.FromDecimal(600));
+        Assert.Contains(draft.Lines,
+            l => l.AccountId == map.StudentReceivables && l.Debit == Money.FromDecimal(900));
     }
 
     [Fact]
@@ -232,7 +254,7 @@ public sealed class AllocationAndJournalTests
 
         JournalDraft draft = JournalBuilder.ForRefund(Guid.NewGuid(), "RFN-2", Today, Guid.NewGuid(),
             Money.FromDecimal(1000), Money.FromDecimal(1000), Money.Zero, cash, Guid.NewGuid(),
-            map.TuitionIncome, map);
+            map.StudentReceivables, map);
 
         draft.Validate();
         Assert.Contains(draft.Lines,
