@@ -1,12 +1,14 @@
   ShikkhaDesk.Core -> D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Core\bin\Release\net8.0\ShikkhaDesk.Core.dll
 D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Application\Services\FeeService.cs(54,34): error CS0535: 'FeeService' does not implement interface member 'IFeeService.GetFeePlansAsync(CancellationToken)' [D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Application\ShikkhaDesk.Application.csproj]
 D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Application\Services\FeeService.cs(54,34): error CS0535: 'FeeService' does not implement interface member 'IFeeService.GetFeePlanItemsAsync(Guid, CancellationToken)' [D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Application\ShikkhaDesk.Application.csproj]
+D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Application\Services\ReportingService.cs(46,40): error CS0535: 'ReportingService' does not implement interface member 'IReportingService.GetPayrollForPeriodAsync(string, CancellationToken)' [D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Application\ShikkhaDesk.Application.csproj]
 
 Build FAILED.
 
 D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Application\Services\FeeService.cs(54,34): error CS0535: 'FeeService' does not implement interface member 'IFeeService.GetFeePlansAsync(CancellationToken)' [D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Application\ShikkhaDesk.Application.csproj]
 D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Application\Services\FeeService.cs(54,34): error CS0535: 'FeeService' does not implement interface member 'IFeeService.GetFeePlanItemsAsync(Guid, CancellationToken)' [D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Application\ShikkhaDesk.Application.csproj]
+D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Application\Services\ReportingService.cs(46,40): error CS0535: 'ReportingService' does not implement interface member 'IReportingService.GetPayrollForPeriodAsync(string, CancellationToken)' [D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Application\ShikkhaDesk.Application.csproj]
     0 Warning(s)
-    2 Error(s)
+    3 Error(s)
 
-Time Elapsed 00:00:10.18
+Time Elapsed 00:00:10.20
