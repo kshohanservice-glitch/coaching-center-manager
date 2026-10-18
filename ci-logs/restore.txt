@@ -1,6 +1,11 @@
   Determining projects to restore...
-  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Application\ShikkhaDesk.Application.csproj (in 188 ms).
-  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Core\ShikkhaDesk.Core.csproj (in 186 ms).
-  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Infrastructure\ShikkhaDesk.Infrastructure.csproj (in 6.56 sec).
-  Restored D:\a\coaching-center-manager\coaching-center-manager\tests\ShikkhaDesk.IntegrationTests\ShikkhaDesk.IntegrationTests.csproj (in 7.09 sec).
-  Restored D:\a\coaching-center-manager\coaching-center-manager\tests\ShikkhaDesk.Tests\ShikkhaDesk.Tests.csproj (in 7.54 sec).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Application\ShikkhaDesk.Application.csproj (in 257 ms).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Lan.Server\ShikkhaDesk.Lan.Server.csproj (in 8.46 sec).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Wpf\ShikkhaDesk.Wpf.csproj (in 8.89 sec).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Lan.Client\ShikkhaDesk.Lan.Client.csproj (in 3 ms).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Core\ShikkhaDesk.Core.csproj (in 1 ms).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Infrastructure\ShikkhaDesk.Infrastructure.csproj (in 11 ms).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Lan.Contracts\ShikkhaDesk.Lan.Contracts.csproj (in 1 ms).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\tests\ShikkhaDesk.Tests\ShikkhaDesk.Tests.csproj (in 11.49 sec).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\tests\ShikkhaDesk.IntegrationTests\ShikkhaDesk.IntegrationTests.csproj (in 11.49 sec).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Lan.Host\ShikkhaDesk.Lan.Host.csproj (in 7.18 sec).
