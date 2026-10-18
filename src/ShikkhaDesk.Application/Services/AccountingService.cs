@@ -125,7 +125,7 @@ public sealed class AccountingService : IAccountingService
     public Task<Guid> ReverseJournalAsync(Guid journalEntryId, string reason, CancellationToken ct = default) =>
         _unitOfWork.ExecuteInTransactionAsync(async token =>
         {
-            _currentUser.Current.Require(PermissionCodes.Reverse);
+            _currentUser.Current.Require("accounting.reverse");
             if (string.IsNullOrWhiteSpace(reason))
             {
                 throw new ValidationException("বাতিলের কারণ উল্লেখ করা আবশ্যক।");
@@ -162,7 +162,7 @@ public sealed class AccountingService : IAccountingService
     public Task<IReadOnlyList<TrialBalanceRow>> GetTrialBalanceAsync(DateRange range,
         CancellationToken ct = default)
     {
-        _currentUser.Current.Require(PermissionCodes.View);
+        _currentUser.Current.Require("accounting.view");
         return _unitOfWork.ExecuteAsync(token => _accounting.GetTrialBalanceAsync(range, token), ct);
     }
 

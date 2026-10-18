@@ -126,6 +126,10 @@ jobs:
             "ERROR_COUNT=$($errors.Count)" | Out-File -Append $log -Encoding utf8
             $errors | Select-Object -First 200 | ForEach-Object { $_ } | Out-File -Append $log -Encoding utf8
           }
+          "=== installer ===" | Out-File -Append $log -Encoding utf8
+          if (Test-Path ci-logs/installer.txt) {
+            Get-Content ci-logs/installer.txt | Select-Object -First 60 | Out-File -Append $log -Encoding utf8
+          } else { "no installer log" | Out-File -Append $log -Encoding utf8 }
           "=== warnings (first 20) ===" | Out-File -Append $log -Encoding utf8
           if (Test-Path ci-logs/compile.txt) {
             Select-String -Path ci-logs/compile.txt -Pattern ": warning " | Select-Object -First 20 |
@@ -136,7 +140,7 @@ jobs:
             "--- $($_.Name) ---" | Out-File -Append $log -Encoding utf8
             $lines = Get-Content $_.FullName
             "LINES=$($lines.Count)" | Out-File -Append $log -Encoding utf8
-            ($lines | Select-String -Pattern "Failed|Passed!|Total tests|error |Assert|Expected|Actual|Error Message|Stack Trace|at ShikkhaDesk|MSB|not found|No test") |
+            ($lines | Select-String -Pattern "Failed |Passed |Error Message|Total tests|^\s{3}\S|Assert|Expected:|Actual:|at ShikkhaDesk") |
               Select-Object -First 80 | ForEach-Object { $_.Line } | Out-File -Append $log -Encoding utf8
           }
           Get-Content $log | Write-Host
