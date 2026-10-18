@@ -220,3 +220,65 @@ been executed. Gate 0 and item 1.1 are the only gates that have been attempted.
   data kept, reinstall and reopen the existing centre (Gate 1, items 1.2–1.10).
 - Launch the application and walk all 42 navigation targets with real data (Gate 2).
 - Clear the outstanding warnings (O-12).
+---
+
+## 2026-10-19 (later) — Backup and restore, and a workflow that could report a false green
+
+### A workflow that reported success while tests were red
+
+`TEST_EXIT(...)` was only ever *written to the log* — no step failed the job on it. Run
+39171789116 finished `completed success` with four failing tests. The workflow now throws when any
+test suite exits non-zero, and likewise when Inno Setup fails. This mattered more than any single
+test: a green run has to mean green.
+
+### Backup and restore: six new integration tests
+
+`tests/ShikkhaDesk.IntegrationTests/BackupAndRestoreTests.cs` exercises the real service against a
+real database — a backup is created, verified and hashed; more business is posted; the backup is
+restored and the trial balance, the outstanding dues and the cash balance must return to exactly
+their previous values; a corrupt file and a missing file are both refused without touching live
+data; two backups taken inside one second must be two files; and retention keeps the newest while
+refusing to delete the last.
+
+Four real defects surfaced while writing them:
+
+1. **A restore replaced the database and changed nothing.** `SqliteConnectionFactory.Recycle`
+   disposed the connection, but Microsoft.Data.Sqlite pools connections, so the handle stayed open
+   and the post-restore `Connection` was served the *previous* content from the pool. Fixed with
+   `SqliteConnection.ClearPool` in `Recycle`. This was a silent data-integrity failure: the service
+   reported success.
+2. **A backup could not even be hashed** — `IOException: The process cannot access the file ...`
+   from `ComputeSha256Async`, because the destination connection's pooled handle still held the
+   file it had just written. Both backup connections now clear their pool before disposal.
+3. **Two backups in one second overwrote each other** — the file name was stamped to the second and
+   reused if it existed, so two history records pointed at one file and the first record's
+   integrity hash described a file that had already been replaced. The name never reuses an
+   existing file now.
+4. **Choosing a corrupt backup threw at the user** — `SqliteException: file is not a database`
+   instead of the Bengali refusal, because `RestoreAsync` called the consistency check unguarded.
+
+One test expectation was wrong and was corrected: the trial balance's debit *total* is invariant
+under ordinary business (money moving between two accounts leaves it unchanged), so it cannot be
+used to prove the ledger moved. The test follows the cash balance instead.
+
+### Result
+
+CI run **39172951164** — the first run with the honest failure signal in place — is green:
+
+    TEST_EXIT(ShikkhaDesk.IntegrationTests)=0   TEST_EXIT(ShikkhaDesk.Tests)=0
+    ISCC_EXIT=0  SETUP_BYTES=50646461  ERROR_COUNT=0
+
+40/40 integration tests (up from 34) and 47/47 unit tests.
+
+`docs/KNOWN-ISSUES.md` O-7 moves from **Open** to **Mitigated**: the service is covered end to end,
+but no working centre's own backup has been restored and no printed trial balance compared.
+
+---
+
+## Next
+
+- Run the installer on a Windows machine: install, launch, reach the setup wizard, uninstall with
+  data kept, reinstall and reopen the existing centre (Gate 1, items 1.2–1.10).
+- Launch the application and walk all 42 navigation targets with real data (Gate 2).
+- Rehearse a restore with a working centre's data and compare printed trial balances (O-7).
+- Clear the outstanding warnings (O-12).

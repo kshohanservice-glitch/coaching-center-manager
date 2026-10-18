@@ -90,10 +90,22 @@ verify Bengali glyphs, and record the fallback font behaviour.
 
 ---
 
-## O-7 — Restore has never been exercised against real data. **Open** · **High**
+## O-7 — Restore is covered by tests but has never been run on a working centre's data. **Mitigated** · **High**
 
-`IBackupService.CreateBackupAsync` / `VerifyBackupAsync` / `RestoreAsync` are covered by service
-tests on synthetic data. No backup taken from a working centre has ever been restored.
+`BackupAndRestoreTests` (6 tests, CI run 39172951164) exercises the real service against a real
+database: a backup is taken, verified and hashed; more business is posted; the backup is restored
+and the trial balance, the outstanding dues and the cash balance are required to return to exactly
+their previous values; a corrupt file and a missing file are both refused without touching live
+data; two backups taken in the same second are two files; and retention keeps the newest while
+refusing to delete the last.
+
+Four defects were found while writing those tests and are fixed: a restore replaced the database
+file but the pooled connection kept serving the old content; a backup could not be hashed because
+the pooled handle still held the file; two backups inside one second overwrote each other; and
+choosing a corrupt backup threw a raw `SqliteException` at the user instead of a Bengali refusal.
+
+**What is still open:** no backup taken from a working centre has ever been restored, and no
+printed trial balance has been compared before and after.
 
 A restore that silently produces a half-migrated database is worse than no restore at all.
 

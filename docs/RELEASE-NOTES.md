@@ -35,10 +35,12 @@ choice, Bangladeshi date and currency conventions, no internet required at any p
 |---|---|
 | The solution restores, builds and publishes on Windows with zero compile errors | CI run 39170877474, `RESTORE_EXIT=0 BUILD_EXIT=0 PUBLISH_EXIT=0 ERROR_COUNT=0` |
 | 47 unit tests pass | `TEST_EXIT(ShikkhaDesk.Tests)=0` |
-| 34 integration tests pass against a real SQLite database | `TEST_EXIT(ShikkhaDesk.IntegrationTests)=0` |
+| 40 integration tests pass against a real SQLite database | `TEST_EXIT(ShikkhaDesk.IntegrationTests)=0` |
 | Migrations apply from nothing, and are idempotent across restarts | `Migrations_apply_and_are_recorded`, `Migrations_are_idempotent_across_restarts` |
 | The ledger balances after a full working day | `All_reconciliation_checks_pass_on_a_realistic_day` — all eight checks |
 | Money never loses or creates a paisa | `MoneyTests`, `AllocationAndJournalTests` |
+| A backup restores the ledger to exactly what it was | `BackupAndRestoreTests` — trial balance, dues and cash compared to the poisa |
+| A red test suite fails the build | the workflow throws when any suite exits non-zero |
 | Permissions are enforced in the service layer, not in the UI | `Permissions_are_enforced_in_the_service_layer` |
 | The installer compiles | `ISCC_EXIT=0`, `SETUP_BYTES=50653312` |
 
@@ -97,7 +99,9 @@ Read these before deciding this build is right for a centre.
 4. **LAN mode is untested between two machines.** The host and client compile and share the same
    services the tests exercise, but no request has crossed a real network.
 5. **Print output is untested on hardware.** The XPS path exists; no page has come out of a printer.
-6. **Backup and restore are untested on real data.**
+6. **Backup and restore are tested, but never on a working centre's own data.** The service is
+   covered end to end against a real database, including a full restore-and-compare, but no
+   customer's backup has been restored and no printed trial balance has been compared.
 7. **Compiler warnings remain**, chiefly `xUnit1031` in the integration tests and one `CS8601`
    nullable warning in `LicenseService`. They do not fail the build.
 8. **No performance testing above a few hundred rows.**
