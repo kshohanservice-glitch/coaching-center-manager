@@ -221,6 +221,21 @@ public sealed class ReportingService : IReportingService
         return _unitOfWork.ExecuteAsync(token => _accountingRepository.GetPayablesAsync(status, token), ct);
     }
 
+    public async Task<IReadOnlyList<PayrollRow>> GetPayrollForPeriodAsync(string periodKey,
+        CancellationToken ct = default)
+    {
+        _currentUser.Current.Require("payroll.view");
+
+        return await _unitOfWork.ExecuteAsync(async token =>
+        {
+            PayrollPeriod? period = await _accountingRepository.GetPayrollPeriodAsync(periodKey, token)
+                .ConfigureAwait(false);
+            return period is null
+                ? Array.Empty<PayrollRow>()
+                : await _accountingRepository.GetPayrollRowsAsync(period.Id, token).ConfigureAwait(false);
+        }, ct).ConfigureAwait(false);
+    }
+
     public Task<IReadOnlyList<PayrollRow>> GetPayrollAsync(Guid periodId, CancellationToken ct = default)
     {
         _currentUser.Current.Require("payroll.view");

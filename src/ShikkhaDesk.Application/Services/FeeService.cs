@@ -347,9 +347,24 @@ public sealed class FeeService : IFeeService
     }
 
     public Task<IReadOnlyList<FeeCharge>> GetOutstandingChargesAsync(Guid? batchId = null, Guid? studentId = null,
-        DateTime? asOf = null, CancellationToken ct = default) =>
-        _unitOfWork.ExecuteAsync(
+        DateTime? asOf = null, CancellationToken ct = default)
+    {
+        _currentUser.Current.Require("fees.view");
+        return _unitOfWork.ExecuteAsync(
             token => _fees.GetOutstandingChargesAsync(batchId, studentId, asOf, token), ct);
+    }
+
+    public Task<IReadOnlyList<FeePlan>> GetFeePlansAsync(CancellationToken ct = default)
+    {
+        _currentUser.Current.Require("fees.view");
+        return _unitOfWork.ExecuteAsync(token => _fees.GetFeePlansAsync(token), ct);
+    }
+
+    public Task<IReadOnlyList<FeePlanItem>> GetFeePlanItemsAsync(Guid feePlanId, CancellationToken ct = default)
+    {
+        _currentUser.Current.Require("fees.view");
+        return _unitOfWork.ExecuteAsync(token => _fees.GetFeePlanItemsAsync(feePlanId, token), ct);
+    }
 
     private async Task<FeePlan?> ResolveDefaultPlanAsync(Guid batchId, CancellationToken ct)
     {
