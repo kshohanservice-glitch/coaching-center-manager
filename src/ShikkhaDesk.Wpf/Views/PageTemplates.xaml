@@ -1,6 +1,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:vm="clr-namespace:ShikkhaDesk.Wpf.ViewModels"
+                    xmlns:infra="clr-namespace:ShikkhaDesk.Wpf.Infrastructure"
                     xmlns:views="clr-namespace:ShikkhaDesk.Wpf.Views">
 
     <!-- One template per page. A page that is not listed here would render blank, so adding a
@@ -177,7 +178,7 @@
         <views:TransfersView />
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type vm:ErrorPageViewModel}">
+    <DataTemplate DataType="{x:Type infra:ErrorPageViewModel}">
         <views:ErrorPageView />
     </DataTemplate>
 </ResourceDictionary>

@@ -62,7 +62,7 @@ def main() -> int:
 
     templates = read(VIEWS / "PageTemplates.xaml")
     for vm_name, view_name in re.findall(
-        r'DataType="\{x:Type vm:(\w+)\}"[\s\S]{0,120}?<views:(\w+)\s*/>', templates
+        r'DataType="\{x:Type (?:vm|infra):(\w+)\}"[\s\S]{0,120}?<views:(\w+)\s*/>', templates
     ):
         if vm_name not in view_model_classes:
             problems.append(f"page template names {vm_name}, which is not a view model class")
