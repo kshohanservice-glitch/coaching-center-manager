@@ -2,11 +2,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("9A19103F-16F7-4668-BE54-9A1E7A4F7556") = "ShikkhaDesk.Core", "src\ShikkhaDesk.Core\ShikkhaDesk.Core.csproj", "{78C34627-9E48-58C4-B0A5-021BEFE2BDA8}"
+Project("9A19103F-16F7-4668-BE54-9A1E7A4F7556") = "ShikkhaDesk.Application", "src\ShikkhaDesk.Application\ShikkhaDesk.Application.csproj", "{BF72579E-4E3E-5727-ADFC-8E40C26AE538}"
 EndProject
-Project("9A19103F-16F7-4668-BE54-9A1E7A4F7556") = "ShikkhaDesk.Application", "src\ShikkhaDesk.Application\ShikkhaDesk.Application.csproj", "{87CCB903-D9FD-5136-8AEF-3380C6C8AA66}"
+Project("9A19103F-16F7-4668-BE54-9A1E7A4F7556") = "ShikkhaDesk.Core", "src\ShikkhaDesk.Core\ShikkhaDesk.Core.csproj", "{98BCF2FA-6A59-59F3-9A11-A997C37D74AB}"
 EndProject
-Project("9A19103F-16F7-4668-BE54-9A1E7A4F7556") = "ShikkhaDesk.Infrastructure", "src\ShikkhaDesk.Infrastructure\ShikkhaDesk.Infrastructure.csproj", "{64A0E9CA-6837-5C33-AA5E-49DC554C4FF6}"
+Project("9A19103F-16F7-4668-BE54-9A1E7A4F7556") = "ShikkhaDesk.Infrastructure", "src\ShikkhaDesk.Infrastructure\ShikkhaDesk.Infrastructure.csproj", "{694E0F2E-8CAB-578F-8B78-AFF167650D34}"
+EndProject
+Project("9A19103F-16F7-4668-BE54-9A1E7A4F7556") = "ShikkhaDesk.Tests", "tests\ShikkhaDesk.Tests\ShikkhaDesk.Tests.csproj", "{329AF171-0F8F-54CE-9B13-4FC786E14DC5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,23 +16,27 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{78C34627-9E48-58C4-B0A5-021BEFE2BDA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{78C34627-9E48-58C4-B0A5-021BEFE2BDA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{78C34627-9E48-58C4-B0A5-021BEFE2BDA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{78C34627-9E48-58C4-B0A5-021BEFE2BDA8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{87CCB903-D9FD-5136-8AEF-3380C6C8AA66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{87CCB903-D9FD-5136-8AEF-3380C6C8AA66}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{87CCB903-D9FD-5136-8AEF-3380C6C8AA66}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{87CCB903-D9FD-5136-8AEF-3380C6C8AA66}.Release|Any CPU.Build.0 = Release|Any CPU
-		{64A0E9CA-6837-5C33-AA5E-49DC554C4FF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{64A0E9CA-6837-5C33-AA5E-49DC554C4FF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{64A0E9CA-6837-5C33-AA5E-49DC554C4FF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{64A0E9CA-6837-5C33-AA5E-49DC554C4FF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF72579E-4E3E-5727-ADFC-8E40C26AE538}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF72579E-4E3E-5727-ADFC-8E40C26AE538}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF72579E-4E3E-5727-ADFC-8E40C26AE538}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF72579E-4E3E-5727-ADFC-8E40C26AE538}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98BCF2FA-6A59-59F3-9A11-A997C37D74AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98BCF2FA-6A59-59F3-9A11-A997C37D74AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98BCF2FA-6A59-59F3-9A11-A997C37D74AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98BCF2FA-6A59-59F3-9A11-A997C37D74AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{694E0F2E-8CAB-578F-8B78-AFF167650D34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{694E0F2E-8CAB-578F-8B78-AFF167650D34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{694E0F2E-8CAB-578F-8B78-AFF167650D34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{694E0F2E-8CAB-578F-8B78-AFF167650D34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{329AF171-0F8F-54CE-9B13-4FC786E14DC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{329AF171-0F8F-54CE-9B13-4FC786E14DC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{329AF171-0F8F-54CE-9B13-4FC786E14DC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{329AF171-0F8F-54CE-9B13-4FC786E14DC5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {5EB5EA53-0E8D-457A-9426-AE3150D365AA}
+		SolutionGuid = {BA2C3BE6-E767-5E40-ADC8-B03AF823CB13}
 	EndGlobalSection
 EndGlobal
