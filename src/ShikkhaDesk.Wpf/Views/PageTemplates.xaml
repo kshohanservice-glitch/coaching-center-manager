@@ -97,7 +97,7 @@
         <views:LedgerView />
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type vm:TransfersViewModel}">
+    <DataTemplate DataType="{x:Type vm:TransferViewModel}">
         <views:TransfersView />
     </DataTemplate>
 
