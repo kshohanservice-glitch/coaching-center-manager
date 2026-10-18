@@ -85,11 +85,21 @@ public sealed class SqliteConnectionFactory : IDisposable
 
         try
         {
-            _connection.Dispose();
+            // Dispose alone returns the handle to Microsoft.Data.Sqlite's pool, which keeps the
+            // database file open. A restore that then replaces the file reopens through that same
+            // pooled handle and reads the old content back, so the restore silently does nothing.
+            SqliteConnection.ClearPool(_connection);
         }
         finally
         {
-            _connection = null;
+            try
+            {
+                _connection.Dispose();
+            }
+            finally
+            {
+                _connection = null;
+            }
         }
     }
 
