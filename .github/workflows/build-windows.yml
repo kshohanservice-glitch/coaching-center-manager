@@ -128,7 +128,11 @@ jobs:
           }
           "=== installer ===" | Out-File -Append $log -Encoding utf8
           if (Test-Path ci-logs/installer.txt) {
-            Get-Content ci-logs/installer.txt | Select-Object -First 60 | Out-File -Append $log -Encoding utf8
+            $installer = Get-Content ci-logs/installer.txt
+            ($installer | Select-String -Pattern "rror|arning") | Select-Object -First 20 |
+              ForEach-Object { $_.Line } | Out-File -Append $log -Encoding utf8
+            "--- last 25 lines ---" | Out-File -Append $log -Encoding utf8
+            $installer | Select-Object -Last 25 | Out-File -Append $log -Encoding utf8
           } else { "no installer log" | Out-File -Append $log -Encoding utf8 }
           "=== warnings (first 20) ===" | Out-File -Append $log -Encoding utf8
           if (Test-Path ci-logs/compile.txt) {
