@@ -81,7 +81,7 @@ public sealed class LicenseService : ILicenseService
             VersionEntitlement = license.VersionEntitlement,
             IssuedAtUtc = license.IssuedAtUtc,
             ExpiresAtUtc = license.ExpiresAtUtc,
-            IssuedTo = license.IssuedTo,
+            IssuedTo = license.IssuedTo ?? string.Empty,
             Signature = license.Signature,
             PublicKeyId = license.PublicKeyId
         };

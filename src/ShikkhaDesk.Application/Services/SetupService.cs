@@ -138,7 +138,7 @@ public sealed class SetupService : ISetupService
             Role? adminRole = await _security.GetRoleByNameAsync("Admin", token).ConfigureAwait(false)
                 ?? throw new DomainException("প্রশাসক ভূমিকা তৈরি করা যায়নি।");
 
-            (string hash, string salt) = _hasher.Hash(request.AdminPassword);
+            (string hash, string salt) = _hasher.Hash(request.AdminPassword ?? string.Empty);
 
             var admin = new User
             {

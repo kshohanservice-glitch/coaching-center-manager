@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ShikkhaDesk.Application.Services;
@@ -25,7 +26,7 @@ public static class LanHostApplication
 
         builder.Logging.ClearProviders();
         builder.Logging.AddProvider(new ShikkhaDeskLanLoggerProvider(loggerFactory));
-        builder.WebHost.UseKestrel(kestrel =>
+        builder.WebHost.ConfigureKestrel(kestrel =>
         {
             if (string.IsNullOrWhiteSpace(options.BindAddress))
             {

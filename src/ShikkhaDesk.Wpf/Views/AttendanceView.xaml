@@ -41,7 +41,7 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="কোড" Binding="{Binding Code}" Width="120" IsReadOnly="True" />
                         <DataGridTextColumn Header="নাম" Binding="{Binding Name}" Width="*" IsReadOnly="True" />
-                        <DataGridComboBoxColumn Header="অবস্থা" SelectedIndexBinding="{Binding StatusIndex}"
+                        <DataGridComboBoxColumn Header="অবস্থা" SelectedItemBinding="{Binding StatusLabel}"
                                                 Width="180">
                             <DataGridComboBoxColumn.ItemsSource>
                                 <x:Array Type="sys:String" xmlns:sys="clr-namespace:System;assembly=mscorlib">

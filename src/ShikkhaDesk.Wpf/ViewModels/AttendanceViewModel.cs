@@ -17,6 +17,23 @@ public sealed class AttendanceRow
 
     public string? Note { get; set; }
 
+    /// <summary>The four labels a teacher can choose, in the order of <see cref="StatusIndex"/>.</summary>
+    public static readonly string[] StatusLabels = ["উপস্থিত", "অনুপস্থিত", "দেরি", "ছুটি"];
+
+    /// <summary>
+    /// The combo box in the grid binds to the label, not the index, because a DataGrid column has no
+    /// index binding. The setter keeps <see cref="StatusIndex"/> as the value that is actually saved.
+    /// </summary>
+    public string StatusLabel
+    {
+        get => StatusLabels[Math.Clamp(StatusIndex, 0, StatusLabels.Length - 1)];
+        set
+        {
+            int index = Array.IndexOf(StatusLabels, value);
+            StatusIndex = index < 0 ? 0 : index;
+        }
+    }
+
     public static AttendanceStatus ToStatus(int index) => index switch
     {
         1 => AttendanceStatus.Absent,

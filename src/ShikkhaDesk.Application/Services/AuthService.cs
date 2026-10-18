@@ -118,7 +118,7 @@ public sealed class AuthService : IAuthService
                 throw new AuthorizationException("বর্তমান পাসওয়ার্ড সঠিক নয়।");
             }
 
-            (string hash, string salt) = _hasher.Hash(newPassword);
+            (string hash, string salt) = _hasher.Hash(newPassword ?? string.Empty);
             user.PasswordHash = hash;
             user.PasswordSalt = salt;
             user.MustChangePassword = false;

@@ -79,7 +79,7 @@ public sealed class UserService : IUserService
                 throw new DomainException("এই ব্যবহারকারী নাম ইতিমধ্যে ব্যবহৃত হয়েছে।");
             }
 
-            (string hash, string salt) = _hasher.Hash(password);
+            (string hash, string salt) = _hasher.Hash(password ?? string.Empty);
 
             var user = new User
             {
@@ -146,7 +146,7 @@ public sealed class UserService : IUserService
             User? user = await _security.GetUserAsync(userId, token).ConfigureAwait(false)
                 ?? throw new NotFoundException("ব্যবহারকারী পাওয়া যায়নি।");
 
-            (string hash, string salt) = _hasher.Hash(newPassword);
+            (string hash, string salt) = _hasher.Hash(newPassword ?? string.Empty);
             user.PasswordHash = hash;
             user.PasswordSalt = salt;
             user.MustChangePassword = mustChange;
