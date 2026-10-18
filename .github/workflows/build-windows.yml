@@ -1,0 +1,25 @@
+name: windows-build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ '**' ]
+
+jobs:
+  environment-probe:
+    name: Environment probe (windows-latest)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Report toolchain
+        shell: pwsh
+        run: |
+          Write-Host "=== OS ==="
+          [System.Environment]::OSVersion.VersionString
+          Write-Host "=== dotnet SDKs ==="
+          dotnet --list-sdks
+          Write-Host "=== Inno Setup ==="
+          $p = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+          if (Test-Path $p) { Write-Host "ISCC found: $p" } else { Write-Host "ISCC NOT at default path"; Get-ChildItem "C:\Program Files (x86)\Inno Setup*" -ErrorAction SilentlyContinue | Out-String }
+          Write-Host "=== git ==="
+          git --version
