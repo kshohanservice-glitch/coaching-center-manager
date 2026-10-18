@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using ShikkhaDesk.Core;
 using ShikkhaDesk.Core.Security;
+using ShikkhaDesk.Core.Entities;
 using ShikkhaDesk.Core.Services;
 using ShikkhaDesk.Infrastructure.Security;
 using Xunit;

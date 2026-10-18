@@ -10,13 +10,13 @@ namespace ShikkhaDesk.Lan.Server;
 /// </summary>
 public sealed class LanSessionContext : ICurrentUserService
 {
-    private static readonly AsyncLocal<Principal?> Current = new();
+    private static readonly AsyncLocal<Principal?> Slot = new();
 
-    public Principal Principal => Current.Value ?? Principal.Anonymous;
+    public Principal Current => Slot.Value ?? Principal.Anonymous;
 
     public bool IsAuthenticated => Principal.UserId != Guid.Empty;
 
-    public void SignIn(Principal principal) => Current.Value = principal;
+    public void SignIn(Principal principal) => Slot.Value = principal;
 
-    public void SignOut() => Current.Value = null;
+    public void SignOut() => Slot.Value = null;
 }

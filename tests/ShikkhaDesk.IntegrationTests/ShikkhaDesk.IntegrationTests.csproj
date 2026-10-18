@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\ShikkhaDesk.Core\ShikkhaDesk.Core.csproj" />
+    <ProjectReference Include="..\..\src\ShikkhaDesk.Application\ShikkhaDesk.Application.csproj" />
     <ProjectReference Include="..\..\src\ShikkhaDesk.Infrastructure\ShikkhaDesk.Infrastructure.csproj" />
   </ItemGroup>
 </Project>
