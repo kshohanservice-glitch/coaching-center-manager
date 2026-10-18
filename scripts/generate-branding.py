@@ -154,6 +154,7 @@ def build_ico(images: list[tuple[int, Image.Image]], path: Path) -> None:
 
 
 def make_banner(width: int, height: int, path: Path) -> None:
+    """Inno Setup wizard image; saved as 24-bit BMP when the path ends in .bmp."""
     """Inno Setup wizard image: brand gradient with the mark and product name."""
     image = Image.new("RGBA", (width, height), NAVY)
     draw = ImageDraw.Draw(image)
@@ -176,7 +177,10 @@ def make_banner(width: int, height: int, path: Path) -> None:
         [width * 0.12, height * 0.70, width * 0.88, height * 0.735],
         radius=height * 0.02, fill=TEAL)
 
-    image.save(path, format="PNG")
+    if path.suffix.lower() == ".bmp":
+        image.convert("RGB").save(path, format="BMP")
+    else:
+        image.save(path, format="PNG")
 
 
 def make_preview_sheet(path: Path) -> None:
@@ -244,8 +248,12 @@ def main() -> None:
 
     installer = ROOT / "installer" / "windows"
     installer.mkdir(parents=True, exist_ok=True)
-    make_banner(164, 314, installer / "wizard-image.bmp".replace(".bmp", ".png"))
+    # Inno Setup's WizardImageFile / WizardSmallImageFile are BMP-only, so the installer ships the
+    # 24-bit BMPs; the PNGs are kept alongside for the docs site and the store listing.
+    make_banner(164, 314, installer / "wizard-image.png")
+    make_banner(164, 314, installer / "wizard-image.bmp")
     make_banner(55, 58, installer / "wizard-small-image.png")
+    make_banner(55, 58, installer / "wizard-small-image.bmp")
 
     (BRAND / "preview").mkdir(exist_ok=True)
     make_preview_sheet(BRAND / "preview" / "branding-preview.png")

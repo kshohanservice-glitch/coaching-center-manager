@@ -336,25 +336,25 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
     public async Task<IReadOnlyList<Supplier>> GetSuppliersAsync(CancellationToken ct = default) =>
         (await QueryAsync<Supplier>(
             @"SELECT id, code, name, contact_person, phone, email, address, notes, opening_balance, is_active,
-                     created_at_utc FROM suppliers ORDER BY name;", null, ct).ConfigureAwait(false)).ToList();
+                     created_at_utc, updated_at_utc FROM suppliers ORDER BY name;", null, ct).ConfigureAwait(false)).ToList();
 
     public Task<Supplier?> GetSupplierAsync(Guid id, CancellationToken ct = default) =>
         QueryFirstOrDefaultAsync<Supplier>(
             @"SELECT id, code, name, contact_person, phone, email, address, notes, opening_balance, is_active,
-                     created_at_utc FROM suppliers WHERE id = @Id;", new { Id = id }, ct);
+                     created_at_utc, updated_at_utc FROM suppliers WHERE id = @Id;", new { Id = id }, ct);
 
     public Task InsertSupplierAsync(Supplier supplier, CancellationToken ct = default) =>
         ExecuteAsync(@"
             INSERT INTO suppliers (id, code, name, contact_person, phone, email, address, notes, opening_balance,
-                                   is_active, created_at_utc)
+                                   is_active, created_at_utc, updated_at_utc)
             VALUES (@Id, @Code, @Name, @ContactPerson, @Phone, @Email, @Address, @Notes, @OpeningBalance,
-                    @IsActive, @CreatedAtUtc);", supplier, ct);
+                    @IsActive, @CreatedAtUtc, @UpdatedAtUtc);", supplier, ct);
 
     public Task UpdateSupplierAsync(Supplier supplier, CancellationToken ct = default) =>
         ExecuteAsync(@"
             UPDATE suppliers SET code = @Code, name = @Name, contact_person = @ContactPerson, phone = @Phone,
                    email = @Email, address = @Address, notes = @Notes, opening_balance = @OpeningBalance,
-                   is_active = @IsActive
+                   is_active = @IsActive, updated_at_utc = @UpdatedAtUtc
              WHERE id = @Id;", supplier, ct);
 
     public Task<Payable?> GetPayableAsync(Guid id, CancellationToken ct = default) =>
