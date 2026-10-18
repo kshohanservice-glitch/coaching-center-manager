@@ -22,8 +22,8 @@ section *Acceptance*), with a written record of each step.
 
 ## O-2 — The installer has been produced but never run. **Fixed (pending verification)** · **Critical**
 
-Inno Setup now compiles the script successfully: CI run **39170126327** reports `ISCC_EXIT=0` and
-produces `artifacts/release/ShikkhaDesk-Setup-v1.0.0-x64.exe`. Three compile-stopping defects had
+Inno Setup now compiles the script successfully: CI run **39170877474** reports `ISCC_EXIT=0` and
+produces `artifacts/release/ShikkhaDesk-Setup-v1.0.0-x64.exe` (50,653,312 bytes). Three compile-stopping defects had
 to be fixed first — `[Icons]` cannot use the `[Files]`-only flag `skipifsourcedoesntexist` (it uses
 `createonlyiffileexists`), and a per-machine installer must write a "run at logon" shortcut to
 `{commonstartup}`, not `{userstartup}`.

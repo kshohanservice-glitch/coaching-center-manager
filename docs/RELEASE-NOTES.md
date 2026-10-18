@@ -20,12 +20,12 @@ batches, attendance, exams and results, plus a complete double-entry ledger behi
 salary, expense, refund and transfer. Bengali-first interface, Bengali or Latin digits by user
 choice, Bangladeshi date and currency conventions, no internet required at any point.
 
-**Artefacts produced by CI (run 39170126327):**
+**Artefacts produced by CI (run 39170877474):**
 
-| Artefact | Path | Notes |
-|---|---|---|
-| Installer | `artifacts/release/ShikkhaDesk-Setup-v1.0.0-x64.exe` | Inno Setup 6, per-machine, x64, compiled (`ISCC_EXIT=0`) — **never executed** |
-| Portable build | `artifacts/release/ShikkhaDesk-Release-v1.0.0-x64.zip` | 68,424,034 bytes self-contained .NET 8 win-x64 |
+| Artefact | Path | Size | Notes |
+|---|---|---|---|
+| Installer | `artifacts/release/ShikkhaDesk-Setup-v1.0.0-x64.exe` | 50,653,312 bytes | Inno Setup 6, per-machine, x64, compiled (`ISCC_EXIT=0`) — **never executed** |
+| Portable build | `artifacts/release/ShikkhaDesk-Release-v1.0.0-x64.zip` | 68,440,649 bytes | Self-contained .NET 8 win-x64 |
 
 ---
 
@@ -33,14 +33,14 @@ choice, Bangladeshi date and currency conventions, no internet required at any p
 
 | Verified | How |
 |---|---|
-| The solution restores, builds and publishes on Windows with zero compile errors | CI run 39170126327, `RESTORE_EXIT=0 BUILD_EXIT=0 PUBLISH_EXIT=0 ERROR_COUNT=0` |
+| The solution restores, builds and publishes on Windows with zero compile errors | CI run 39170877474, `RESTORE_EXIT=0 BUILD_EXIT=0 PUBLISH_EXIT=0 ERROR_COUNT=0` |
 | 47 unit tests pass | `TEST_EXIT(ShikkhaDesk.Tests)=0` |
 | 34 integration tests pass against a real SQLite database | `TEST_EXIT(ShikkhaDesk.IntegrationTests)=0` |
 | Migrations apply from nothing, and are idempotent across restarts | `Migrations_apply_and_are_recorded`, `Migrations_are_idempotent_across_restarts` |
 | The ledger balances after a full working day | `All_reconciliation_checks_pass_on_a_realistic_day` — all eight checks |
 | Money never loses or creates a paisa | `MoneyTests`, `AllocationAndJournalTests` |
 | Permissions are enforced in the service layer, not in the UI | `Permissions_are_enforced_in_the_service_layer` |
-| The installer compiles | `ISCC_EXIT=0` |
+| The installer compiles | `ISCC_EXIT=0`, `SETUP_BYTES=50653312` |
 
 Full detail, including the defects the tests caught, is in `docs/TEST-RESULTS.md`.
 

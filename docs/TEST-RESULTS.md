@@ -17,7 +17,7 @@ a local run.
 | `tests/ShikkhaDesk.IntegrationTests` (SQLite, real database) | 34 | **34** | 0 | Passed |
 | **Total** | **81** | **81** | **0** | **Passed** |
 
-Verified on CI run **39170126327** (2026-10-19, Windows NT 10.0.26100):
+Verified on CI run **39170877474** (2026-10-19, Windows NT 10.0.26100):
 
 ```
 PRESENTATION_EXIT=0
@@ -27,8 +27,10 @@ TEST_EXIT(ShikkhaDesk.IntegrationTests)=0
 TEST_EXIT(ShikkhaDesk.Tests)=0
 PUBLISH_EXIT=0
 PORTABLE_ZIP=artifacts\release\ShikkhaDesk-Release-v1.0.0-x64.zip
-ZIP_BYTES=68424034
+ZIP_BYTES=68440649
 ISCC_EXIT=0
+SETUP_EXE=ShikkhaDesk-Setup-v1.0.0-x64.exe
+SETUP_BYTES=50653312
 ERROR_COUNT=0
 ```
 
@@ -132,7 +134,7 @@ Stated plainly, because coverage claimed but not held is worse than coverage adm
 | Printing and PDF/XPS output | The XPS code path has never executed on hardware | Gate 2.4 |
 | LAN host and client | No two-machine run has taken place; the RPC surface compiles and the services are the same ones the tests exercise, but the transport has never carried a real request | Gate 5 |
 | Backup and restore on real data | The backup service is covered; a restore onto a populated database has not been rehearsed | Gate 6 |
-| The installer | Inno Setup now compiles it successfully (`ISCC_EXIT=0`), but no one has run the produced `.exe`, installed, launched, upgraded or uninstalled with it | Gate 1, items 1.2–1.10 |
+| The installer | Inno Setup now compiles it successfully (`ISCC_EXIT=0`, 50,653,312 bytes), but no one has run the produced `.exe`, installed, launched, upgraded or uninstalled with it | Gate 1, items 1.2–1.10 |
 | Performance and volume | No test above a few hundred rows. A centre with 5,000 students has not been simulated | `OPEN-DECISIONS.md` |
 
 ---

@@ -36,8 +36,8 @@ No data ever leaves the customer's machine.
 | WPF desktop shell + all 42 pages | **Built** | compiles on Windows CI; **never launched on a real desktop** |
 | Print / PDF output | **Built** | XPS path only; not exercised on hardware |
 | Backup / restore | **Integration Tested** (service) · **Built** (UI) | service covered; restore on real data not yet rehearsed |
-| Installer (Inno Setup) | **Built** — never executed | `ISCC_EXIT=0` on CI run 39170126327; `ShikkhaDesk-Setup-v1.0.0-x64.exe` produced but never run |
-| Release artefacts | **Built** | run 39170126327: installer exe + 68,424,034-byte portable zip, uploaded as CI artefacts |
+| Installer (Inno Setup) | **Built** — never executed | `ISCC_EXIT=0` on CI run 39170877474; `ShikkhaDesk-Setup-v1.0.0-x64.exe` (50,653,312 bytes) produced but never run |
+| Release artefacts | **Built** | run 39170877474: installer exe + 68,440,649-byte portable zip, uploaded as CI artefacts |
 | Documentation | **Implemented** | this file and its siblings in `docs/`, including `TEST-RESULTS.md`, `RELEASE-NOTES.md`, `BRAND-GUIDELINES.md` |
 | Branding assets | **Implemented** | `assets/branding/`, genuine multi-size ICO |
 
@@ -45,10 +45,10 @@ No data ever leaves the customer's machine.
 
 | Gate | Result | Evidence |
 |---|---|---|
-| Restore, build, publish | Passed | `RESTORE_EXIT=0 BUILD_EXIT=0 PUBLISH_EXIT=0 ERROR_COUNT=0`, CI run 39170126327 |
+| Restore, build, publish | Passed | `RESTORE_EXIT=0 BUILD_EXIT=0 PUBLISH_EXIT=0 ERROR_COUNT=0`, CI run 39170877474 |
 | Unit tests | Passed 47/47 | `TEST_EXIT(ShikkhaDesk.Tests)=0` |
 | Integration tests | Passed 34/34 | `TEST_EXIT(ShikkhaDesk.IntegrationTests)=0` |
-| Installer compile | Passed | `ISCC_EXIT=0` |
+| Installer compile | Passed | `ISCC_EXIT=0`, `SETUP_BYTES=50653312` |
 | Everything else | **Not attempted** | Gates 1.2–6 of `RELEASE-CHECKLIST.md` |
 
 The full test inventory, and the defects those tests caught, are in `docs/TEST-RESULTS.md`.

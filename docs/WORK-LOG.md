@@ -204,6 +204,11 @@ CI run **39170126327** is the first fully green run:
 
 47/47 unit and 34/34 integration tests pass. The installer compiles and is produced.
 
+Run **39170877474** repeated it with the documentation and the startup-shortcut fix in place, and is
+the run the documents now cite:
+
+    SETUP_EXE=ShikkhaDesk-Setup-v1.0.0-x64.exe   SETUP_BYTES=50653312   ZIP_BYTES=68440649
+
 **What this does not mean:** the program still has never been launched, and the installer has never
 been executed. Gate 0 and item 1.1 are the only gates that have been attempted.
 
