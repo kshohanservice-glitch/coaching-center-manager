@@ -1,0 +1,36 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+artifacts/
+*.user
+*.suo
+.vs/
+.vscode/
+.idea/
+
+# Release binaries (not in git; produced by CI)
+artifacts/release/
+*.exe
+*.msi
+*.zip
+!installer/**/*.exe
+
+# Keys, secrets and customer data
+*.key
+*.pfx
+*.p12
+*.snk
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+appsettings.local.json
+*.log
+Data/
+Backups/
+ci-logs/
+
+# OS junk
+Thumbs.db
+desktop.ini
