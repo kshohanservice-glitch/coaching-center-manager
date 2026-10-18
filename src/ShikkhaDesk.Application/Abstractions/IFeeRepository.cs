@@ -44,6 +44,9 @@ public interface IFeeRepository
     Task<IReadOnlyList<Payment>> GetPaymentsForStudentAsync(Guid studentId, CancellationToken ct = default);
     Task<Money> SumCollectionsAsync(DateRange range, CancellationToken ct = default);
 
+    /// <summary>Total still owed by students, derived from the charges themselves.</summary>
+    Task<Money> GetTotalOutstandingAsync(CancellationToken ct = default);
+
     // Credit
     Task InsertCreditTransactionAsync(StudentCreditTransaction transaction, CancellationToken ct = default);
     Task<IReadOnlyList<StudentCreditTransaction>> GetCreditTransactionsAsync(Guid studentId,

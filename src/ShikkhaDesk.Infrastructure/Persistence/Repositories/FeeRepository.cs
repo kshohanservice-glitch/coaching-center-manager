@@ -301,6 +301,12 @@ public sealed class FeeRepository : RepositoryBase, IFeeRepository
                WHERE status = 0 AND payment_date BETWEEN @From AND @To;",
             new { From = StartOfDay(range.From), To = EndOfDay(range.To) }, ct)!;
 
+    public Task<Money> GetTotalOutstandingAsync(CancellationToken ct = default) =>
+        ExecuteScalarAsync<Money>(@"
+            SELECT IFNULL(SUM(net_amount - paid_amount - waived_amount), 0)
+              FROM fee_charges WHERE is_void = 0
+                AND (net_amount - paid_amount - waived_amount) > 0;", null, ct)!;
+
     // ------------------------------------------------------------------ credit
 
     private const string CreditColumns = @"

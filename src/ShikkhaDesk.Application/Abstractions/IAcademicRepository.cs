@@ -76,6 +76,7 @@ public interface IAcademicRepository
     Task InsertExamAsync(Exam exam, CancellationToken ct = default);
     Task UpdateExamAsync(Exam exam, CancellationToken ct = default);
     Task<IReadOnlyList<ExamSubject>> GetExamSubjectsAsync(Guid examId, CancellationToken ct = default);
+    Task<ExamSubject?> GetExamSubjectAsync(Guid examSubjectId, CancellationToken ct = default);
     Task ReplaceExamSubjectsAsync(Guid examId, IReadOnlyList<ExamSubject> subjects, CancellationToken ct = default);
     Task<IReadOnlyList<Mark>> GetMarksAsync(Guid examId, CancellationToken ct = default);
     Task<IReadOnlyList<Mark>> GetMarksForStudentAsync(Guid studentId, CancellationToken ct = default);

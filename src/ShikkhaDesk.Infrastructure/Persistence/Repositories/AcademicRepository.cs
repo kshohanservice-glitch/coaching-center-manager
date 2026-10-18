@@ -473,6 +473,11 @@ public sealed class AcademicRepository : RepositoryBase, IAcademicRepository
                 FROM exam_subjects WHERE exam_id = @ExamId ORDER BY sort_order, subject_name;",
             new { ExamId = examId }, ct).ConfigureAwait(false)).ToList();
 
+    public Task<ExamSubject?> GetExamSubjectAsync(Guid examSubjectId, CancellationToken ct = default) =>
+        QueryFirstOrDefaultAsync<ExamSubject>(@"
+            SELECT id, exam_id, subject_id, subject_name, maximum_marks, pass_marks, exam_date, sort_order
+              FROM exam_subjects WHERE id = @Id;", new { Id = examSubjectId }, ct);
+
     public async Task ReplaceExamSubjectsAsync(Guid examId, IReadOnlyList<ExamSubject> subjects,
         CancellationToken ct = default)
     {

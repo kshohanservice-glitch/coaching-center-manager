@@ -64,6 +64,13 @@ public sealed class FeeCharge
     public Money WaivedAmount { get; set; }
     public bool IsVoid { get; set; }
     public Guid? VoidedByChargeId { get; set; }
+
+    /// <summary>
+    /// Deterministic key (student + plan + kind + period) that makes bulk assessment idempotent.
+    /// Backed by a unique index so a repeated run can never create a duplicate charge.
+    /// </summary>
+    public string IdempotencyKey { get; set; } = string.Empty;
+
     public DateTime CreatedAtUtc { get; set; }
 
     /// <summary>Outstanding balance: net amount less allocated payments and waivers.</summary>

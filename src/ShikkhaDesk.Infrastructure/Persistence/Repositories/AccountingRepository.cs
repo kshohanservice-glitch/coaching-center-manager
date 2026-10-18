@@ -478,6 +478,29 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
 
     // ------------------------------------------------------------------ cashbook / bankbook
 
+    public Task<Money> GetUnpaidPayrollTotalAsync(CancellationToken ct = default) =>
+        ExecuteScalarAsync<Money>(@"
+            SELECT IFNULL(SUM(net_salary), 0) FROM payroll_records WHERE status = 0;", null, ct)!;
+
+    public Task<Money> GetOutstandingPayablesTotalAsync(CancellationToken ct = default) =>
+        ExecuteScalarAsync<Money>(@"
+            SELECT IFNULL(SUM(amount - paid_amount), 0) FROM payables
+             WHERE status IN (0, 1) AND (amount - paid_amount) > 0;", null, ct)!;
+
+    public Task<Money> SumIncomeExpenseBySourceAsync(TransactionSourceKind sourceKind, DateRange range,
+        CancellationToken ct = default) =>
+        ExecuteScalarAsync<Money>(@"
+            SELECT IFNULL(SUM(CASE WHEN a.type = 4 THEN jl.debit - jl.credit
+                                   WHEN a.type = 3 THEN jl.credit - jl.debit
+                                   ELSE 0 END), 0)
+              FROM journal_lines jl
+              JOIN journal_entries je ON je.id = jl.journal_entry_id AND je.status <> 2
+              JOIN accounts a         ON a.id = jl.account_id
+             WHERE je.source_kind = @SourceKind
+               AND (@From IS NULL OR je.entry_date >= @From)
+               AND (@To IS NULL OR je.entry_date <= @To);",
+            new { SourceKind = sourceKind, From = StartOfDay(range.From), To = EndOfDay(range.To) }, ct)!;
+
     public async Task<IReadOnlyList<CashbookRow>> GetCashbookAsync(Guid financialAccountId, DateRange range,
         CancellationToken ct = default)
     {
