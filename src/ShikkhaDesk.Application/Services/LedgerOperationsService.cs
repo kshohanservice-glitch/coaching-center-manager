@@ -114,7 +114,7 @@ public sealed class LedgerOperationsService : ILedgerOperationsService
                 .ConfigureAwait(false);
 
             string number = await _sequences.NextFormattedAsync(
-                "INC", "INC", request.IncomeDate.ToString("yyyy-MM"), 5, true, request.IncomeDate, token)
+                "INC", "INC", 5, NumberingPeriod.Yearly, request.IncomeDate, token)
                 .ConfigureAwait(false);
 
             var income = new IncomeRecord
@@ -185,7 +185,7 @@ public sealed class LedgerOperationsService : ILedgerOperationsService
                 .ConfigureAwait(false);
 
             string number = await _sequences.NextFormattedAsync(
-                "EXP", "EXP", request.ExpenseDate.ToString("yyyy-MM"), 5, true, request.ExpenseDate, token)
+                "EXP", "EXP", 5, NumberingPeriod.Yearly, request.ExpenseDate, token)
                 .ConfigureAwait(false);
 
             var expense = new ExpenseRecord
@@ -238,12 +238,11 @@ public sealed class LedgerOperationsService : ILedgerOperationsService
 
             string billNumber = string.IsNullOrWhiteSpace(request.BillNumber)
                 ? await _sequences.NextFormattedAsync("BILL", "BIL",
-                    request.ExpenseDate.ToString("yyyy-MM"), 5, true, request.ExpenseDate, token)
-                    .ConfigureAwait(false)
+                    5, NumberingPeriod.Yearly, request.ExpenseDate, token).ConfigureAwait(false)
                 : request.BillNumber.Trim();
 
             string expenseNumber = await _sequences.NextFormattedAsync(
-                "EXP", "EXP", request.ExpenseDate.ToString("yyyy-MM"), 5, true, request.ExpenseDate, token)
+                "EXP", "EXP", 5, NumberingPeriod.Yearly, request.ExpenseDate, token)
                 .ConfigureAwait(false);
 
             AccountMap map = await _accounting.GetAccountMapAsync(token).ConfigureAwait(false);
@@ -338,8 +337,7 @@ public sealed class LedgerOperationsService : ILedgerOperationsService
             AccountMap map = await _accounting.GetAccountMapAsync(token).ConfigureAwait(false);
 
             string number = await _sequences.NextFormattedAsync("PAY", "PAY",
-                request.SettlementDate.ToString("yyyy-MM"), 5, true, request.SettlementDate, token)
-                .ConfigureAwait(false);
+                5, NumberingPeriod.Yearly, request.SettlementDate, token).ConfigureAwait(false);
 
             var settlement = new PayableSettlement
             {
@@ -400,8 +398,7 @@ public sealed class LedgerOperationsService : ILedgerOperationsService
             AccountMap map = await _accounting.GetAccountMapAsync(token).ConfigureAwait(false);
 
             string number = await _sequences.NextFormattedAsync("TRF", "TRF",
-                request.TransferDate.ToString("yyyy-MM"), 5, true, request.TransferDate, token)
-                .ConfigureAwait(false);
+                5, NumberingPeriod.Yearly, request.TransferDate, token).ConfigureAwait(false);
 
             var transfer = new Transfer
             {

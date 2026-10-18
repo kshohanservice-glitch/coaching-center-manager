@@ -52,22 +52,24 @@ public sealed class SequenceAllocator : ISequenceAllocator
             .ConfigureAwait(false);
     }
 
-    public async Task<string> NextFormattedAsync(string kind, string prefix, string periodKey, int width,
-        bool includeYear, DateTime date, CancellationToken cancellationToken = default)
+    public async Task<string> NextFormattedAsync(string kind, string prefix, int width,
+        NumberingPeriod period, DateTime date, CancellationToken cancellationToken = default)
     {
-        string scope = ReceiptNumbering.Scope(kind, prefix, includeYear, date);
-        long number = await NextAsync(scope, prefix, periodKey, cancellationToken).ConfigureAwait(false);
-        return ReceiptNumbering.Format(prefix, number, width, includeYear, date);
+        string scope = ReceiptNumbering.Scope(kind, prefix, period, date);
+        long number = await NextAsync(scope, prefix, ReceiptNumbering.PeriodToken(period, date),
+            cancellationToken).ConfigureAwait(false);
+        return ReceiptNumbering.Format(prefix, number, width, period, date);
     }
 
     /// <summary>Peeks at the next number without consuming it, for preview purposes only.</summary>
-    public async Task<string> PeekFormattedAsync(string kind, string prefix, string periodKey, int width,
-        bool includeYear, DateTime date, CancellationToken cancellationToken = default)
+    public async Task<string> PeekFormattedAsync(string kind, string prefix, int width,
+        NumberingPeriod period, DateTime date, CancellationToken cancellationToken = default)
     {
-        string scope = ReceiptNumbering.Scope(kind, prefix, includeYear, date);
+        string scope = ReceiptNumbering.Scope(kind, prefix, period, date);
         long current = await _unitOfWork.Connection.ExecuteScalarAsync<long?>(
-            new CommandDefinition(SelectSql, new { Scope = scope, Prefix = prefix, PeriodKey = periodKey },
+            new CommandDefinition(SelectSql, new { Scope = scope, Prefix = prefix,
+                PeriodKey = ReceiptNumbering.PeriodToken(period, date) },
                 _unitOfWork.Transaction, cancellationToken: cancellationToken)).ConfigureAwait(false) ?? 0;
-        return ReceiptNumbering.Format(prefix, current + 1, width, includeYear, date);
+        return ReceiptNumbering.Format(prefix, current + 1, width, period, date);
     }
 }

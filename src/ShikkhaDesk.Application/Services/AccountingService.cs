@@ -78,7 +78,7 @@ public sealed class AccountingService : IAccountingService
 
         Guid userId = _currentUser.Current.UserId;
         string journalNumber = await _sequences.NextFormattedAsync(
-            "JRNL", "JV", draft.EntryDate.ToString("yyyy-MM"), 6, true, draft.EntryDate, ct);
+            "JRNL", "JV", 6, NumberingPeriod.Yearly, draft.EntryDate, ct);
 
         var entry = new JournalEntry
         {

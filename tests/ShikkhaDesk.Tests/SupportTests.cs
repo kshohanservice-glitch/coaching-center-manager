@@ -130,10 +130,12 @@ public sealed class SupportTests
     public void Receipt_numbers_are_padded_and_scoped()
     {
         var date = new DateTime(2026, 3, 10);
-        Assert.Equal("RCP-2026-000123", ReceiptNumbering.Format("RCP", 123, 6, true, date));
-        Assert.Equal("RCP-000123", ReceiptNumbering.Format("RCP", 123, 6, false, date));
-        Assert.Equal("RCPT|RCP|2026", ReceiptNumbering.Scope("RCPT", "RCP", true, date));
-        Assert.Equal("RCPT|RCP|ALL", ReceiptNumbering.Scope("RCPT", "RCP", false, date));
+        Assert.Equal("RCP-2026-000123", ReceiptNumbering.Format("RCP", 123, 6, NumberingPeriod.Yearly, date));
+        Assert.Equal("RCP-000123", ReceiptNumbering.Format("RCP", 123, 6, NumberingPeriod.Continuous, date));
+        Assert.Equal("RCP-2026-03-000123", ReceiptNumbering.Format("RCP", 123, 6, NumberingPeriod.Monthly, date));
+        Assert.Equal("RCPT|RCP|2026", ReceiptNumbering.Scope("RCPT", "RCP", NumberingPeriod.Yearly, date));
+        Assert.Equal("RCPT|RCP|ALL", ReceiptNumbering.Scope("RCPT", "RCP", NumberingPeriod.Continuous, date));
+        Assert.Equal("RCPT|RCP|2026-03", ReceiptNumbering.Scope("RCPT", "RCP", NumberingPeriod.Monthly, date));
     }
 
     [Fact]

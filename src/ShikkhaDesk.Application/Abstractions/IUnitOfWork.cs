@@ -1,4 +1,5 @@
 using System.Data;
+using ShikkhaDesk.Core.Services;
 
 namespace ShikkhaDesk.Application.Abstractions;
 
@@ -35,6 +36,6 @@ public interface ISequenceAllocator
     Task<long> NextAsync(string scope, string prefix, string periodKey,
         CancellationToken cancellationToken = default);
 
-    Task<string> NextFormattedAsync(string kind, string prefix, string periodKey, int width, bool includeYear,
+    Task<string> NextFormattedAsync(string kind, string prefix, int width, NumberingPeriod period,
         DateTime date, CancellationToken cancellationToken = default);
 }

@@ -85,6 +85,14 @@ public sealed class FeeService : IFeeService
         plan.Id = plan.Id == Guid.Empty ? Guid.NewGuid() : plan.Id;
         plan.CreatedAtUtc = DateTime.UtcNow;
 
+        // A plan item is meaningless without its parent, and an empty Guid would be stored as a
+        // broken foreign key rather than failing loudly here.
+        foreach (FeePlanItem item in items)
+        {
+            item.Id = item.Id == Guid.Empty ? Guid.NewGuid() : item.Id;
+            item.FeePlanId = plan.Id;
+        }
+
         await _unitOfWork.ExecuteAsync(token => _fees.InsertFeePlanAsync(plan, items, token), ct)
             .ConfigureAwait(false);
         await _audit.RecordAsync("fees.plan.create", nameof(FeePlan), plan.Id, plan.Name, ct: ct)
@@ -97,7 +105,15 @@ public sealed class FeeService : IFeeService
         CancellationToken ct = default)
     {
         _currentUser.Current.Require("fees.assess");
+        ArgumentNullException.ThrowIfNull(plan);
+        ArgumentNullException.ThrowIfNull(items);
         ValidatePlan(plan, items);
+
+        foreach (FeePlanItem item in items)
+        {
+            item.Id = item.Id == Guid.Empty ? Guid.NewGuid() : item.Id;
+            item.FeePlanId = plan.Id;
+        }
 
         // Editing a plan never rewrites historical charges: only future assessments use the new rates.
         await _unitOfWork.ExecuteAsync(token => _fees.UpdateFeePlanAsync(plan, items, token), ct)
@@ -234,7 +250,7 @@ public sealed class FeeService : IFeeService
         var recurring = items.Where(i => i.RecurrenceMonths > 0 && ShouldChargeInPeriod(i, periodKey)).ToList();
 
         string assessmentNumber = await _sequences.NextFormattedAsync(
-            "ASMT", "AS", DateTime.Today.ToString("yyyy-MM"), 5, true, DateTime.Today, ct).ConfigureAwait(false);
+            "ASMT", "AS", 5, NumberingPeriod.Yearly, DateTime.Today, ct).ConfigureAwait(false);
 
         var assessment = new FeeAssessment
         {

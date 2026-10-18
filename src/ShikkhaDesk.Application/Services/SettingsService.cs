@@ -2,23 +2,31 @@ using System.Globalization;
 using ShikkhaDesk.Application.Abstractions;
 using ShikkhaDesk.Core;
 using ShikkhaDesk.Core.Entities;
+using ShikkhaDesk.Core.Services;
 
 namespace ShikkhaDesk.Application.Services;
 
 public sealed record ReceiptSettings(
     string Prefix,
     int NumberWidth,
-    bool IncludeYear,
-    string ResetPolicy)
+    NumberingPeriod Period)
 {
-    public string PeriodKeyFor(DateTime date) => ResetPolicy switch
+    public string PolicyName => Period switch
     {
-        "Never" => "ALL",
-        "Monthly" => date.ToString("yyyy-MM", CultureInfo.InvariantCulture),
-        _ => date.ToString("yyyy", CultureInfo.InvariantCulture)
+        NumberingPeriod.Continuous => "Never",
+        NumberingPeriod.Monthly => "Monthly",
+        _ => "Yearly"
     };
 
-    public static ReceiptSettings Default => new("RCP", 6, true, "Yearly");
+    public static ReceiptSettings Default => new("RCP", 6, NumberingPeriod.Yearly);
+
+    public static ReceiptSettings FromPolicy(string? policy) => new(
+        Default.Prefix, Default.NumberWidth, policy switch
+        {
+            "Never" => NumberingPeriod.Continuous,
+            "Monthly" => NumberingPeriod.Monthly,
+            _ => NumberingPeriod.Yearly
+        });
 }
 
 public interface ISettingsService
@@ -66,9 +74,12 @@ public sealed class SettingsService : ISettingsService
         string prefix = await GetAsync("receipt.prefix", ReceiptSettings.Default.Prefix, ct).ConfigureAwait(false);
         int width = await GetIntAsync("receipt.numberWidth", ReceiptSettings.Default.NumberWidth, ct)
             .ConfigureAwait(false);
-        bool includeYear = await GetBoolAsync("receipt.includeYear", true, ct).ConfigureAwait(false);
         string resetPolicy = await GetAsync("receipt.resetPolicy", "Yearly", ct).ConfigureAwait(false);
-        return new ReceiptSettings(prefix, Math.Clamp(width, 1, 12), includeYear, resetPolicy);
+        return ReceiptSettings.FromPolicy(resetPolicy) with
+        {
+            Prefix = string.IsNullOrWhiteSpace(prefix) ? ReceiptSettings.Default.Prefix : prefix.Trim(),
+            NumberWidth = Math.Clamp(width, 1, 12)
+        };
     }
 
     public Task<Institution?> GetInstitutionAsync(CancellationToken ct = default) =>

@@ -133,9 +133,8 @@ public sealed class PaymentService : IPaymentService
         string receiptNumber = await _sequences.NextFormattedAsync(
             "RCPT",
             receiptSettings.Prefix,
-            receiptSettings.PeriodKeyFor(paymentDate),
             receiptSettings.NumberWidth,
-            receiptSettings.IncludeYear,
+            receiptSettings.Period,
             paymentDate, ct).ConfigureAwait(false);
 
         var payment = new Payment
@@ -400,7 +399,7 @@ public sealed class PaymentService : IPaymentService
                 request.Method, token).ConfigureAwait(false);
 
             string refundNumber = await _sequences.NextFormattedAsync(
-                "RFND", "RFN", DateTime.Today.ToString("yyyy-MM"), 5, true, DateTime.Today, token)
+                "RFND", "RFN", 5, NumberingPeriod.Yearly, DateTime.Today, token)
                 .ConfigureAwait(false);
 
             var refund = new Refund
