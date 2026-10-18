@@ -1,0 +1,113 @@
+<UserControl x:Class="ShikkhaDesk.Wpf.Views.StaffView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="360" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Style="{StaticResource Card}" Margin="0,0,12,0">
+            <DataGrid ItemsSource="{Binding Rows}" SelectedItem="{Binding Selected}" MinHeight="440" />
+        </Border>
+
+        <Border Grid.Column="1" Style="{StaticResource Card}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="নতুন কর্মচারী" Style="{StaticResource SectionTitle}" />
+
+                    <TextBlock Text="নাম *" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding FullName}" Margin="0,0,0,10" />
+
+                    <TextBlock Text="পদবি" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding Designation}" Margin="0,0,0,10" />
+
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,5,0">
+                            <TextBlock Text="ফোন" Style="{StaticResource FieldLabel}" />
+                            <TextBox Text="{Binding Phone}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                            <TextBlock Text="ইমেইল" Style="{StaticResource FieldLabel}" />
+                            <TextBox Text="{Binding Email}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Text="যোগদান" Style="{StaticResource FieldLabel}" />
+                    <DatePicker SelectedDate="{Binding JoiningDate}" Margin="0,0,0,10" />
+
+                    <TextBlock Text="ঠিকানা" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding Address}" Margin="0,0,0,12" />
+
+                    <TextBlock Text="বেতন (টাকা)" Style="{StaticResource SectionTitle}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,5,8">
+                            <TextBlock Text="মূল বেতন" Style="{StaticResource FieldLabel}" />
+                            <TextBox Text="{Binding BasicSalary}" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="1" Margin="5,0,0,8">
+                            <TextBlock Text="বাড়ি ভাড়া" Style="{StaticResource FieldLabel}" />
+                            <TextBox Text="{Binding HouseRent}" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,5,8">
+                            <TextBlock Text="চিকিৎসা" Style="{StaticResource FieldLabel}" />
+                            <TextBox Text="{Binding Medical}" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="1" Margin="5,0,0,8">
+                            <TextBlock Text="যাতায়াত" Style="{StaticResource FieldLabel}" />
+                            <TextBox Text="{Binding Transport}" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,5,8">
+                            <TextBlock Text="অন্যান্য ভাতা" Style="{StaticResource FieldLabel}" />
+                            <TextBox Text="{Binding OtherAllowance}" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="1" Margin="5,0,0,8">
+                            <TextBlock Text="প্রভিডেন্ট ফান্ড" Style="{StaticResource FieldLabel}" />
+                            <TextBox Text="{Binding ProvidentFund}" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="3" Grid.Column="0" Margin="0,0,5,8">
+                            <TextBlock Text="আয়কর" Style="{StaticResource FieldLabel}" />
+                            <TextBox Text="{Binding Tax}" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="3" Grid.Column="1" Margin="5,0,0,8">
+                            <TextBlock Text="অন্যান্য কর্তন" Style="{StaticResource FieldLabel}" />
+                            <TextBox Text="{Binding OtherDeduction}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Text="ব্যাংক হিসাব" Style="{StaticResource SectionTitle}" />
+                    <TextBlock Text="হিসাবের নাম" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding BankAccountName}" Margin="0,0,0,10" />
+                    <TextBlock Text="হিসাব নম্বর" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding BankAccountNumber}" Margin="0,0,0,12" />
+
+                    <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource ErrorBrush}"
+                               TextWrapping="Wrap" Margin="0,0,0,8" />
+                    <TextBlock Text="{Binding StatusMessage}" Foreground="{StaticResource SuccessBrush}"
+                               TextWrapping="Wrap" Margin="0,0,0,8" />
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="পরিষ্কার" Command="{Binding ClearCommand}" Width="90" Margin="0,0,8,0" />
+                        <Button Content="সংরক্ষণ" Command="{Binding SaveCommand}"
+                                Style="{StaticResource PrimaryButton}" Width="120" />
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>

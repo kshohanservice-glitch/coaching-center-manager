@@ -42,6 +42,8 @@ public interface IFeeService
     Task<StudentBalanceSummary> GetStudentBalanceAsync(Guid studentId, CancellationToken ct = default);
     Task<IReadOnlyList<FeeCharge>> GetOutstandingChargesAsync(Guid? batchId = null, Guid? studentId = null,
         DateTime? asOf = null, CancellationToken ct = default);
+    Task<IReadOnlyList<FeePlan>> GetFeePlansAsync(CancellationToken ct = default);
+    Task<IReadOnlyList<FeePlanItem>> GetFeePlanItemsAsync(Guid feePlanId, CancellationToken ct = default);
 }
 
 /// <summary>

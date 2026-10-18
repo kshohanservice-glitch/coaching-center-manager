@@ -1,0 +1,104 @@
+<Window x:Class="ShikkhaDesk.Wpf.Views.StudentEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="শিক্ষার্থীর তথ্য" Width="620" Height="600"
+        WindowStartupLocation="CenterScreen" ShowInTaskbar="False"
+        Icon="pack://application:,,,/app-icon.ico"
+        Background="{StaticResource AppBackgroundBrush}">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <Border Style="{StaticResource Card}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,12">
+                        <TextBlock Text="পুরো নাম *" Style="{StaticResource FieldLabel}" />
+                        <TextBox x:Name="FullNameBox" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,12">
+                        <TextBlock Text="অভিভাবকের নাম" Style="{StaticResource FieldLabel}" />
+                        <TextBox x:Name="GuardianNameBox" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,0,0,12">
+                        <TextBlock Text="অভিভাবকের ফোন" Style="{StaticResource FieldLabel}" />
+                        <TextBox x:Name="GuardianPhoneBox" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,10,12">
+                        <TextBlock Text="শিক্ষার্থীর ফোন" Style="{StaticResource FieldLabel}" />
+                        <TextBox x:Name="StudentPhoneBox" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Grid.Column="1" Margin="10,0,0,12">
+                        <TextBlock Text="লিঙ্গ" Style="{StaticResource FieldLabel}" />
+                        <ComboBox x:Name="GenderBox" IsEditable="True">
+                            <ComboBoxItem Content="ছাত্র" />
+                            <ComboBoxItem Content="ছাত্রী" />
+                            <ComboBoxItem Content="অন্যান্য" />
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="3" Grid.Column="0" Margin="0,0,10,12">
+                        <TextBlock Text="জন্ম তারিখ" Style="{StaticResource FieldLabel}" />
+                        <DatePicker x:Name="DateOfBirthPicker" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="3" Grid.Column="1" Margin="10,0,0,12">
+                        <TextBlock Text="শিক্ষার্থীর কোড" Style="{StaticResource FieldLabel}" />
+                        <TextBox x:Name="StudentCodeBox" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Margin="0,0,0,12">
+                        <TextBlock Text="ঠিকানা" Style="{StaticResource FieldLabel}" />
+                        <TextBox x:Name="AddressBox" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="5" Grid.Column="0" Margin="0,0,10,12">
+                        <TextBlock Text="স্কুল / কলেজ" Style="{StaticResource FieldLabel}" />
+                        <TextBox x:Name="SchoolBox" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="5" Grid.Column="1" Margin="10,0,0,12">
+                        <TextBlock Text="শ্রেণি" Style="{StaticResource FieldLabel}" />
+                        <TextBox x:Name="SchoolClassBox" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Margin="0,0,0,8">
+                        <TextBlock Text="মন্তব্য" Style="{StaticResource FieldLabel}" />
+                        <TextBox x:Name="NotesBox" Height="70" AcceptsReturn="True"
+                                 VerticalContentAlignment="Top" TextWrapping="Wrap" />
+                    </StackPanel>
+
+                    <TextBlock Grid.Row="7" Grid.ColumnSpan="2" x:Name="DuplicateText"
+                               TextWrapping="Wrap" Foreground="{StaticResource WarningBrush}" FontSize="12" />
+                </Grid>
+            </Border>
+        </ScrollViewer>
+
+        <Grid Grid.Row="1" Margin="0,16,0,0">
+            <TextBlock x:Name="ErrorText" Foreground="{StaticResource ErrorBrush}" VerticalAlignment="Center"
+                       TextWrapping="Wrap" Margin="0,0,16,0" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="বাতিল" Width="100" IsCancel="True" Margin="0,0,10,0" />
+                <Button Content="সংরক্ষণ" Width="120" Style="{StaticResource PrimaryButton}"
+                        IsDefault="True" Click="Save_Click" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

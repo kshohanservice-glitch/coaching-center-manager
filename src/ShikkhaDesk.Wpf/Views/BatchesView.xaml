@@ -1,0 +1,78 @@
+<UserControl x:Class="ShikkhaDesk.Wpf.Views.BatchesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="330" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Style="{StaticResource Card}" Margin="0,0,12,0">
+            <DataGrid ItemsSource="{Binding Rows}" MinHeight="420" />
+        </Border>
+
+        <Border Grid.Column="1" Style="{StaticResource Card}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="নতুন ব্যাচ" Style="{StaticResource SectionTitle}" />
+
+                    <TextBlock Text="নাম *" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding Name}" Margin="0,0,0,10" />
+
+                    <TextBlock Text="শিক্ষাবর্ষ *" Style="{StaticResource FieldLabel}" />
+                    <ComboBox ItemsSource="{Binding Sessions}" SelectedItem="{Binding Session}" Margin="0,0,0,10" />
+
+                    <TextBlock Text="কোর্স" Style="{StaticResource FieldLabel}" />
+                    <ComboBox ItemsSource="{Binding Courses}" SelectedItem="{Binding Course}" Margin="0,0,0,10" />
+
+                    <TextBlock Text="ক্লাস" Style="{StaticResource FieldLabel}" />
+                    <ComboBox ItemsSource="{Binding Classes}" SelectedItem="{Binding ClassGrade}" Margin="0,0,0,10" />
+
+                    <TextBlock Text="শুরু" Style="{StaticResource FieldLabel}" />
+                    <DatePicker SelectedDate="{Binding StartDate}" Margin="0,0,0,10" />
+
+                    <TextBlock Text="আসন সংখ্যা" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding CapacityText}" Margin="0,0,0,10" />
+
+                    <TextBlock Text="সাপ্তাহিক দিন" Style="{StaticResource FieldLabel}" />
+                    <ComboBox SelectedIndex="{Binding DayOfWeekIndex}" Margin="0,0,0,10">
+                        <ComboBoxItem Content="রবিবার" />
+                        <ComboBoxItem Content="সোমবার" />
+                        <ComboBoxItem Content="মঙ্গলবার" />
+                        <ComboBoxItem Content="বুধবার" />
+                        <ComboBoxItem Content="বৃহস্পতিবার" />
+                        <ComboBoxItem Content="শুক্রবার" />
+                        <ComboBoxItem Content="শনিবার" />
+                    </ComboBox>
+
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,5,0">
+                            <TextBlock Text="শুরুর সময়" Style="{StaticResource FieldLabel}" />
+                            <TextBox Text="{Binding StartTime}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                            <TextBlock Text="শেষ সময়" Style="{StaticResource FieldLabel}" />
+                            <TextBox Text="{Binding EndTime}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Text="কক্ষ" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding Room}" Margin="0,0,0,10" />
+
+                    <TextBlock Text="বিবরণ" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding ScheduleNote}" Height="60" AcceptsReturn="True"
+                             VerticalContentAlignment="Top" Margin="0,0,0,12" />
+
+                    <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource ErrorBrush}"
+                               TextWrapping="Wrap" Margin="0,0,0,8" />
+                    <Button Content="সংরক্ষণ" Command="{Binding SaveCommand}"
+                            Style="{StaticResource PrimaryButton}" />
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>

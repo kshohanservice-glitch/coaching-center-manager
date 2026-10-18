@@ -1,0 +1,95 @@
+<UserControl x:Class="ShikkhaDesk.Wpf.Views.AcademicsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <TabControl>
+        <TabItem Header="শিক্ষাবর্ষ">
+            <Grid Margin="0,12,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="300" />
+                </Grid.ColumnDefinitions>
+                <DataGrid Grid.Column="0" ItemsSource="{Binding Sessions}" Margin="0,0,12,0" MinHeight="320" />
+                <Border Grid.Column="1" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="নতুন শিক্ষাবর্ষ" Style="{StaticResource SectionTitle}" />
+                        <TextBlock Text="নাম" Style="{StaticResource FieldLabel}" />
+                        <TextBox Text="{Binding SessionName}" Margin="0,0,0,10" />
+                        <TextBlock Text="শুরু" Style="{StaticResource FieldLabel}" />
+                        <DatePicker SelectedDate="{Binding SessionStart}" Margin="0,0,0,10" />
+                        <TextBlock Text="শেষ" Style="{StaticResource FieldLabel}" />
+                        <DatePicker SelectedDate="{Binding SessionEnd}" Margin="0,0,0,10" />
+                        <CheckBox Content="চলতি শিক্ষাবর্ষ" IsChecked="{Binding SessionIsActive}"
+                                  Margin="0,0,0,12" />
+                        <Button Content="যোগ করুন" Command="{Binding AddSessionCommand}"
+                                Style="{StaticResource PrimaryButton}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </TabItem>
+
+        <TabItem Header="ক্লাস / শ্রেণি">
+            <Grid Margin="0,12,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="300" />
+                </Grid.ColumnDefinitions>
+                <DataGrid Grid.Column="0" ItemsSource="{Binding Classes}" Margin="0,0,12,0" MinHeight="320" />
+                <Border Grid.Column="1" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="নতুন ক্লাস" Style="{StaticResource SectionTitle}" />
+                        <TextBlock Text="নাম" Style="{StaticResource FieldLabel}" />
+                        <TextBox Text="{Binding ClassName}" Margin="0,0,0,10" />
+                        <TextBlock Text="ক্রম" Style="{StaticResource FieldLabel}" />
+                        <TextBox Text="{Binding ClassSortOrder}" Margin="0,0,0,12" />
+                        <Button Content="যোগ করুন" Command="{Binding AddClassCommand}"
+                                Style="{StaticResource PrimaryButton}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </TabItem>
+
+        <TabItem Header="কোর্স">
+            <Grid Margin="0,12,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="300" />
+                </Grid.ColumnDefinitions>
+                <DataGrid Grid.Column="0" ItemsSource="{Binding Courses}" Margin="0,0,12,0" MinHeight="320" />
+                <Border Grid.Column="1" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="নতুন কোর্স" Style="{StaticResource SectionTitle}" />
+                        <TextBlock Text="নাম" Style="{StaticResource FieldLabel}" />
+                        <TextBox Text="{Binding CourseName}" Margin="0,0,0,10" />
+                        <TextBlock Text="কোড" Style="{StaticResource FieldLabel}" />
+                        <TextBox Text="{Binding CourseCode}" Margin="0,0,0,10" />
+                        <TextBlock Text="মেয়াদ (মাস)" Style="{StaticResource FieldLabel}" />
+                        <TextBox Text="{Binding CourseDurationMonths}" Margin="0,0,0,12" />
+                        <Button Content="যোগ করুন" Command="{Binding AddCourseCommand}"
+                                Style="{StaticResource PrimaryButton}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </TabItem>
+
+        <TabItem Header="বিষয়">
+            <Grid Margin="0,12,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="300" />
+                </Grid.ColumnDefinitions>
+                <DataGrid Grid.Column="0" ItemsSource="{Binding Subjects}" Margin="0,0,12,0" MinHeight="320" />
+                <Border Grid.Column="1" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="নতুন বিষয়" Style="{StaticResource SectionTitle}" />
+                        <TextBlock Text="নাম" Style="{StaticResource FieldLabel}" />
+                        <TextBox Text="{Binding SubjectName}" Margin="0,0,0,10" />
+                        <TextBlock Text="কোড" Style="{StaticResource FieldLabel}" />
+                        <TextBox Text="{Binding SubjectCode}" Margin="0,0,0,12" />
+                        <Button Content="যোগ করুন" Command="{Binding AddSubjectCommand}"
+                                Style="{StaticResource PrimaryButton}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </TabItem>
+    </TabControl>
+</UserControl>
