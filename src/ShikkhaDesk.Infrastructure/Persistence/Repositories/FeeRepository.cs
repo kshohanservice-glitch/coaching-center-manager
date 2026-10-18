@@ -169,7 +169,8 @@ public sealed class FeeRepository : RepositoryBase, IFeeRepository
     private const string PaymentColumns = @"
         id, student_id, receipt_number, payment_date, amount_received, amount_allocated, amount_refunded,
         method, financial_account_id, transaction_reference, notes, status, collected_by_user_id,
-        journal_entry_id, reversed_by_payment_id, idempotency_key, created_at_utc";
+        journal_entry_id, reversed_by_payment_id, reversal_journal_entry_id, idempotency_key,
+        created_at_utc";
 
     public Task<Payment?> GetPaymentAsync(Guid id, CancellationToken ct = default) =>
         QueryFirstOrDefaultAsync<Payment>(
@@ -191,17 +192,19 @@ public sealed class FeeRepository : RepositoryBase, IFeeRepository
             INSERT INTO payments (id, student_id, receipt_number, payment_date, amount_received, amount_allocated,
                                   amount_refunded, method, financial_account_id, transaction_reference, notes,
                                   status, collected_by_user_id, journal_entry_id, reversed_by_payment_id,
-                                  idempotency_key, created_at_utc)
+                                  reversal_journal_entry_id, idempotency_key, created_at_utc)
             VALUES (@Id, @StudentId, @ReceiptNumber, @PaymentDate, @AmountReceived, @AmountAllocated,
                     @AmountRefunded, @Method, @FinancialAccountId, @TransactionReference, @Notes, @Status,
-                    @CollectedByUserId, @JournalEntryId, @ReversedByPaymentId, @IdempotencyKey, @CreatedAtUtc);",
+                    @CollectedByUserId, @JournalEntryId, @ReversedByPaymentId,
+                    @ReversalJournalEntryId, @IdempotencyKey, @CreatedAtUtc);",
             payment, ct);
 
     public Task UpdatePaymentAsync(Payment payment, CancellationToken ct = default) =>
         ExecuteAsync(@"
             UPDATE payments SET amount_allocated = @AmountAllocated, amount_refunded = @AmountRefunded,
                    status = @Status, reversed_by_payment_id = @ReversedByPaymentId, notes = @Notes,
-                   journal_entry_id = @JournalEntryId
+                   journal_entry_id = @JournalEntryId,
+                   reversal_journal_entry_id = @ReversalJournalEntryId
              WHERE id = @Id;", payment, ct);
 
     public async Task InsertAllocationsAsync(IReadOnlyList<PaymentAllocation> allocations,
@@ -234,14 +237,16 @@ public sealed class FeeRepository : RepositoryBase, IFeeRepository
     public async Task<PagedResult<PaymentListItem>> SearchPaymentsAsync(PaymentQuery query,
         CancellationToken ct = default)
     {
+        // Every column is qualified here: students has its own status column, so an unqualified
+        // 'status' in this predicate is ambiguous for SQLite and the search fails to prepare.
         string where = @"
-            WHERE (@From IS NULL OR payment_date >= @From)
-              AND (@To IS NULL OR payment_date <= @To)
-              AND (@StudentId IS NULL OR student_id = @StudentId)
-              AND (@Method IS NULL OR method = @Method)
-              AND (@CollectedByUserId IS NULL OR collected_by_user_id = @CollectedByUserId)
-              AND (@Status IS NULL OR status = @Status)
-              AND (@BatchId IS NULL OR student_id IN (SELECT student_id FROM enrollments WHERE batch_id = @BatchId))";
+            WHERE (@From IS NULL OR p.payment_date >= @From)
+              AND (@To IS NULL OR p.payment_date <= @To)
+              AND (@StudentId IS NULL OR p.student_id = @StudentId)
+              AND (@Method IS NULL OR p.method = @Method)
+              AND (@CollectedByUserId IS NULL OR p.collected_by_user_id = @CollectedByUserId)
+              AND (@Status IS NULL OR p.status = @Status)
+              AND (@BatchId IS NULL OR p.student_id IN (SELECT student_id FROM enrollments WHERE batch_id = @BatchId))";
 
         var parameters = new
         {
@@ -254,7 +259,7 @@ public sealed class FeeRepository : RepositoryBase, IFeeRepository
             query.BatchId
         };
 
-        int total = await ExecuteScalarAsync<int?>($"SELECT COUNT(*) FROM payments {where};", parameters, ct)
+        int total = await ExecuteScalarAsync<int?>($"SELECT COUNT(*) FROM payments p {where};", parameters, ct)
             .ConfigureAwait(false) ?? 0;
 
         int pageSize = Math.Clamp(query.PageSize, 1, 500);

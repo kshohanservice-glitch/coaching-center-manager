@@ -94,6 +94,12 @@ public sealed class Payment
     public Guid CollectedByUserId { get; set; }
     public Guid? JournalEntryId { get; set; }
     public Guid? ReversedByPaymentId { get; set; }
+
+    /// <summary>
+    /// The journal entry that mirrors this payment when it is reversed. Reversing a payment produces a
+    /// journal entry, not another payment, so it cannot be stored in <see cref="ReversedByPaymentId"/>.
+    /// </summary>
+    public Guid? ReversalJournalEntryId { get; set; }
     /// <summary>Client-supplied idempotency key; unique per student so retries cannot double-charge.</summary>
     public string? IdempotencyKey { get; set; }
     public DateTime CreatedAtUtc { get; set; }

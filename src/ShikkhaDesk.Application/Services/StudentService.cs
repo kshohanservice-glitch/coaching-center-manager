@@ -49,15 +49,17 @@ public sealed class StudentService : IStudentService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IAuditService _audit;
     private readonly ICurrentUserService _currentUser;
+    private readonly IAccountingService _accounting;
 
     public StudentService(IAcademicRepository academic, IFeeRepository fees, IUnitOfWork unitOfWork,
-        IAuditService audit, ICurrentUserService currentUser)
+        IAuditService audit, ICurrentUserService currentUser, IAccountingService accounting)
     {
         _academic = academic;
         _fees = fees;
         _unitOfWork = unitOfWork;
         _audit = audit;
         _currentUser = currentUser;
+        _accounting = accounting;
     }
 
     public Task<PagedResult<Student>> SearchAsync(StudentQuery query, CancellationToken ct = default)
@@ -224,6 +226,21 @@ public sealed class StudentService : IStudentService
 
                 await _fees.InsertChargesAsync([charge], token).ConfigureAwait(false);
                 chargeId = charge.Id;
+
+                // The admission fee is a due like every other charge, so it has to appear as a
+                // receivable in the general ledger too. Without this the fee sub-ledger shows a due
+                // the ledger never recognised, and every payment that settles it over-credits the
+                // receivable control account - which is exactly what the reconciliation catches.
+                AccountMap map = await _accounting.GetAccountMapAsync(token).ConfigureAwait(false);
+                JournalDraft draft = JournalBuilder.ForFeeAssessment(
+                    admission.Id,
+                    admissionNumber,
+                    admissionDate,
+                    [new JournalBuilder.FeeAssessmentLine(student.Id, FeeChargeKind.AdmissionFee,
+                        charge.NetAmount, charge.Description)],
+                    map);
+
+                await _accounting.PostAsync(draft, token).ConfigureAwait(false);
             }
 
             if (request.BatchId.HasValue)

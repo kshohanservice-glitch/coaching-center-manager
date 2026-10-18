@@ -349,7 +349,7 @@ public sealed class PaymentService : IPaymentService
                 : Guid.Empty;
 
             payment.Status = PaymentStatus.Reversed;
-            payment.ReversedByPaymentId = reversalJournalId;
+            payment.ReversalJournalEntryId = reversalJournalId == Guid.Empty ? null : reversalJournalId;
             payment.Notes = string.IsNullOrWhiteSpace(payment.Notes)
                 ? "বাতিল: " + reason
                 : payment.Notes + " | বাতিল: " + reason;
