@@ -5,21 +5,78 @@ on:
   push:
     branches: [ '**' ]
 
+permissions:
+  contents: write
+  actions: read
+
 jobs:
   environment-probe:
     name: Environment probe (windows-latest)
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
       - name: Report toolchain
         shell: pwsh
         run: |
-          Write-Host "=== OS ==="
-          [System.Environment]::OSVersion.VersionString
-          Write-Host "=== dotnet SDKs ==="
-          dotnet --list-sdks
-          Write-Host "=== Inno Setup ==="
-          $p = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
-          if (Test-Path $p) { Write-Host "ISCC found: $p" } else { Write-Host "ISCC NOT at default path"; Get-ChildItem "C:\Program Files (x86)\Inno Setup*" -ErrorAction SilentlyContinue | Out-String }
-          Write-Host "=== git ==="
-          git --version
+          $out = "ci-logs/probe.txt"
+          New-Item -ItemType Directory -Force -Path "ci-logs" | Out-Null
+          $lines = @()
+          $lines += "OS: " + [System.Environment]::OSVersion.VersionString
+          $lines += "PSVersion: " + $PSVersionTable.PSVersion.ToString()
+          $lines += "=== dotnet SDKs ==="
+          $lines += (dotnet --list-sdks)
+          $lines += "=== dotnet runtimes ==="
+          $lines += (dotnet --list-runtimes)
+          $lines += "=== Inno Setup ==="
+          $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+          if (Test-Path $iscc) { $lines += "ISCC found: $iscc" } else { $lines += "ISCC NOT at default path" }
+          $lines += "=== VS ==="
+          $lines += (Get-ChildItem "C:\Program Files\Microsoft Visual Studio" -ErrorAction SilentlyContinue | ForEach-Object { $_.Name }) 
+          $lines += "=== nuget reachable ==="
+          $lines += (dotnet nuget list source)
+          $lines | Out-File -FilePath $out -Encoding utf8
+          Get-Content $out
+
+      - name: Test nuget restore from runner
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "probeapp" | Out-Null
+          Set-Content -Path "probeapp/probe.csproj" -Encoding utf8 -Value @'
+          <Project Sdk="Microsoft.NET.Sdk">
+            <PropertyGroup>
+              <OutputType>Exe</OutputType>
+              <TargetFramework>net8.0</TargetFramework>
+              <Nullable>enable</Nullable>
+            </PropertyGroup>
+            <ItemGroup>
+              <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.11" />
+              <PackageReference Include="xunit" Version="2.9.2" />
+            </ItemGroup>
+          </Project>
+          '@
+          Set-Content -Path "probeapp/Program.cs" -Encoding utf8 -Value 'System.Console.WriteLine("probe-ok");'
+          dotnet restore probeapp/probe.csproj 2>&1 | Out-File -Append -FilePath "ci-logs/probe.txt" -Encoding utf8
+          "RESTORE_EXIT=$LASTEXITCODE" | Out-File -Append -FilePath "ci-logs/probe.txt" -Encoding utf8
+          dotnet build probeapp/probe.csproj -c Release 2>&1 | Out-File -Append -FilePath "ci-logs/probe.txt" -Encoding utf8
+          "BUILD_EXIT=$LASTEXITCODE" | Out-File -Append -FilePath "ci-logs/probe.txt" -Encoding utf8
+          Remove-Item -Recurse -Force "probeapp"
+
+      - name: Publish probe log as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: shikkhadesk-probe-log
+          path: ci-logs/probe.txt
+
+      - name: Commit probe log back to branch
+        shell: pwsh
+        run: |
+          git config user.name "shikkhadesk-ci"
+          git config user.email "ci@shikkhadesk.local"
+          git add -f ci-logs/probe.txt
+          if (-not (git diff --cached --quiet)) {
+            git commit -m "ci: publish probe log [skip ci]"
+            git push origin HEAD:${{ github.ref_name }}
+          } else { Write-Host "no log change" }
