@@ -39,7 +39,7 @@ public sealed class AcademicRepository : RepositoryBase, IAcademicRepository
                         OR IFNULL(guardian_phone, '') LIKE @Term ESCAPE '\'
                         OR IFNULL(student_phone, '') LIKE @Term ESCAPE '\')";
 
-        int total = await ExecuteScalarAsync<int>(
+        int total = await ExecuteScalarAsync<int?>(
             $"SELECT COUNT(*) FROM students {where};",
             new { query.Status, query.BatchId, query.ClassGradeId, Search = query.Search, Term = term }, ct)
             .ConfigureAwait(false) ?? 0;
@@ -68,7 +68,7 @@ public sealed class AcademicRepository : RepositoryBase, IAcademicRepository
         ExecuteScalarAsync<int>("SELECT COUNT(*) FROM students WHERE status = @Status;", new { Status = status }, ct)!;
 
     public Task<int> CountNewAdmissionsAsync(DateRange range, CancellationToken ct = default) =>
-        ExecuteScalarAsync<int>(
+        ExecuteScalarAsync<int?>(
             "SELECT COUNT(*) FROM admissions WHERE admission_date BETWEEN @From AND @To;",
             new { From = StartOfDay(range.From), To = EndOfDay(range.To) }, ct)!;
 

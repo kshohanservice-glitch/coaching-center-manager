@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>ShikkhaDesk.Lan.Client</RootNamespace>
+    <AssemblyName>ShikkhaDesk.Lan.Client</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ShikkhaDesk.Core\ShikkhaDesk.Core.csproj" />
+    <ProjectReference Include="..\ShikkhaDesk.Application\ShikkhaDesk.Application.csproj" />
+    <ProjectReference Include="..\ShikkhaDesk.Lan.Contracts\ShikkhaDesk.Lan.Contracts.csproj" />
+  </ItemGroup>
+</Project>

@@ -152,7 +152,7 @@ public sealed class FeeRepository : RepositoryBase, IFeeRepository
     public async Task<bool> AssessmentExistsAsync(Guid? feePlanId, string? periodKey, Guid studentId,
         FeeChargeKind kind, CancellationToken ct = default)
     {
-        int count = await ExecuteScalarAsync<int>(
+        int count = await ExecuteScalarAsync<int?>(
             @"SELECT COUNT(*) FROM fee_charges
                WHERE student_id = @StudentId AND kind = @Kind
                  AND IFNULL(period_key, '') = @PeriodKey

@@ -156,8 +156,8 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
             {
                 query.AccountId,
                 query.FinancialAccountId,
-                From = query.From is null ? null : StartOfDay(query.From.Value),
-                To = query.To is null ? null : EndOfDay(query.To.Value)
+                From = query.From is null ? (DateTime?)null : StartOfDay(query.From.Value),
+                To = query.To is null ? (DateTime?)null : EndOfDay(query.To.Value)
             }, ct).ConfigureAwait(false) ?? 0;
 
         int pageSize = Math.Clamp(query.PageSize, 1, 1000);
@@ -191,8 +191,8 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
             {
                 query.AccountId,
                 query.FinancialAccountId,
-                From = query.From is null ? null : StartOfDay(query.From.Value),
-                To = query.To is null ? null : EndOfDay(query.To.Value),
+                From = query.From is null ? (DateTime?)null : StartOfDay(query.From.Value),
+                To = query.To is null ? (DateTime?)null : EndOfDay(query.To.Value),
                 Limit = pageSize,
                 Offset = (page - 1) * pageSize
             }, ct).ConfigureAwait(false)).ToList();
@@ -246,7 +246,7 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
               JOIN accounts a         ON a.id = jl.account_id
              WHERE jl.account_id = @AccountId
                AND (@AsOf IS NULL OR je.entry_date <= @AsOf);",
-            new { AccountId = accountId, AsOf = asOf is null ? null : EndOfDay(asOf.Value) }, ct)!;
+            new { AccountId = accountId, AsOf = asOf is null ? (DateTime?)null : EndOfDay(asOf.Value) }, ct)!;
 
     public Task<Money> GetFinancialAccountBalanceAsync(Guid financialAccountId, DateTime? asOf,
         CancellationToken ct = default) =>
@@ -259,7 +259,7 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
                    AND je.source_kind <> 12
                    AND (@AsOf IS NULL OR je.entry_date <= @AsOf)
              WHERE fa.id = @FinancialAccountId;",
-            new { FinancialAccountId = financialAccountId, AsOf = asOf is null ? null : EndOfDay(asOf.Value) }, ct)!;
+            new { FinancialAccountId = financialAccountId, AsOf = asOf is null ? (DateTime?)null : EndOfDay(asOf.Value) }, ct)!;
 
     // ------------------------------------------------------------------ transfers
 

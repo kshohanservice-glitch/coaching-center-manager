@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>ShikkhaDesk.Lan</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ShikkhaDesk.Core\ShikkhaDesk.Core.csproj" />
+    <ProjectReference Include="..\ShikkhaDesk.Application\ShikkhaDesk.Application.csproj" />
+  </ItemGroup>
+</Project>

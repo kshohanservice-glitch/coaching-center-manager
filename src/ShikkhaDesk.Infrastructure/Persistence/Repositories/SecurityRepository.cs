@@ -122,8 +122,8 @@ public sealed class SecurityRepository : RepositoryBase, ISecurityRepository
             {
                 Search = search,
                 Term = term,
-                From = range is null ? null : StartOfDay(range.From),
-                To = range is null ? null : EndOfDay(range.To)
+                From = range is null ? (DateTime?)null : StartOfDay(range.From),
+                To = range is null ? (DateTime?)null : EndOfDay(range.To)
             }, ct).ConfigureAwait(false) ?? 0;
 
         int size = Math.Clamp(pageSize, 1, 500);
@@ -139,8 +139,8 @@ public sealed class SecurityRepository : RepositoryBase, ISecurityRepository
             {
                 Search = search,
                 Term = term,
-                From = range is null ? null : StartOfDay(range.From),
-                To = range is null ? null : EndOfDay(range.To),
+                From = range is null ? (DateTime?)null : StartOfDay(range.From),
+                To = range is null ? (DateTime?)null : EndOfDay(range.To),
                 Limit = size,
                 Offset = (current - 1) * size
             }, ct).ConfigureAwait(false)).ToList();
