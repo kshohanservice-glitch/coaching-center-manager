@@ -72,6 +72,27 @@ public sealed class SqliteConnectionFactory : IDisposable
         return connection;
     }
 
+    /// <summary>
+    /// Closes and discards the pooled connection so the database file can be replaced (restore) or
+    /// moved. Callers must not use any open transaction or repository handle afterwards.
+    /// </summary>
+    public void Recycle()
+    {
+        if (_connection is null)
+        {
+            return;
+        }
+
+        try
+        {
+            _connection.Dispose();
+        }
+        finally
+        {
+            _connection = null;
+        }
+    }
+
     public void Dispose()
     {
         if (_disposed)

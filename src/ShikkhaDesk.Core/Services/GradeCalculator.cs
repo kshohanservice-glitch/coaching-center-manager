@@ -1,3 +1,5 @@
+using ShikkhaDesk.Core.Entities;
+
 namespace ShikkhaDesk.Core.Services;
 
 /// <summary>
