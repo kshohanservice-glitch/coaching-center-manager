@@ -1,11 +1,11 @@
   Determining projects to restore...
-  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Lan.Contracts\ShikkhaDesk.Lan.Contracts.csproj (in 270 ms).
-  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Lan.Server\ShikkhaDesk.Lan.Server.csproj (in 12.39 sec).
-  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Wpf\ShikkhaDesk.Wpf.csproj (in 14.58 sec).
-  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Core\ShikkhaDesk.Core.csproj (in 1 ms).
-  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Application\ShikkhaDesk.Application.csproj (in 1 ms).
-  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Lan.Client\ShikkhaDesk.Lan.Client.csproj (in 2 ms).
-  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Infrastructure\ShikkhaDesk.Infrastructure.csproj (in 7 ms).
-  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Lan.Host\ShikkhaDesk.Lan.Host.csproj (in 18.79 sec).
-  Restored D:\a\coaching-center-manager\coaching-center-manager\tests\ShikkhaDesk.Tests\ShikkhaDesk.Tests.csproj (in 18.91 sec).
-  Restored D:\a\coaching-center-manager\coaching-center-manager\tests\ShikkhaDesk.IntegrationTests\ShikkhaDesk.IntegrationTests.csproj (in 6.9 sec).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Core\ShikkhaDesk.Core.csproj (in 198 ms).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Application\ShikkhaDesk.Application.csproj (in 205 ms).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Lan.Client\ShikkhaDesk.Lan.Client.csproj (in 6.9 sec).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Infrastructure\ShikkhaDesk.Infrastructure.csproj (in 10.33 sec).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Wpf\ShikkhaDesk.Wpf.csproj (in 10.82 sec).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Lan.Server\ShikkhaDesk.Lan.Server.csproj (in 10.82 sec).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Lan.Contracts\ShikkhaDesk.Lan.Contracts.csproj (in 2 ms).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Lan.Host\ShikkhaDesk.Lan.Host.csproj (in 12.77 sec).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\tests\ShikkhaDesk.IntegrationTests\ShikkhaDesk.IntegrationTests.csproj (in 13.33 sec).
+  Restored D:\a\coaching-center-manager\coaching-center-manager\tests\ShikkhaDesk.Tests\ShikkhaDesk.Tests.csproj (in 16.83 sec).
