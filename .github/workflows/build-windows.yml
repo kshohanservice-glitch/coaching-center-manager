@@ -133,8 +133,11 @@ jobs:
           }
           "=== test summary ===" | Out-File -Append $log -Encoding utf8
           Get-ChildItem ci-logs -Filter test-*.txt -ErrorAction SilentlyContinue | ForEach-Object {
-            (Select-String -Path $_.FullName -Pattern "Passed!|Failed!|error") | Select-Object -First 20 |
-              ForEach-Object { $_.Line } | Out-File -Append $log -Encoding utf8
+            "--- $($_.Name) ---" | Out-File -Append $log -Encoding utf8
+            $lines = Get-Content $_.FullName
+            "LINES=$($lines.Count)" | Out-File -Append $log -Encoding utf8
+            ($lines | Select-String -Pattern "Failed|Passed!|Total tests|error |Assert|Error Message|Stack Trace|MSB|not found|No test") |
+              Select-Object -First 80 | ForEach-Object { $_.Line } | Out-File -Append $log -Encoding utf8
           }
           Get-Content $log | Write-Host
 
