@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Using Include="ShikkhaDesk.Core" />
+    <Using Include="ShikkhaDesk.Core.Security" />
     <Using Include="ShikkhaDesk.Core.Entities" />
     <Using Include="ShikkhaDesk.Core.Services" />
     <Using Include="ShikkhaDesk.Application.Dto" />

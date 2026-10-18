@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace ShikkhaDesk.Infrastructure.Security;
+namespace ShikkhaDesk.Core.Security;
 
 /// <summary>
 /// Password hashing with PBKDF2-HMAC-SHA256, a per-user random salt and a constant-time comparison.

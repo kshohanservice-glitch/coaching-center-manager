@@ -321,6 +321,12 @@ public sealed class FeeRepository : RepositoryBase, IFeeRepository
             $"SELECT {CreditColumns} FROM student_credit_transactions WHERE student_id = @StudentId ORDER BY transaction_date, created_at_utc;",
             new { StudentId = studentId }, ct).ConfigureAwait(false)).ToList();
 
+    public Task LinkCreditTransactionJournalAsync(Guid creditTransactionId, Guid journalEntryId,
+        CancellationToken ct = default) =>
+        ExecuteAsync(
+            "UPDATE student_credit_transactions SET journal_entry_id = @JournalEntryId WHERE id = @Id;",
+            new { Id = creditTransactionId, JournalEntryId = journalEntryId }, ct);
+
     public Task<Money> GetCreditBalanceAsync(Guid studentId, CancellationToken ct = default) =>
         ExecuteScalarAsync<Money>(@"
             SELECT IFNULL(SUM(CASE kind WHEN 0 THEN amount WHEN 3 THEN amount ELSE -amount END), 0)

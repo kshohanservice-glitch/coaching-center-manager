@@ -48,6 +48,8 @@ public interface IFeeRepository
     Task InsertCreditTransactionAsync(StudentCreditTransaction transaction, CancellationToken ct = default);
     Task<IReadOnlyList<StudentCreditTransaction>> GetCreditTransactionsAsync(Guid studentId,
         CancellationToken ct = default);
+    Task LinkCreditTransactionJournalAsync(Guid creditTransactionId, Guid journalEntryId,
+        CancellationToken ct = default);
     Task<Money> GetCreditBalanceAsync(Guid studentId, CancellationToken ct = default);
     Task<Money> GetTotalCreditLiabilityAsync(CancellationToken ct = default);
 

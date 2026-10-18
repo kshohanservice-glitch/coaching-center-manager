@@ -98,7 +98,9 @@ public sealed class Payment
 public sealed class PaymentAllocation
 {
     public Guid Id { get; set; }
-    public Guid PaymentId { get; set; }
+
+    /// <summary>Null when the row records an advance-credit application rather than a cash payment.</summary>
+    public Guid? PaymentId { get; set; }
     public Guid FeeChargeId { get; set; }
     public Money Amount { get; set; }
     public DateTime AllocatedAtUtc { get; set; }

@@ -42,9 +42,8 @@ internal static class DapperConfiguration
             parameter.Value = value.MinorUnits;
         }
 
-        public override Money Parse(object value) => value switch
+        public override Money Parse(object value) => value is null or DBNull ? Money.Zero : value switch
         {
-            null => Money.Zero,
             long minor => Money.FromMinorUnits(minor),
             int intValue => Money.FromMinorUnits(intValue),
             _ => Money.FromMinorUnits(Convert.ToInt64(value, CultureInfo.InvariantCulture))
@@ -59,9 +58,8 @@ internal static class DapperConfiguration
             parameter.Value = value.ToString("D");
         }
 
-        public override Guid Parse(object value) => value switch
+        public override Guid Parse(object value) => value is null or DBNull ? Guid.Empty : value switch
         {
-            null => Guid.Empty,
             Guid guid => guid,
             byte[] bytes => new Guid(bytes),
             _ => Guid.Parse(value.ToString() ?? string.Empty)
@@ -86,6 +84,11 @@ internal static class DapperConfiguration
 
         public override DateTime Parse(object value)
         {
+            if (value is null or DBNull)
+            {
+                return default;
+            }
+
             string? text = value?.ToString();
             if (string.IsNullOrWhiteSpace(text))
             {
@@ -111,6 +114,11 @@ internal static class DapperConfiguration
 
         public override DateTime? Parse(object value)
         {
+            if (value is null or DBNull)
+            {
+                return null;
+            }
+
             string? text = value?.ToString();
             if (string.IsNullOrWhiteSpace(text))
             {

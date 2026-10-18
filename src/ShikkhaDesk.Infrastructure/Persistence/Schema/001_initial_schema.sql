@@ -339,9 +339,11 @@ CREATE UNIQUE INDEX IF NOT EXISTS ux_payments_idempotency
 CREATE INDEX IF NOT EXISTS ix_payments_date ON payments(payment_date);
 CREATE INDEX IF NOT EXISTS ix_payments_student ON payments(student_id);
 
+-- A row is either a payment allocation (payment_id set) or an advance-credit application
+-- (credit_transaction_id set). payment_id is nullable for the latter.
 CREATE TABLE IF NOT EXISTS payment_allocations (
     id                   TEXT PRIMARY KEY,
-    payment_id           TEXT NOT NULL REFERENCES payments(id) ON DELETE CASCADE,
+    payment_id           TEXT REFERENCES payments(id) ON DELETE CASCADE,
     fee_charge_id        TEXT NOT NULL REFERENCES fee_charges(id),
     amount               INTEGER NOT NULL DEFAULT 0,
     allocated_at_utc     TEXT NOT NULL,
