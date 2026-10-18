@@ -1,0 +1,25 @@
+ShikkhaDesk CI run 3
+OS: Microsoft Windows NT 10.0.26100.0
+Date(UTC): 2026-10-18T15:06:36Z
+=== dotnet SDKs ===
+8.0.131 [C:\Program Files\dotnet\sdk]
+8.0.206 [C:\Program Files\dotnet\sdk]
+8.0.319 [C:\Program Files\dotnet\sdk]
+8.0.425 [C:\Program Files\dotnet\sdk]
+9.0.121 [C:\Program Files\dotnet\sdk]
+9.0.205 [C:\Program Files\dotnet\sdk]
+9.0.318 [C:\Program Files\dotnet\sdk]
+10.0.112 [C:\Program Files\dotnet\sdk]
+10.0.204 [C:\Program Files\dotnet\sdk]
+10.0.303 [C:\Program Files\dotnet\sdk]
+10.0.401 [C:\Program Files\dotnet\sdk]
+RESTORE_EXIT=0
+BUILD_EXIT=1
+=== errors and warnings ===
+D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Core\Services\GradeCalculator.cs(22,70): error CS0246: The type or namespace name 'GradeScaleItem' could not be found (are you missing a using directive or an assembly reference?) [D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Core\ShikkhaDesk.Core.csproj]
+D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Core\Services\GradeCalculator.cs(40,71): error CS0246: The type or namespace name 'GradeScaleItem' could not be found (are you missing a using directive or an assembly reference?) [D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Core\ShikkhaDesk.Core.csproj]
+D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Core\Services\GradeCalculator.cs(22,70): error CS0246: The type or namespace name 'GradeScaleItem' could not be found (are you missing a using directive or an assembly reference?) [D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Core\ShikkhaDesk.Core.csproj]
+D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Core\Services\GradeCalculator.cs(40,71): error CS0246: The type or namespace name 'GradeScaleItem' could not be found (are you missing a using directive or an assembly reference?) [D:\a\coaching-center-manager\coaching-center-manager\src\ShikkhaDesk.Core\ShikkhaDesk.Core.csproj]
+    0 Warning(s)
+    2 Error(s)
+=== test summary ===
