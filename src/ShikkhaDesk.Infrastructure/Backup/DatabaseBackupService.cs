@@ -66,12 +66,23 @@ public sealed class DatabaseBackupService : IBackupService
             await _factory.WriteLock.WaitAsync(ct).ConfigureAwait(false);
             try
             {
-                using (var source = new SqliteConnection(BuildReadOnlyConnectionString(_factory.Options.DatabasePath)))
-                using (var destination = new SqliteConnection(BuildCreateConnectionString(path)))
+                var source = new SqliteConnection(BuildReadOnlyConnectionString(_factory.Options.DatabasePath));
+                var destination = new SqliteConnection(BuildCreateConnectionString(path));
+                try
                 {
                     await source.OpenAsync(ct).ConfigureAwait(false);
                     await destination.OpenAsync(ct).ConfigureAwait(false);
                     source.BackupDatabase(destination, "main", "main");
+                }
+                finally
+                {
+                    // Microsoft.Data.Sqlite pools connections, and a pooled handle keeps the file
+                    // open after Dispose. Without clearing the pool the integrity hash and the
+                    // restore's file copy hit a sharing violation on the file just written.
+                    SqliteConnection.ClearPool(destination);
+                    SqliteConnection.ClearPool(source);
+                    destination.Dispose();
+                    source.Dispose();
                 }
             }
             finally
@@ -245,12 +256,22 @@ public sealed class DatabaseBackupService : IBackupService
 
     private static async Task<bool> IsConsistentAsync(string path, CancellationToken ct)
     {
-        using var connection = new SqliteConnection(BuildReadOnlyConnectionString(path));
-        await connection.OpenAsync(ct).ConfigureAwait(false);
-        using var command = connection.CreateCommand();
-        command.CommandText = "PRAGMA integrity_check;";
-        object? result = await command.ExecuteScalarAsync(ct).ConfigureAwait(false);
-        return string.Equals(result as string, "ok", StringComparison.OrdinalIgnoreCase);
+        var connection = new SqliteConnection(BuildReadOnlyConnectionString(path));
+        try
+        {
+            await connection.OpenAsync(ct).ConfigureAwait(false);
+            using var command = connection.CreateCommand();
+            command.CommandText = "PRAGMA integrity_check;";
+            object? result = await command.ExecuteScalarAsync(ct).ConfigureAwait(false);
+            return string.Equals(result as string, "ok", StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            // Same reason as above: a pooled handle would keep the file locked for the copy that
+            // follows a successful check.
+            SqliteConnection.ClearPool(connection);
+            connection.Dispose();
+        }
     }
 
     private static void DeleteSideFiles(string databasePath)
