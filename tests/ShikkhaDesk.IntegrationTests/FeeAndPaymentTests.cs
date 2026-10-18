@@ -103,14 +103,15 @@ public sealed class FeeAndPaymentTests
         StudentBalanceSummary balance = host.Get<IStudentService>()
             .GetBalanceAsync(studentId).GetAwaiter().GetResult();
 
-        Assert.Equal(Money.FromDecimal(1000), balance.CreditBalance);
-        Assert.Equal(Money.FromDecimal(500), balance.Outstanding);
+        // 500 admission + 2000 tuition = 2500 due, so the 500 left over is credit and nothing is due.
+        Assert.Equal(Money.FromDecimal(500), balance.CreditBalance);
+        Assert.True(balance.Outstanding.IsZero);
 
         AccountMap map = host.Get<IAccountingService>().GetAccountMapAsync().GetAwaiter().GetResult();
         Money creditLiability = host.Get<IAccountingService>()
             .GetAccountBalanceAsync(map.StudentAdvanceCredit, null).GetAwaiter().GetResult();
 
-        Assert.Equal(Money.FromDecimal(1000), creditLiability);
+        Assert.Equal(Money.FromDecimal(500), creditLiability);
     }
 
     [Fact]
@@ -128,6 +129,19 @@ public sealed class FeeAndPaymentTests
         StudentBalanceSummary before = host.Get<IStudentService>()
             .GetBalanceAsync(studentId).GetAwaiter().GetResult();
 
+        // Collection settles every open charge first, so what is left is credit and nothing is due:
+        // the same money is never counted as settled fees and as available credit at the same time.
+        Assert.True(before.Outstanding.IsZero);
+        Assert.Equal(Money.FromDecimal(500), before.CreditBalance);
+
+        // April is billed now, and only then does a due appear that the stored credit can settle.
+        host.Get<IFeeService>().AssessMonthlyFeesAsync(new AssessMonthlyFeesRequest(batchId, "2026-04"))
+            .GetAwaiter().GetResult();
+
+        StudentBalanceSummary billed = host.Get<IStudentService>()
+            .GetBalanceAsync(studentId).GetAwaiter().GetResult();
+        Assert.Equal(Money.FromDecimal(2000), billed.Outstanding);
+
         Money applied = host.Get<IPaymentService>()
             .ApplyCreditAsync(studentId).GetAwaiter().GetResult();
 
@@ -136,9 +150,9 @@ public sealed class FeeAndPaymentTests
         StudentBalanceSummary after = host.Get<IStudentService>()
             .GetBalanceAsync(studentId).GetAwaiter().GetResult();
 
-        Assert.Equal(Money.Zero, after.Outstanding);
-        Assert.Equal(Money.FromDecimal(500), after.CreditBalance);
-        Assert.Equal(before.Outstanding - applied, after.Outstanding);
+        Assert.Equal(Money.FromDecimal(1500), after.Outstanding);
+        Assert.Equal(Money.Zero, after.CreditBalance);
+        Assert.Equal(billed.Outstanding - applied, after.Outstanding);
     }
 
     [Fact]
@@ -212,7 +226,10 @@ public sealed class FeeAndPaymentTests
         StudentBalanceSummary balance = host.Get<IStudentService>()
             .GetBalanceAsync(studentId).GetAwaiter().GetResult();
 
-        Assert.Equal(Money.FromDecimal(1000), balance.CreditBalance);
+        // Admitting this student raised a 500 admission fee, so twenty payments of 50 settle that
+        // charge first and only the remaining 500 stays as advance credit.
+        Assert.Equal(Money.FromDecimal(500), balance.CreditBalance);
+        Assert.True(balance.Outstanding.IsZero);
     }
 
     [Fact]

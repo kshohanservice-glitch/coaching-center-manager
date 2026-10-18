@@ -163,7 +163,7 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
         int pageSize = Math.Clamp(query.PageSize, 1, 1000);
         int page = Math.Max(1, query.Page);
 
-        var items = (await QueryAsync<LedgerEntryRow>($@"
+        var rows = (await QueryAsync<LedgerEntryProjection>($@"
             WITH movement AS (
                 SELECT je.id          AS JournalEntryId,
                        je.journal_number AS JournalNumber,
@@ -197,15 +197,27 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
                 Offset = (page - 1) * pageSize
             }, ct).ConfigureAwait(false)).ToList();
 
+        var items = rows
+            .Select(p => new LedgerEntryRow(p.JournalEntryId, p.JournalNumber, p.EntryDate, p.Description,
+                p.SourceKind, p.Debit, p.Credit, p.RunningBalance, p.SourceId, p.SourceReference))
+            .ToList();
+
         return new PagedResult<LedgerEntryRow>(items, total, page, pageSize);
     }
 
+    // The journal conditions below sit in the ON clause of a LEFT JOIN, which keeps accounts that have
+    // no movements at all. That join does not drop a line whose journal fails the condition - it only
+    // nulls the journal columns - so each SUM wraps its term in "CASE WHEN je.id IS NULL THEN 0".
+    // Without it a reversed entry and the opening-balance entry stayed inside every total, and a cash
+    // balance was reported twice: once from financial_accounts.opening_balance and once from its own
+    // opening journal entry.
+
     public async Task<IReadOnlyList<AccountBalanceRow>> GetAccountBalancesAsync(DateRange range,
         CancellationToken ct = default) =>
-        (await QueryAsync<AccountBalanceRow>(@"
+        (await QueryAsync<AccountBalanceProjection>(@"
             SELECT a.id AS AccountId, a.code AS Code, a.name AS Name, a.type AS Type,
-                   IFNULL(SUM(jl.debit), 0)  AS DebitTotal,
-                   IFNULL(SUM(jl.credit), 0) AS CreditTotal
+                   IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.debit END), 0)  AS DebitTotal,
+                   IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.credit END), 0) AS CreditTotal
               FROM accounts a
               LEFT JOIN journal_lines jl ON jl.account_id = a.id
               LEFT JOIN journal_entries je ON je.id = jl.journal_entry_id
@@ -214,18 +226,24 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
                    AND (@To IS NULL OR je.entry_date <= @To)
              GROUP BY a.id, a.code, a.name, a.type
              ORDER BY a.code;",
-            new { From = StartOfDay(range.From), To = EndOfDay(range.To) }, ct).ConfigureAwait(false)).ToList();
+            new { From = StartOfDay(range.From), To = EndOfDay(range.To) }, ct).ConfigureAwait(false))
+            .Select(p => new AccountBalanceRow(p.AccountId, p.Code, p.Name, p.Type, p.DebitTotal, p.CreditTotal))
+            .ToList();
 
     public async Task<IReadOnlyList<TrialBalanceRow>> GetTrialBalanceAsync(DateRange range,
         CancellationToken ct = default) =>
-        (await QueryAsync<TrialBalanceRow>(@"
+        (await QueryAsync<TrialBalanceProjection>(@"
             SELECT a.code AS Code, a.name AS Name, a.type AS Type,
                    CASE WHEN a.type IN (0, 4)
-                        THEN MAX(0, IFNULL(SUM(jl.debit), 0) - IFNULL(SUM(jl.credit), 0))
-                        ELSE MAX(0, IFNULL(SUM(jl.credit), 0) - IFNULL(SUM(jl.debit), 0)) END AS Debit,
+                        THEN MAX(0, IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.debit END), 0)
+                                  - IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.credit END), 0))
+                        ELSE MAX(0, IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.credit END), 0)
+                                  - IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.debit END), 0)) END AS Debit,
                    CASE WHEN a.type IN (0, 4)
-                        THEN MAX(0, IFNULL(SUM(jl.credit), 0) - IFNULL(SUM(jl.debit), 0))
-                        ELSE MAX(0, IFNULL(SUM(jl.debit), 0) - IFNULL(SUM(jl.credit), 0)) END AS Credit
+                        THEN MAX(0, IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.credit END), 0)
+                                  - IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.debit END), 0))
+                        ELSE MAX(0, IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.debit END), 0)
+                                  - IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.credit END), 0)) END AS Credit
               FROM accounts a
               LEFT JOIN journal_lines jl ON jl.account_id = a.id
               LEFT JOIN journal_entries je ON je.id = jl.journal_entry_id
@@ -236,7 +254,9 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
              GROUP BY a.id, a.code, a.name, a.type
             HAVING IFNULL(SUM(jl.debit), 0) <> 0 OR IFNULL(SUM(jl.credit), 0) <> 0
              ORDER BY a.code;",
-            new { From = StartOfDay(range.From), To = EndOfDay(range.To) }, ct).ConfigureAwait(false)).ToList();
+            new { From = StartOfDay(range.From), To = EndOfDay(range.To) }, ct).ConfigureAwait(false))
+            .Select(p => new TrialBalanceRow(p.Code, p.Name, p.Type, p.Debit, p.Credit))
+            .ToList();
 
     public Task<Money> GetAccountBalanceAsync(Guid accountId, DateTime? asOf, CancellationToken ct = default) =>
         ExecuteScalarAsync<Money>(@"
@@ -251,7 +271,8 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
     public Task<Money> GetFinancialAccountBalanceAsync(Guid financialAccountId, DateTime? asOf,
         CancellationToken ct = default) =>
         ExecuteScalarAsync<Money>(@"
-            SELECT fa.opening_balance + IFNULL(SUM(jl.debit - jl.credit), 0)
+            SELECT fa.opening_balance
+                 + IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.debit - jl.credit END), 0)
               FROM financial_accounts fa
               LEFT JOIN journal_lines jl ON jl.financial_account_id = fa.id
               LEFT JOIN journal_entries je ON je.id = jl.journal_entry_id
@@ -381,13 +402,16 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
 
     public async Task<IReadOnlyList<PayableRow>> GetPayablesAsync(PayableStatus? status = null,
         CancellationToken ct = default) =>
-        (await QueryAsync<PayableRow>(@"
+        (await QueryAsync<PayableProjection>(@"
             SELECT p.id AS PayableId, p.bill_number AS BillNumber, s.name AS SupplierName, p.bill_date AS BillDate,
                    p.due_date AS DueDate, p.amount AS Amount, p.paid_amount AS PaidAmount,
                    (p.amount - p.paid_amount) AS Outstanding, p.status AS Status
               FROM payables p JOIN suppliers s ON s.id = p.supplier_id
              WHERE (@Status IS NULL OR p.status = @Status)
-             ORDER BY p.bill_date DESC;", new { Status = status }, ct).ConfigureAwait(false)).ToList();
+             ORDER BY p.bill_date DESC;", new { Status = status }, ct).ConfigureAwait(false))
+            .Select(p => new PayableRow(p.PayableId, p.BillNumber, p.SupplierName, p.BillDate, p.DueDate,
+                p.Amount, p.PaidAmount, p.Outstanding, p.Status))
+            .ToList();
 
     public Task InsertPayableSettlementAsync(PayableSettlement settlement, CancellationToken ct = default) =>
         ExecuteAsync(@"
@@ -468,14 +492,17 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
             new { PeriodId = periodId }, ct).ConfigureAwait(false)).ToList();
 
     public async Task<IReadOnlyList<PayrollRow>> GetPayrollRowsAsync(Guid periodId, CancellationToken ct = default) =>
-        (await QueryAsync<PayrollRow>(@"
+        (await QueryAsync<PayrollProjection>(@"
             SELECT r.id AS PayrollRecordId, s.staff_code AS StaffCode, s.full_name AS StaffName,
                    IFNULL(s.designation, '') AS Designation, r.basic_salary AS BasicSalary,
                    r.allowances AS Allowances, r.deductions AS Deductions, r.net_salary AS NetSalary,
                    r.status AS Status, r.payment_date AS PaymentDate
               FROM payroll_records r JOIN staff s ON s.id = r.staff_id
              WHERE r.payroll_period_id = @PeriodId
-             ORDER BY s.full_name;", new { PeriodId = periodId }, ct).ConfigureAwait(false)).ToList();
+             ORDER BY s.full_name;", new { PeriodId = periodId }, ct).ConfigureAwait(false))
+            .Select(p => new PayrollRow(p.PayrollRecordId, p.StaffCode, p.StaffName, p.Designation,
+                p.BasicSalary, p.Allowances, p.Deductions, p.NetSalary, p.Status, p.PaymentDate))
+            .ToList();
 
     // ------------------------------------------------------------------ cashbook / bankbook
 
@@ -508,7 +535,8 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
         // The aggregate is read as a native SQLite integer and converted once, so no nullable
         // Money mapping is required and a missing row simply yields zero.
         Money opening = Money.FromMinorUnits(await ExecuteScalarAsync<long?>(@"
-            SELECT fa.opening_balance + IFNULL(SUM(jl.debit - jl.credit), 0)
+            SELECT fa.opening_balance
+                 + IFNULL(SUM(CASE WHEN je.id IS NULL THEN 0 ELSE jl.debit - jl.credit END), 0)
               FROM financial_accounts fa
               LEFT JOIN journal_lines jl ON jl.financial_account_id = fa.id
               LEFT JOIN journal_entries je ON je.id = jl.journal_entry_id
@@ -523,9 +551,9 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
                 opening.IsNegative ? opening.Abs() : Money.Zero, opening, null)
         };
 
-        var movements = (await QueryAsync<CashbookRow>(@"
+        var movements = (await QueryAsync<CashbookProjection>(@"
             WITH movement AS (
-                SELECT je.entry_date AS Date,
+                SELECT je.entry_date AS EntryDate,
                        IFNULL(je.source_reference, je.journal_number) AS VoucherNumber,
                        je.description AS Description,
                        jl.debit  AS Receipt,
@@ -538,10 +566,13 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
                  WHERE jl.financial_account_id = @FinancialAccountId
                    AND je.entry_date BETWEEN @From AND @To
             )
-            SELECT Date, VoucherNumber, Description, Receipt, Payment, RunningBalance, Reference
-              FROM movement ORDER BY Date, VoucherNumber;",
+            SELECT EntryDate, VoucherNumber, Description, Receipt, Payment, RunningBalance, Reference
+              FROM movement ORDER BY EntryDate, VoucherNumber;",
             new { FinancialAccountId = financialAccountId, From = StartOfDay(range.From), To = EndOfDay(range.To) },
-            ct).ConfigureAwait(false)).ToList();
+            ct).ConfigureAwait(false))
+            .Select(p => new CashbookRow(p.EntryDate, p.VoucherNumber, p.Description, p.Receipt, p.Payment,
+                p.RunningBalance, p.Reference))
+            .ToList();
 
         foreach (CashbookRow movement in movements)
         {
@@ -549,5 +580,83 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
         }
 
         return rows;
+    }
+
+    // ------------------------------------------------------------------ read projections
+    //
+    // Dapper can only build a positional record when every constructor parameter type is the exact
+    // type SQLite hands back, and SQLite has no Money, Guid or DateTime. These flat classes are what
+    // Dapper fills in (the registered type handlers convert the columns), and each one is mapped onto
+    // its public record immediately below the query that reads it.
+
+    private sealed class LedgerEntryProjection
+    {
+        public Guid JournalEntryId { get; set; }
+        public string JournalNumber { get; set; } = string.Empty;
+        public DateTime EntryDate { get; set; }
+        public string Description { get; set; } = string.Empty;
+        public TransactionSourceKind SourceKind { get; set; }
+        public Money Debit { get; set; }
+        public Money Credit { get; set; }
+        public Money RunningBalance { get; set; }
+        public Guid? SourceId { get; set; }
+        public string? SourceReference { get; set; }
+    }
+
+    private sealed class AccountBalanceProjection
+    {
+        public Guid AccountId { get; set; }
+        public string Code { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public AccountType Type { get; set; }
+        public Money DebitTotal { get; set; }
+        public Money CreditTotal { get; set; }
+    }
+
+    private sealed class TrialBalanceProjection
+    {
+        public string Code { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public AccountType Type { get; set; }
+        public Money Debit { get; set; }
+        public Money Credit { get; set; }
+    }
+
+    private sealed class PayableProjection
+    {
+        public Guid PayableId { get; set; }
+        public string BillNumber { get; set; } = string.Empty;
+        public string SupplierName { get; set; } = string.Empty;
+        public DateTime BillDate { get; set; }
+        public DateTime? DueDate { get; set; }
+        public Money Amount { get; set; }
+        public Money PaidAmount { get; set; }
+        public Money Outstanding { get; set; }
+        public PayableStatus Status { get; set; }
+    }
+
+    private sealed class PayrollProjection
+    {
+        public Guid PayrollRecordId { get; set; }
+        public string StaffCode { get; set; } = string.Empty;
+        public string StaffName { get; set; } = string.Empty;
+        public string Designation { get; set; } = string.Empty;
+        public Money BasicSalary { get; set; }
+        public Money Allowances { get; set; }
+        public Money Deductions { get; set; }
+        public Money NetSalary { get; set; }
+        public PayrollStatus Status { get; set; }
+        public DateTime? PaymentDate { get; set; }
+    }
+
+    private sealed class CashbookProjection
+    {
+        public DateTime EntryDate { get; set; }
+        public string VoucherNumber { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public Money Receipt { get; set; }
+        public Money Payment { get; set; }
+        public Money RunningBalance { get; set; }
+        public string? Reference { get; set; }
     }
 }

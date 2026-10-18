@@ -260,7 +260,7 @@ public sealed class FeeRepository : RepositoryBase, IFeeRepository
         int pageSize = Math.Clamp(query.PageSize, 1, 500);
         int page = Math.Max(1, query.Page);
 
-        var items = (await QueryAsync<PaymentListItem>($@"
+        var rows = (await QueryAsync<PaymentListProjection>($@"
             SELECT p.id AS PaymentId, p.receipt_number AS ReceiptNumber, p.student_id AS StudentId,
                    s.student_code AS StudentCode, s.full_name AS StudentName, p.payment_date AS PaymentDate,
                    p.amount_received AS AmountReceived, p.amount_allocated AS AmountAllocated,
@@ -285,6 +285,12 @@ public sealed class FeeRepository : RepositoryBase, IFeeRepository
                 Limit = pageSize,
                 Offset = (page - 1) * pageSize
             }, ct).ConfigureAwait(false)).ToList();
+
+        var items = rows
+            .Select(p => new PaymentListItem(p.PaymentId, p.ReceiptNumber, p.StudentId, p.StudentCode,
+                p.StudentName, p.PaymentDate, p.AmountReceived, p.AmountAllocated, p.Unallocated, p.Method,
+                p.Status, p.TransactionReference, p.CollectedBy))
+            .ToList();
 
         return new PagedResult<PaymentListItem>(items, total, page, pageSize);
     }
@@ -387,4 +393,23 @@ public sealed class FeeRepository : RepositoryBase, IFeeRepository
             UPDATE receipts SET reprint_count = @ReprintCount, last_reprinted_at = @LastReprintedAt,
                    payload_json = @PayloadJson
              WHERE id = @Id;", receipt, ct);
+
+    // Dapper builds this flat shape (see the note in AccountingRepository) and it is mapped onto the
+    // public PaymentListItem record straight away.
+    private sealed class PaymentListProjection
+    {
+        public Guid PaymentId { get; set; }
+        public string ReceiptNumber { get; set; } = string.Empty;
+        public Guid StudentId { get; set; }
+        public string StudentCode { get; set; } = string.Empty;
+        public string StudentName { get; set; } = string.Empty;
+        public DateTime PaymentDate { get; set; }
+        public Money AmountReceived { get; set; }
+        public Money AmountAllocated { get; set; }
+        public Money Unallocated { get; set; }
+        public PaymentMethod Method { get; set; }
+        public PaymentStatus Status { get; set; }
+        public string? TransactionReference { get; set; }
+        public string CollectedBy { get; set; } = string.Empty;
+    }
 }
