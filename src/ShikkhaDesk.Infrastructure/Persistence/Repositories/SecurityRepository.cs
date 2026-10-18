@@ -117,7 +117,7 @@ public sealed class SecurityRepository : RepositoryBase, ISecurityRepository
               AND (@From IS NULL OR occurred_at_utc >= @From)
               AND (@To IS NULL OR occurred_at_utc <= @To)";
 
-        int total = await ExecuteScalarAsync<int>($"SELECT COUNT(*) FROM audit_logs {where};",
+        int total = await ExecuteScalarAsync<int?>($"SELECT COUNT(*) FROM audit_logs {where};",
             new
             {
                 Search = search,

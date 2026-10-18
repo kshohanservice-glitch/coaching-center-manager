@@ -159,7 +159,7 @@ public sealed class FeeRepository : RepositoryBase, IFeeRepository
                  AND (@FeePlanId IS NULL OR assessment_id IN (
                         SELECT id FROM fee_assessments WHERE fee_plan_id = @FeePlanId));",
             new { StudentId = studentId, Kind = kind, PeriodKey = periodKey ?? string.Empty, FeePlanId = feePlanId }, ct)
-            .ConfigureAwait(false);
+            .ConfigureAwait(false) ?? 0;
 
         return count > 0;
     }
@@ -254,7 +254,7 @@ public sealed class FeeRepository : RepositoryBase, IFeeRepository
             query.BatchId
         };
 
-        int total = await ExecuteScalarAsync<int>($"SELECT COUNT(*) FROM payments {where};", parameters, ct)
+        int total = await ExecuteScalarAsync<int?>($"SELECT COUNT(*) FROM payments {where};", parameters, ct)
             .ConfigureAwait(false) ?? 0;
 
         int pageSize = Math.Clamp(query.PageSize, 1, 500);

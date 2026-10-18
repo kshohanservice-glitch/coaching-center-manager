@@ -68,7 +68,7 @@ public sealed class AcademicRepository : RepositoryBase, IAcademicRepository
         ExecuteScalarAsync<int>("SELECT COUNT(*) FROM students WHERE status = @Status;", new { Status = status }, ct)!;
 
     public Task<int> CountNewAdmissionsAsync(DateRange range, CancellationToken ct = default) =>
-        ExecuteScalarAsync<int?>(
+        ExecuteScalarAsync<int>(
             "SELECT COUNT(*) FROM admissions WHERE admission_date BETWEEN @From AND @To;",
             new { From = StartOfDay(range.From), To = EndOfDay(range.To) }, ct)!;
 

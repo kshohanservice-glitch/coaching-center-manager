@@ -148,7 +148,7 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
               AND (@From IS NULL OR je.entry_date >= @From)
               AND (@To IS NULL OR je.entry_date <= @To)";
 
-        int total = await ExecuteScalarAsync<int>($@"
+        int total = await ExecuteScalarAsync<int?>($@"
             SELECT COUNT(*) FROM journal_lines jl
               JOIN journal_entries je ON je.id = jl.journal_entry_id
              WHERE je.status <> 2 {conditions.Replace("jl.", "jl.")};",
@@ -505,7 +505,9 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
     public async Task<IReadOnlyList<CashbookRow>> GetCashbookAsync(Guid financialAccountId, DateRange range,
         CancellationToken ct = default)
     {
-        Money opening = await ExecuteScalarAsync<Money>(@"
+        // The aggregate is read as a native SQLite integer and converted once, so no nullable
+        // Money mapping is required and a missing row simply yields zero.
+        Money opening = Money.FromMinorUnits(await ExecuteScalarAsync<long?>(@"
             SELECT fa.opening_balance + IFNULL(SUM(jl.debit - jl.credit), 0)
               FROM financial_accounts fa
               LEFT JOIN journal_lines jl ON jl.financial_account_id = fa.id
@@ -513,7 +515,7 @@ public sealed class AccountingRepository : RepositoryBase, IAccountingRepository
                    AND je.status <> 2 AND je.source_kind <> 12 AND je.entry_date < @From
              WHERE fa.id = @FinancialAccountId;",
             new { FinancialAccountId = financialAccountId, From = StartOfDay(range.From) }, ct)
-            .ConfigureAwait(false) ?? Money.Zero;
+            .ConfigureAwait(false) ?? 0L);
 
         var rows = new List<CashbookRow>
         {
