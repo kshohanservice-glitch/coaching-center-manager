@@ -52,8 +52,8 @@ public sealed class BackupAndRestoreTests
         host.Get<IPaymentService>().CollectAsync(new CollectPaymentRequest(
             studentId, Money.FromDecimal(1200), PaymentMethod.Cash)).GetAwaiter().GetResult();
 
-        (Money trialDebits, Money trialCredits, Money outstanding) before = Snapshot(host, studentId);
-        Assert.Equal(before.trialDebits, before.trialCredits);
+        LedgerSnapshot before = Snapshot(host, studentId);
+        Assert.Equal(before.Debits, before.Credits);
 
         BackupRecord backup = CreateVerifiedBackup(host);
 
@@ -67,9 +67,12 @@ public sealed class BackupAndRestoreTests
             DateTime.Today, electricity.Id, Money.FromDecimal(750), "বিদ্যুৎ বিল",
             FinancialAccountId: host.CurrentCashAccountId())).GetAwaiter().GetResult();
 
-        (Money trialDebits, Money trialCredits, Money outstanding) after = Snapshot(host, studentId);
-        Assert.NotEqual(before.outstanding, after.outstanding);
-        Assert.NotEqual(before.trialDebits, after.trialDebits);
+        LedgerSnapshot after = Snapshot(host, studentId);
+
+        // The two sides of a trial balance always sum to the same figure, so that total is not what
+        // tells you the ledger moved: money flowing in and out of cash is.
+        Assert.NotEqual(before.Outstanding, after.Outstanding);
+        Assert.NotEqual(before.Cash, after.Cash);
 
         RestoreResult result = host.Get<IBackupService>().RestoreAsync(backup.FilePath).GetAwaiter().GetResult();
 
@@ -78,13 +81,14 @@ public sealed class BackupAndRestoreTests
             "পুনরুদ্ধারের আগে বর্তমান ডেটার ব্যাকআপ নেওয়া হয়নি।");
         Assert.True(File.Exists(result.PreRestoreBackupPath!));
 
-        (Money trialDebits, Money trialCredits, Money outstanding) restored = Snapshot(host, studentId);
+        LedgerSnapshot restored = Snapshot(host, studentId);
 
         // To the poisa: the same as it was when the backup was taken.
-        Assert.Equal(before.trialDebits, restored.trialDebits);
-        Assert.Equal(before.trialCredits, restored.trialCredits);
-        Assert.Equal(before.outstanding, restored.outstanding);
-        Assert.Equal(restored.trialDebits, restored.trialCredits);
+        Assert.Equal(before.Debits, restored.Debits);
+        Assert.Equal(before.Credits, restored.Credits);
+        Assert.Equal(before.Outstanding, restored.Outstanding);
+        Assert.Equal(before.Cash, restored.Cash);
+        Assert.Equal(restored.Debits, restored.Credits);
     }
 
     [Fact]
@@ -180,14 +184,19 @@ public sealed class BackupAndRestoreTests
     private static Money ReadOutstanding(TestHost host, Guid studentId) =>
         host.Get<IStudentService>().GetBalanceAsync(studentId).GetAwaiter().GetResult().Outstanding;
 
-    private static (Money Debits, Money Credits, Money Outstanding) Snapshot(TestHost host, Guid studentId)
+    /// <summary>Enough of the ledger to prove a restore put every figure back where it was.</summary>
+    private sealed record LedgerSnapshot(Money Debits, Money Credits, Money Outstanding, Money Cash);
+
+    private static LedgerSnapshot Snapshot(TestHost host, Guid studentId)
     {
         IReadOnlyList<TrialBalanceRow> trial = host.Get<IAccountingService>()
             .GetTrialBalanceAsync(All).GetAwaiter().GetResult();
 
         Money debits = trial.Aggregate(Money.Zero, (sum, row) => sum + row.Debit);
         Money credits = trial.Aggregate(Money.Zero, (sum, row) => sum + row.Credit);
+        Money cash = host.Get<IAccountingRepository>()
+            .GetFinancialAccountBalanceAsync(host.CurrentCashAccountId(), null).GetAwaiter().GetResult();
 
-        return (debits, credits, ReadOutstanding(host, studentId));
+        return new LedgerSnapshot(debits, credits, ReadOutstanding(host, studentId), cash);
     }
 }
